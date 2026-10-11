@@ -1,0 +1,5 @@
+# GLB 与大型二进制走 git-lfs（先 git lfs install 再 clone/pull）
+*.glb filter=lfs diff=lfs merge=lfs -text
+*.wasm filter=lfs diff=lfs merge=lfs -text
+*.png filter=lfs diff=lfs merge=lfs -text
+*.jpg filter=lfs diff=lfs merge=lfs -text

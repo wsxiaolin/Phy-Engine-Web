@@ -1,0 +1,11 @@
+# 不入库：外部克隆与本地缓存
+repo/
+unity/
+node_modules/
+__pycache__/
+*.pyc
+.cache/
+
+# 提取中间产物保留（GLB 走 LFS），但临时文件不入库
+*.log
+.DS_Store
