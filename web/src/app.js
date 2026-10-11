@@ -45,6 +45,7 @@ export class App {
     this.ui.buildPalette((item) => this.beginPlacing(item));
     this.ui.buildWireBar((name) => {
       this.wireColor = name;
+      this.ui.toast(`已选中 ${name}。`); // Unity DialogWires 同款提示
     }, this.wireColor);
     this.bindUI();
     this.bindPointer();
@@ -152,6 +153,21 @@ export class App {
     };
     stick.addEventListener("pointerup", end);
     stick.addEventListener("pointercancel", end);
+
+    // Delete/Backspace：删选中导线或元件（Unity CircuitMode: KeyCode.Delete）
+    document.addEventListener("keydown", (e) => {
+      if (e.key !== "Delete" && e.key !== "Backspace") return;
+      const tag = document.activeElement?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+      if (this.deleteSelectedWire()) {
+        e.preventDefault();
+        return;
+      }
+      if (this.rails.selection) {
+        this.deleteElement(this.rails.selection);
+        e.preventDefault();
+      }
+    });
   }
 
   applyJoystick() {
@@ -269,7 +285,8 @@ export class App {
     if (p) {
       const id = p.group.userData.elementId;
       if (this.rails.selection === id) {
-        // already selected -> wire mode on this pin if close to one
+        // 已选中：开关类二次点击=拨动开关（Unity: 开关面板拨杆）
+        if (this.toggleInteractive(id)) return;
         if (pinHit && pinHit.group.userData.elementId === id) {
           this.handlePin(p.group, pinHit.pin.userData.pinIndex);
           return;
@@ -282,11 +299,24 @@ export class App {
       return;
     }
 
+    // 导线点选（Unity: 点导线选中，Delete 删除）
+    if (!this.rails.pendingWire) {
+      const wHits = this.raycaster.intersectObjects(this.wireSystem.group.children, false);
+      if (wHits.length) {
+        const view = this.wireSystem.views.get(wHits[0].object.userData.wire);
+        if (view) {
+          this.selectWire(view);
+          return;
+        }
+      }
+    }
+
     if (this.rails.placing) {
       const pt = this.planePoint();
       if (pt) this.commitPlacing(pt);
       return;
     }
+    this.selectWire(null);
     this.select(null);
   }
 
@@ -395,6 +425,7 @@ export class App {
   select(target) {
     const id = target && typeof target === "object" ? target.userData.elementId : target;
     this.rails.selection = id;
+    if (id) this.selectWire(null); // 选中元件时清除导线高亮
     for (const [eid, g] of this.elementObjects) setPinsVisible(g, eid === id || g === this.hover);
     if (!id) {
       this._selectBox.visible = false;
@@ -407,6 +438,48 @@ export class App {
     this._selectBox.setFromObject(g);
     this._selectBox.visible = true;
     this.showInspector(el);
+  }
+
+  // ---- wire selection (Unity: 点导线选中，Delete 删除) --------------------
+
+  selectWire(view) {
+    if (this.rails.selWire === view) return;
+    if (this.rails.selWire?.mesh) {
+      this.rails.selWire.mesh.material.emissive?.setHex(0x000000);
+    }
+    this.rails.selWire = view;
+    if (view?.mesh) {
+      view.mesh.material.emissive?.setHex(0x303030);
+      this.select(null);
+      this.ui.toast(`已选中导线 · ${view.mesh.userData.wire?.colorName ?? ""}（Delete 删除）`);
+    }
+  }
+
+  deleteSelectedWire() {
+    const view = this.rails.selWire;
+    if (!view) return false;
+    const wire = view.wire ?? view.mesh?.userData.wire;
+    this.experiment.removeWire(wire);
+    this.selectWire(null);
+    this.syncWires();
+    this.scheduleSimulate();
+    this.ui.toast("已删除导线");
+    return true;
+  }
+
+  // 可交互元件：开关类点击本体切换（Unity: 开关面板拨杆）
+  toggleInteractive(id) {
+    const el = this.experiment.getElement(id);
+    if (!el) return false;
+    if (/Switch|Logic Input/.test(el.modelId)) {
+      const cur = Number(el.properties["开关"] ?? 0);
+      el.properties["开关"] = cur ? 0 : 1;
+      this.ui.toast(`${el.label}：${el.properties["开关"] ? "闭合" : "断开"}`);
+      this.scheduleSimulate();
+      this.showInspector(el);
+      return true;
+    }
+    return false;
   }
 
   showInspector(el) {
@@ -583,9 +656,18 @@ export class App {
     this.hasSimulated = true;
     const supportedEls = this.experiment.elements.filter((e) => isSupported(e.modelId));
     const ids = new Set(supportedEls.map((e) => e.id));
+    let subWires = this.experiment.wires.filter((w) => ids.has(w.source) && ids.has(w.target));
+    // 只送进「有连线」的元件：悬空元件不参与求解（Unity 同语义；孤立模型
+    // 会让引擎 analyze 失败）
+    const connected = new Set();
+    for (const w of subWires) {
+      connected.add(w.source);
+      connected.add(w.target);
+    }
+    const connectedEls = supportedEls.filter((e) => connected.has(e.id));
     const sub = new Experiment();
-    sub.elements = supportedEls.map((e) => ({ ...e }));
-    sub.wires = this.experiment.wires.filter((w) => ids.has(w.source) && ids.has(w.target));
+    sub.elements = connectedEls.map((e) => ({ ...e }));
+    sub.wires = subWires;
     if (!sub.elements.length) {
       this.engine.destroy();
       if (verbose) this.ui.toast("没有可仿真的元件");
