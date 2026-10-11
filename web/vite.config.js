@@ -55,6 +55,7 @@ function buildArtefacts() {
 }
 
 export default defineConfig({
+  base: "./",
   plugins: [buildArtefacts()],
   server: {
     host: true,

@@ -6,8 +6,8 @@ let _chips = null;
 export async function loadCatalog() {
   if (_catalog) return _catalog;
   const [cat, chips] = await Promise.all([
-    fetch("/assets/catalog.json").then((r) => r.json()),
-    fetch("/assets/chips.json").then((r) => r.json()),
+    fetch(`${import.meta.env.BASE_URL}assets/catalog.json`).then((r) => r.json()),
+    fetch(`${import.meta.env.BASE_URL}assets/chips.json`).then((r) => r.json()),
   ]);
   _catalog = cat;
   _chips = chips;

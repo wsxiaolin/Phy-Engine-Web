@@ -5,9 +5,9 @@ let Module = null;
 
 export async function initEngine() {
   if (Module) return Module;
-  const url = new URL("/wasm/phy_engine.js", window.location.origin).href;
+  const url = new URL(`${import.meta.env.BASE_URL}wasm/phy_engine.js`, window.location.origin).href;
   const mod = await import(/* @vite-ignore */ url);
-  Module = await mod.default({ locateFile: (p) => `/wasm/${p}` });
+  Module = await mod.default({ locateFile: (p) => `${import.meta.env.BASE_URL}wasm/${p}` });
   return Module;
 }
 

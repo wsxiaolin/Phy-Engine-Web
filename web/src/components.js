@@ -9,7 +9,7 @@ async function template(modelId) {
   if (templateCache.has(modelId)) return templateCache.get(modelId);
   const entry = byId(modelId);
   if (!entry) throw new Error("unknown model: " + modelId);
-  const gltf = await loader.loadAsync(`/assets/components/${entry.glb}`);
+  const gltf = await loader.loadAsync(`${import.meta.env.BASE_URL}assets/components/${entry.glb}`);
   const src = gltf.scene;
   src.traverse((o) => {
     if (o.isMesh) {

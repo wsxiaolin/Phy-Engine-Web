@@ -70,7 +70,7 @@ export function initScene(canvas) {
 
 export async function loadRoom(roomGroup) {
   const loader = new GLTFLoader();
-  const gltf = await loader.loadAsync("/assets/room.glb");
+  const gltf = await loader.loadAsync(`${import.meta.env.BASE_URL}assets/room.glb`);
   const root = gltf.scene;
   root.traverse((o) => {
     if (o.isMesh) {
