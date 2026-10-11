@@ -1,0 +1,3066 @@
+[
+ {
+  "ModelID": "Basic Capacitor",
+  "FriendlyName": "电容",
+  "Categories": [
+   "模拟电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514512,
+     0.021171504,
+     -1.5919231768946398e-09
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Basic_Capacitor.glb",
+  "glbBytes": 527452
+ },
+ {
+  "ModelID": "Basic Diode",
+  "FriendlyName": "二极管",
+  "Categories": [
+   "模拟电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514512,
+     0.021171504,
+     -1.5919231768946398e-09
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Basic_Diode.glb",
+  "glbBytes": 519984
+ },
+ {
+  "ModelID": "Basic Inductor",
+  "FriendlyName": "电感",
+  "Categories": [
+   "模拟电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514512,
+     0.021171504,
+     0.0
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Basic_Inductor.glb",
+  "glbBytes": 778548
+ },
+ {
+  "ModelID": "Current Source",
+  "FriendlyName": "电流源",
+  "Categories": [
+   "模拟电路"
+  ],
+  "pins": [
+   {
+    "name": "Positive Pin",
+    "position": [
+     -0.06,
+     0.02,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Negative Pin",
+    "position": [
+     0.06000003,
+     0.01999998,
+     0.0
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Current_Source.glb",
+  "glbBytes": 3653844
+ },
+ {
+  "ModelID": "Ground Component",
+  "FriendlyName": "接地元件",
+  "Categories": [
+   "模拟电路",
+   "数字电路",
+   "家庭电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     0.063514512,
+     0.021171504,
+     -1.5919231768946398e-09
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Ground_Component.glb",
+  "glbBytes": 387676
+ },
+ {
+  "ModelID": "Light-Emitting Diode",
+  "FriendlyName": "发光二极管",
+  "Categories": [
+   "模拟电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514512,
+     0.021171504,
+     -1.5919231768946398e-09
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Light-Emitting_Diode.glb",
+  "glbBytes": 1148364
+ },
+ {
+  "ModelID": "Mutual Inductor",
+  "FriendlyName": "理想互感",
+  "Categories": [
+   "模拟电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -1.0445831012371363,
+     0.3328552597195986,
+     -0.1461901572785767
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     1.0445829614378965,
+     0.3328554026393238,
+     -0.146190094603589
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     -1.0445831012650029,
+     0.3329879682969791,
+     0.14509091701523114
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 4",
+    "position": [
+     1.0445829614379094,
+     0.33285535403678823,
+     0.1461901572785671
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Mutual_Inductor.glb",
+  "glbBytes": 592628
+ },
+ {
+  "ModelID": "N-MOSFET",
+  "FriendlyName": "N-MOSFET",
+  "Categories": [
+   "模拟电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.0633774,
+     0.0211258,
+     0.0
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514794,
+     0.021171598,
+     0.031757397
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.063514794,
+     0.021171598,
+     -0.031757397
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "N-MOSFET.glb",
+  "glbBytes": 907996
+ },
+ {
+  "ModelID": "Operational Amplifier",
+  "FriendlyName": "运算放大器",
+  "Categories": [
+   "模拟电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063514794,
+     0.021171598,
+     -0.031757397
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.0633774,
+     0.0211258,
+     0.0316887
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.063514794,
+     0.021171598,
+     0.0
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Operational_Amplifier.glb",
+  "glbBytes": 908000
+ },
+ {
+  "ModelID": "P-MOSFET",
+  "FriendlyName": "P-MOSFET",
+  "Categories": [
+   "模拟电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.0633774,
+     0.0211258,
+     0.0
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.063514794,
+     0.021171598,
+     0.031757397
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514794,
+     0.021171598,
+     -0.031757397
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "P-MOSFET.glb",
+  "glbBytes": 908004
+ },
+ {
+  "ModelID": "Rectifier",
+  "FriendlyName": "全波整流器",
+  "Categories": [
+   "模拟电路",
+   "家庭电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.0633774,
+     0.0211257788742,
+     -0.02640725
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514794,
+     0.021171576828402,
+     -0.026464497500000003
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     -0.0633774,
+     0.0211257788742,
+     0.02640725
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 4",
+    "position": [
+     0.063514794,
+     0.021171576828402,
+     0.026464497500000003
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Rectifier.glb",
+  "glbBytes": 724924
+ },
+ {
+  "ModelID": "Relay Component",
+  "FriendlyName": "继电器",
+  "Categories": [
+   "模拟电路",
+   "家庭电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -1.06,
+     0.02,
+     -0.025
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -1.0,
+     0.05,
+     0.0
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     -1.06,
+     0.02,
+     0.025
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 4",
+    "position": [
+     -0.94,
+     0.02,
+     -0.025
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 5",
+    "position": [
+     -0.94,
+     0.02,
+     0.025
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Relay_Component.glb",
+  "glbBytes": 694488
+ },
+ {
+  "ModelID": "Tapped Transformer",
+  "FriendlyName": "中心抽头变压器",
+  "Categories": [
+   "模拟电路",
+   "家庭电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.0633774,
+     0.0211258,
+     -0.02640725
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514794,
+     0.021171598,
+     -0.026464497500000003
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     -0.063377586,
+     0.021125862,
+     0.0264073275
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 4",
+    "position": [
+     0.063514512,
+     0.021171504,
+     0.02646438
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 5",
+    "position": [
+     -0.0,
+     0.021171576828402,
+     0.026464497500000003
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Tapped_Transformer.glb",
+  "glbBytes": 582696
+ },
+ {
+  "ModelID": "Transformer",
+  "FriendlyName": "理想变压器",
+  "Categories": [
+   "模拟电路",
+   "家庭电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.0633774,
+     0.0211258,
+     -0.02640725
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514794,
+     0.021171598,
+     -0.026464497500000003
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     -0.063377586,
+     0.021125862,
+     0.0264073275
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 4",
+    "position": [
+     0.063514512,
+     0.021171504,
+     0.02646438
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Transformer.glb",
+  "glbBytes": 561400
+ },
+ {
+  "ModelID": "Transistor",
+  "FriendlyName": "三极管",
+  "Categories": [
+   "模拟电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063514512,
+     0.021171504,
+     -5.55261520938336e-09
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.06337758830860198,
+     0.021125862,
+     -0.026407321959355246
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.0633773976914048,
+     0.0211258,
+     0.026407255540628498
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Transistor.glb",
+  "glbBytes": 938820
+ },
+ {
+  "ModelID": "Battery Source",
+  "FriendlyName": "一节电池",
+  "Categories": [
+   "基础电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514512,
+     0.021171504,
+     -1.5919231768946398e-09
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Battery_Source.glb",
+  "glbBytes": 816460
+ },
+ {
+  "ModelID": "Buzzer",
+  "FriendlyName": "蜂鸣器",
+  "Categories": [
+   "基础电路",
+   "演示元件"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514512,
+     0.021171504,
+     -1.5919231768946398e-09
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Buzzer.glb",
+  "glbBytes": 665764
+ },
+ {
+  "ModelID": "DPDT Switch",
+  "FriendlyName": "双刀双掷开关",
+  "Categories": [
+   "基础电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063377586,
+     0.021125862,
+     0.036970258500000006
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.0,
+     0.0211258,
+     0.03697015
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.0633774,
+     0.0211258,
+     0.03697015
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 4",
+    "position": [
+     -0.063514794,
+     0.021171598,
+     -0.0370502965
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 5",
+    "position": [
+     -0.0,
+     0.021171598,
+     -0.0370502965
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 6",
+    "position": [
+     0.063514794,
+     0.021171598,
+     -0.0370502965
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "DPDT_Switch.glb",
+  "glbBytes": 605544
+ },
+ {
+  "ModelID": "Incandescent Lamp",
+  "FriendlyName": "白炽灯泡",
+  "Categories": [
+   "基础电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514512,
+     0.021171504,
+     -1.5919231768946398e-09
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Incandescent_Lamp.glb",
+  "glbBytes": 1042424
+ },
+ {
+  "ModelID": "Push Switch",
+  "FriendlyName": "按钮开关",
+  "Categories": [
+   "基础电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514512,
+     0.021171504,
+     -1.5919231768946398e-09
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Push_Switch.glb",
+  "glbBytes": 443696
+ },
+ {
+  "ModelID": "Resistor",
+  "FriendlyName": "定值电阻",
+  "Categories": [
+   "基础电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514512,
+     0.021171504,
+     -1.5919231768946398e-09
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Resistor.glb",
+  "glbBytes": 566068
+ },
+ {
+  "ModelID": "SPDT Switch",
+  "FriendlyName": "单刀双掷开关",
+  "Categories": [
+   "基础电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063514794,
+     0.021171598,
+     0.0232887578
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.0,
+     0.021125862,
+     0.023238448199999998
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.063514512,
+     0.021171504,
+     0.023288654399999997
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "SPDT_Switch.glb",
+  "glbBytes": 471712
+ },
+ {
+  "ModelID": "Simple Switch",
+  "FriendlyName": "简单开关",
+  "Categories": [
+   "基础电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063377586,
+     0.021125862,
+     0.021125862
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514512,
+     0.021171504,
+     0.021171504
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Simple_Switch.glb",
+  "glbBytes": 440692
+ },
+ {
+  "ModelID": "Slide Rheostat",
+  "FriendlyName": "滑动变阻器",
+  "Categories": [
+   "基础电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     1.9283169002831502e-07,
+     9.5393358215415e-07,
+     -3.0402532216081997e-06
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     1.9283169002831502e-07,
+     9.5393358215415e-07,
+     -3.0402532216081997e-06
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     1.9283169002831502e-07,
+     9.5393358215415e-07,
+     -3.0402532216081997e-06
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 4",
+    "position": [
+     1.9283169002831502e-07,
+     9.5393358215415e-07,
+     -3.0402532216081997e-06
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Slide_Rheostat.glb",
+  "glbBytes": 1196120
+ },
+ {
+  "ModelID": "Student Source",
+  "FriendlyName": "学生电源",
+  "Categories": [
+   "基础电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.0,
+     0.09500457207432851,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.0,
+     0.09500457207432851,
+     0.0
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.178360145180028,
+     0.09500457207432851,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 4",
+    "position": [
+     0.248920040459958,
+     0.09500457207432851,
+     0.0
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Student_Source.glb",
+  "glbBytes": 202668
+ },
+ {
+  "ModelID": "Comparator",
+  "FriendlyName": "比较器",
+  "Categories": [
+   "模拟电路",
+   "逻辑电路"
+  ],
+  "pins": [],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Comparator.glb",
+  "glbBytes": 3632748
+ },
+ {
+  "ModelID": "Full Adder",
+  "FriendlyName": "全加器",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Full_Adder.glb",
+  "glbBytes": 3632748
+ },
+ {
+  "ModelID": "Full Subtractor",
+  "FriendlyName": "全减器",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Full_Subtractor.glb",
+  "glbBytes": 3632748
+ },
+ {
+  "ModelID": "Half Adder",
+  "FriendlyName": "半加器",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Half_Adder.glb",
+  "glbBytes": 3632748
+ },
+ {
+  "ModelID": "Half Subtractor",
+  "FriendlyName": "半减器",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Half_Subtractor.glb",
+  "glbBytes": 3632748
+ },
+ {
+  "ModelID": "Multiplier",
+  "FriendlyName": "二位乘法器",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Multiplier.glb",
+  "glbBytes": 3632748
+ },
+ {
+  "ModelID": "Pulse Source",
+  "FriendlyName": "脉冲波发生器",
+  "Categories": [
+   "模拟电路",
+   "数字电路"
+  ],
+  "pins": [
+   {
+    "name": "Positive Pin",
+    "position": [
+     -0.06,
+     0.02,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Negative Pin",
+    "position": [
+     0.06000003,
+     0.02,
+     0.0
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Pulse_Source.glb",
+  "glbBytes": 3653840
+ },
+ {
+  "ModelID": "Sawtooth Source",
+  "FriendlyName": "锯齿波发生器",
+  "Categories": [
+   "模拟电路"
+  ],
+  "pins": [
+   {
+    "name": "Positive Pin",
+    "position": [
+     -0.06,
+     0.02,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Negative Pin",
+    "position": [
+     0.06000003,
+     0.01999998,
+     0.0
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Sawtooth_Source.glb",
+  "glbBytes": 3653844
+ },
+ {
+  "ModelID": "Schmitt Trigger",
+  "FriendlyName": "施密特触发器",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.06,
+     0.02,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.06000003,
+     0.01999998,
+     0.0
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Schmitt_Trigger.glb",
+  "glbBytes": 3654064
+ },
+ {
+  "ModelID": "Sinewave Source",
+  "FriendlyName": "正弦波发生器",
+  "Categories": [
+   "模拟电路"
+  ],
+  "pins": [
+   {
+    "name": "Positive Pin",
+    "position": [
+     -0.06,
+     0.02,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Negative Pin",
+    "position": [
+     0.06000003,
+     0.02,
+     0.0
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Sinewave_Source.glb",
+  "glbBytes": 3653840
+ },
+ {
+  "ModelID": "Square Source",
+  "FriendlyName": "方波发生器",
+  "Categories": [
+   "模拟电路",
+   "逻辑电路"
+  ],
+  "pins": [
+   {
+    "name": "Positive Pin",
+    "position": [
+     -0.06,
+     0.02,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Negative Pin",
+    "position": [
+     0.06000003,
+     0.01999998,
+     0.0
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Square_Source.glb",
+  "glbBytes": 3653844
+ },
+ {
+  "ModelID": "Triangle Source",
+  "FriendlyName": "三角波发生器",
+  "Categories": [
+   "模拟电路"
+  ],
+  "pins": [
+   {
+    "name": "Positive Pin",
+    "position": [
+     -0.06,
+     0.02,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Negative Pin",
+    "position": [
+     0.06000003,
+     0.02,
+     0.0
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Triangle_Source.glb",
+  "glbBytes": 3653840
+ },
+ {
+  "ModelID": "8bit Display",
+  "FriendlyName": "八位显示器",
+  "Categories": [
+   "演示元件"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.06,
+     0.02,
+     -0.07
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.06,
+     0.02,
+     -0.023
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     -0.06,
+     0.02,
+     0.023
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 4",
+    "position": [
+     -0.06,
+     0.02,
+     0.07
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 5",
+    "position": [
+     0.06,
+     0.02,
+     -0.07
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 6",
+    "position": [
+     0.06,
+     0.02,
+     -0.023
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 7",
+    "position": [
+     0.06,
+     0.02,
+     0.023
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 8",
+    "position": [
+     0.06,
+     0.02,
+     0.07
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "8bit_Display.glb",
+  "glbBytes": 1572860
+ },
+ {
+  "ModelID": "Color Light-Emitting Diode",
+  "FriendlyName": "彩色发光二极管",
+  "Categories": [
+   "演示元件"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.09506637899999999,
+     0.021125862,
+     -0.036970258500000006
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.09506637899999999,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     -0.09506637899999999,
+     0.021125862,
+     0.036970258500000006
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 4",
+    "position": [
+     0.09527176799999999,
+     0.021171504,
+     -1.5919231768946398e-09
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Color_Light-Emitting_Diode.glb",
+  "glbBytes": 1190900
+ },
+ {
+  "ModelID": "Dual Light-Emitting Diode",
+  "FriendlyName": "演示发光二极管",
+  "Categories": [
+   "演示元件"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514512,
+     0.021171504,
+     -1.5919231768946398e-09
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Dual_Light-Emitting_Diode.glb",
+  "glbBytes": 1685996
+ },
+ {
+  "ModelID": "Electric Bell",
+  "FriendlyName": "电铃",
+  "Categories": [
+   "演示元件"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.0633774,
+     0.0211257788742,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514794,
+     0.021171576828402,
+     0.0
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Electric_Bell.glb",
+  "glbBytes": 770720
+ },
+ {
+  "ModelID": "Electric Fan",
+  "FriendlyName": "小电扇",
+  "Categories": [
+   "演示元件"
+  ],
+  "pins": [
+   {
+    "name": "对象040",
+    "position": [
+     -0.063377586,
+     0.021125862,
+     -1.02212782782705e-09
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "对象045",
+    "position": [
+     0.063514512,
+     0.021171504,
+     -1.5919231768946398e-09
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Electric_Fan.glb",
+  "glbBytes": 1343600
+ },
+ {
+  "ModelID": "Musical Box",
+  "FriendlyName": "八音盒",
+  "Categories": [
+   "演示元件"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514512,
+     0.021171504,
+     -1.5919231768946398e-09
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Musical_Box.glb",
+  "glbBytes": 4207664
+ },
+ {
+  "ModelID": "Resistance Law",
+  "FriendlyName": "电阻定律实验",
+  "Categories": [
+   "演示元件"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.14788103400000002,
+     0.021125861999999995,
+     0.04985703432
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.1478806,
+     0.0211258,
+     0.015949979
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     -0.1478806,
+     0.0211258,
+     -0.021020168887419997
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 4",
+    "position": [
+     -0.1478806,
+     0.0211258,
+     -0.055138334831129995
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 5",
+    "position": [
+     0.148200528,
+     0.021171504,
+     0.04996474944
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 6",
+    "position": [
+     0.148201186,
+     0.021171598,
+     0.01598455649
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 7",
+    "position": [
+     0.148201186,
+     0.021171598,
+     -0.0210657378928402
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 8",
+    "position": [
+     0.148201186,
+     0.021171598,
+     -0.0552578676042603
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Resistance_Law.glb",
+  "glbBytes": 549984
+ },
+ {
+  "ModelID": "Simple Instrument",
+  "FriendlyName": "简单乐器",
+  "Categories": [
+   "演示元件"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.0633774,
+     0.0211257788742,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514794,
+     0.021171576828402,
+     0.0
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Simple_Instrument.glb",
+  "glbBytes": 1494568
+ },
+ {
+  "ModelID": "Solenoid",
+  "FriendlyName": "通电螺线管",
+  "Categories": [
+   "演示元件"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     5.620996995000114e-06,
+     9.103102494e-05,
+     -2.182700598e-05
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -2.70100207899991e-06,
+     9.103102494e-05,
+     -2.08050071600004e-05
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     -1.0657995182000179e-05,
+     9.103102494e-05,
+     -2.16080073800004e-05
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 4",
+    "position": [
+     1.1242004647999789e-05,
+     9.103102494e-05,
+     -2.05130048899998e-05
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Solenoid.glb",
+  "glbBytes": 1358412
+ },
+ {
+  "ModelID": "Spark Gap",
+  "FriendlyName": "火花隙",
+  "Categories": [
+   "演示元件"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     0.042251722153118405,
+     0.021125862,
+     0.02112586569376317
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.042343009850871735,
+     0.021171504,
+     0.021171500298256526
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Spark_Gap.glb",
+  "glbBytes": 627332
+ },
+ {
+  "ModelID": "Tesla Coil",
+  "FriendlyName": "特斯拉线圈",
+  "Categories": [
+   "演示元件"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.0580960985,
+     0.021125840874138,
+     -5.07892243802383e-09
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.05822160850000001,
+     0.021171482828496,
+     5.0898948711416305e-09
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Tesla_Coil.glb",
+  "glbBytes": 1574288
+ },
+ {
+  "ModelID": "Air Switch",
+  "FriendlyName": "空气开关",
+  "Categories": [
+   "家庭电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.04590074758689852,
+     0.052983661896000005,
+     -0.013635789598086541
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.04783713265273305,
+     0.053098132032,
+     -0.01366526535547806
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Air_Switch.glb",
+  "glbBytes": 563860
+ },
+ {
+  "ModelID": "Fuse Component",
+  "FriendlyName": "保险丝",
+  "Categories": [
+   "家庭电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.065377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.06151451199999999,
+     0.021171504,
+     -1.5919231768946398e-09
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Fuse_Component.glb",
+  "glbBytes": 441384
+ },
+ {
+  "ModelID": "Simple Ammeter",
+  "FriendlyName": "直流安培表",
+  "Categories": [
+   "仪器仪表"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -5.155284324715979,
+     3.46155648471598,
+     6.66905337
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.316887061688703,
+     3.4540688382580202,
+     6.65462763
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     4.32022629774198,
+     3.4540688382580202,
+     6.65462763
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Simple_Ammeter.glb",
+  "glbBytes": 997940
+ },
+ {
+  "ModelID": "Electricity Meter",
+  "FriendlyName": "电能表",
+  "Categories": [
+   "仪器仪表",
+   "家庭电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -2.942511,
+     2.105027526575517,
+     5.911429352548093
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     1.207184,
+     2.105027526575517,
+     5.911429352548093
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     -1.207187728,
+     2.105036440460885,
+     5.911451374730216
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 4",
+    "position": [
+     2.942520087,
+     2.105036440460885,
+     5.911451374730216
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Electricity_Meter.glb",
+  "glbBytes": 1128212
+ },
+ {
+  "ModelID": "Galvanometer",
+  "FriendlyName": "灵敏电流计",
+  "Categories": [
+   "仪器仪表"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -5.155284324715979,
+     3.46155648471598,
+     6.66905337
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.316887061688703,
+     3.4540688382580202,
+     6.65462763
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     4.32022629774198,
+     3.4540688382580202,
+     6.65462763
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Galvanometer.glb",
+  "glbBytes": 1018500
+ },
+ {
+  "ModelID": "Microammeter",
+  "FriendlyName": "微安表",
+  "Categories": [
+   "仪器仪表"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -5.155284324715979,
+     3.46155648471598,
+     6.66905337
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.316887061688703,
+     3.4540688382580202,
+     6.65462763
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     4.32022629774198,
+     3.4540688382580202,
+     6.65462763
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Microammeter.glb",
+  "glbBytes": 1018508
+ },
+ {
+  "ModelID": "Multimeter",
+  "FriendlyName": "万用表",
+  "Categories": [
+   "仪器仪表"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     0.0010335767858356759,
+     0.000765612336,
+     0.0014514734092373218
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.0010335768079032474,
+     0.000765612336,
+     0.0018661801133048926
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Multimeter.glb",
+  "glbBytes": 1128004
+ },
+ {
+  "ModelID": "Resistance Box",
+  "FriendlyName": "电阻箱",
+  "Categories": [
+   "仪器仪表"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.00034051812393971997,
+     0.0005765460177480801,
+     -0.0003072670422065
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.00035083439445864,
+     0.0005765460177480801,
+     -0.000303512435032864
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Resistance_Box.glb",
+  "glbBytes": 986528
+ },
+ {
+  "ModelID": "Simple Voltmeter",
+  "FriendlyName": "直流电压表",
+  "Categories": [
+   "仪器仪表"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -5.155284324715979,
+     3.46155648471598,
+     6.66905337
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.316887061688703,
+     3.4540688382580202,
+     6.65462763
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     4.32022629774198,
+     3.4540688382580202,
+     6.65462763
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Simple_Voltmeter.glb",
+  "glbBytes": 1018492
+ },
+ {
+  "ModelID": "8bit Input",
+  "FriendlyName": "八位输入器",
+  "Categories": [
+   "演示元件"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.06,
+     0.02,
+     -0.07
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.06,
+     0.02,
+     -0.023
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     -0.06,
+     0.02,
+     0.023
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 4",
+    "position": [
+     -0.06,
+     0.02,
+     0.07
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 5",
+    "position": [
+     0.06,
+     0.02,
+     -0.07
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 6",
+    "position": [
+     0.06,
+     0.02,
+     -0.023
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 7",
+    "position": [
+     0.06,
+     0.02,
+     0.023
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 8",
+    "position": [
+     0.06,
+     0.02,
+     0.07
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "8bit_Input.glb",
+  "glbBytes": 3782268
+ },
+ {
+  "ModelID": "And Gate",
+  "FriendlyName": "与门",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063514512,
+     0.021171504,
+     -0.021171504
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.063514794,
+     0.021171598,
+     0.021171598
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "And_Gate.glb",
+  "glbBytes": 604408
+ },
+ {
+  "ModelID": "Imp Gate",
+  "FriendlyName": "蕴含门",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063514512,
+     0.021171504,
+     -0.021171504
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.063514794,
+     0.021171598,
+     0.021171598
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Imp_Gate.glb",
+  "glbBytes": 604364
+ },
+ {
+  "ModelID": "Logic Input",
+  "FriendlyName": "逻辑输入",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     0.0633774,
+     0.0211258,
+     0.0
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Logic_Input.glb",
+  "glbBytes": 2182236
+ },
+ {
+  "ModelID": "Logic Output",
+  "FriendlyName": "逻辑输出",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063514512,
+     0.021171504,
+     0.0
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Logic_Output.glb",
+  "glbBytes": 2147100
+ },
+ {
+  "ModelID": "Nand Gate",
+  "FriendlyName": "与非门",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063514512,
+     0.021171504,
+     -0.021171504
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.063514794,
+     0.021171598,
+     0.021171598
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Nand_Gate.glb",
+  "glbBytes": 604360
+ },
+ {
+  "ModelID": "Nimp Gate",
+  "FriendlyName": "蕴含非门",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063514512,
+     0.021171504,
+     -0.021171504
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.063514794,
+     0.021171598,
+     0.021171598
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Nimp_Gate.glb",
+  "glbBytes": 604368
+ },
+ {
+  "ModelID": "No Gate",
+  "FriendlyName": "非门",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063514794,
+     0.021171598,
+     -5.55263986260732e-09
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063377586,
+     0.021125862,
+     5.5406447578090795e-09
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "No_Gate.glb",
+  "glbBytes": 582928
+ },
+ {
+  "ModelID": "Nor Gate",
+  "FriendlyName": "或非门",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063514512,
+     0.021171504,
+     -0.021171504
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.063514794,
+     0.021171598,
+     0.021171598
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Nor_Gate.glb",
+  "glbBytes": 604396
+ },
+ {
+  "ModelID": "Or Gate",
+  "FriendlyName": "或门",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063514512,
+     0.021171504,
+     -0.021171504
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.063514794,
+     0.021171598,
+     0.021171598
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Or_Gate.glb",
+  "glbBytes": 604392
+ },
+ {
+  "ModelID": "Xnor Gate",
+  "FriendlyName": "同或门",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063514512,
+     0.021171504,
+     -0.021171504
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.063514794,
+     0.021171598,
+     0.021171598
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Xnor_Gate.glb",
+  "glbBytes": 604356
+ },
+ {
+  "ModelID": "Xor Gate",
+  "FriendlyName": "异或门",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063514512,
+     0.021171504,
+     -0.021171504
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     -0.063514794,
+     0.021171598,
+     0.021171598
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Xor_Gate.glb",
+  "glbBytes": 604360
+ },
+ {
+  "ModelID": "Yes Gate",
+  "FriendlyName": "是门",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063514794,
+     0.021171598,
+     -5.55263986260732e-09
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063377586,
+     0.021125862,
+     5.5406447578090795e-09
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Yes_Gate.glb",
+  "glbBytes": 582932
+ },
+ {
+  "ModelID": "Accelerometer",
+  "FriendlyName": "加速度计",
+  "Categories": [
+   "传感器"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     0.063377586,
+     0.021125862,
+     -0.042251724
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.042251724
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Accelerometer.glb",
+  "glbBytes": 3675176
+ },
+ {
+  "ModelID": "Analog Joystick",
+  "FriendlyName": "模拟摇杆",
+  "Categories": [
+   "传感器"
+  ],
+  "pins": [
+   {
+    "name": "Pin X1",
+    "position": [
+     -0.06,
+     0.02,
+     -0.07
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin X2",
+    "position": [
+     -0.06,
+     0.02,
+     0.0
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin X3",
+    "position": [
+     -0.06,
+     0.02,
+     0.07
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin Y1",
+    "position": [
+     0.06,
+     0.02,
+     -0.07
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin Y2",
+    "position": [
+     0.06,
+     0.02,
+     0.0
+    ],
+    "isPositive": false
+   },
+   {
+    "name": "Pin Y3",
+    "position": [
+     0.06,
+     0.02,
+     0.07
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Analog_Joystick.glb",
+  "glbBytes": 1240740
+ },
+ {
+  "ModelID": "Attitude Sensor",
+  "FriendlyName": "姿态传感器",
+  "Categories": [
+   "传感器"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     0.063377586,
+     0.021125862,
+     -0.042251724
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.042251724
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Attitude_Sensor.glb",
+  "glbBytes": 3675176
+ },
+ {
+  "ModelID": "Gravity Sensor",
+  "FriendlyName": "重力加速计",
+  "Categories": [
+   "传感器"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     0.063377586,
+     0.021125862,
+     -0.042251724
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.042251724
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Gravity_Sensor.glb",
+  "glbBytes": 3675176
+ },
+ {
+  "ModelID": "Gyroscope",
+  "FriendlyName": "陀螺仪传感器",
+  "Categories": [
+   "传感器"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     0.063377586,
+     0.021125862,
+     -0.042251724
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.042251724
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Gyroscope.glb",
+  "glbBytes": 3675176
+ },
+ {
+  "ModelID": "Linear Accelerometer",
+  "FriendlyName": "线性加速度计",
+  "Categories": [
+   "传感器"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     0.063377586,
+     0.021125862,
+     -0.042251724
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.042251724
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Linear_Accelerometer.glb",
+  "glbBytes": 3675176
+ },
+ {
+  "ModelID": "Magnetic Field Sensor",
+  "FriendlyName": "磁场传感器",
+  "Categories": [
+   "传感器"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     0.063377586,
+     0.021125862,
+     -0.042251724
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 3",
+    "position": [
+     0.063377586,
+     0.021125862,
+     0.042251724
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Magnetic_Field_Sensor.glb",
+  "glbBytes": 3675176
+ },
+ {
+  "ModelID": "Photodiode",
+  "FriendlyName": "光电二极管",
+  "Categories": [
+   "传感器"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514512,
+     0.021171504,
+     -1.5919231768946398e-09
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Photodiode.glb",
+  "glbBytes": 520232
+ },
+ {
+  "ModelID": "Photoresistor",
+  "FriendlyName": "光敏电阻",
+  "Categories": [
+   "传感器"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     -0.063377586,
+     0.021125862,
+     0.0
+    ],
+    "isPositive": true
+   },
+   {
+    "name": "Pin 2",
+    "position": [
+     0.063514512,
+     0.021171504,
+     -1.5919231768946398e-09
+    ],
+    "isPositive": false
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Photoresistor.glb",
+  "glbBytes": 409128
+ },
+ {
+  "ModelID": "Proximity Sensor",
+  "FriendlyName": "邻近传感器",
+  "Categories": [
+   "传感器"
+  ],
+  "pins": [
+   {
+    "name": "Pin 1",
+    "position": [
+     0.0633774,
+     0.0211258,
+     0.0
+    ],
+    "isPositive": true
+   }
+  ],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Proximity_Sensor.glb",
+  "glbBytes": 2146960
+ },
+ {
+  "ModelID": "555 Timer",
+  "FriendlyName": "555 定时器",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "555_Timer.glb",
+  "glbBytes": 3632748
+ },
+ {
+  "ModelID": "Counter",
+  "FriendlyName": "计数器",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Counter.glb",
+  "glbBytes": 3632748
+ },
+ {
+  "ModelID": "D Flipflop",
+  "FriendlyName": "D 触发器",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "D_Flipflop.glb",
+  "glbBytes": 3632748
+ },
+ {
+  "ModelID": "JK Flipflop",
+  "FriendlyName": "JK 触发器",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "JK_Flipflop.glb",
+  "glbBytes": 3632748
+ },
+ {
+  "ModelID": "Random Generator",
+  "FriendlyName": "随机数发生器",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Random_Generator.glb",
+  "glbBytes": 3632748
+ },
+ {
+  "ModelID": "Real-T Flipflop",
+  "FriendlyName": "T 触发器",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "Real-T_Flipflop.glb",
+  "glbBytes": 3632748
+ },
+ {
+  "ModelID": "T Flipflop",
+  "FriendlyName": "T' 触发器",
+  "Categories": [
+   "逻辑电路"
+  ],
+  "pins": [],
+  "limitSize": null,
+  "schematic": false,
+  "glb": "T_Flipflop.glb",
+  "glbBytes": 3632748
+ }
+]

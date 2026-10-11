@@ -130,6 +130,7 @@ def parse(path):
         node = _read_node(f, version)
         if node is None:
             break
+        fbx.nodes.append(node)
         if node.name == 'Objects':
             for obj in node.children:
                 if obj.name in ('Model', 'Geometry', 'Material', 'Texture', 'Video', 'NodeAttribute'):

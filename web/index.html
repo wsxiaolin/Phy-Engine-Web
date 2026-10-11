@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>物实电路 · Web</title>
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="viewport"></canvas>
+
+      <div id="brand"><span class="dot"></span><span>物实电路</span></div>
+
+      <!-- left floating toolbar -->
+      <div id="left-tools" class="toolcol left">
+        <button class="tool" id="btn-back" title="返回" aria-label="返回">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="tool" id="btn-ar" title="AR" aria-label="AR">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 3l7 4v10l-7 4-7-4V7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 3v8m0 0l7-4m-7 4l-7-4m7 4v8" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="tool" id="btn-wire" title="连线颜色" aria-label="连线颜色">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 7h16M4 12h16M4 17h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="18" cy="17" r="2.2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+        </button>
+      </div>
+
+      <!-- right floating toolbar -->
+      <div id="right-tools" class="toolcol right">
+        <button class="tool" id="btn-pause" title="暂停 / 运行" aria-label="暂停">
+          <svg viewBox="0 0 24 24" width="22" height="22"><path d="M9 6v12M15 6v12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        </button>
+        <button class="tool wide" id="btn-speed" title="仿真速度">1s/s</button>
+        <button class="tool" id="btn-more" title="更多" aria-label="更多">
+          <svg viewBox="0 0 24 24" width="22" height="22"><circle cx="6" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="18" cy="12" r="1.8" fill="currentColor"/></svg>
+        </button>
+        <button class="tool big" id="btn-add" title="添加元件" aria-label="添加元件">
+          <svg viewBox="0 0 24 24" width="26" height="26"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+
+      <div id="more-menu" class="card hidden">
+        <button data-act="new">新建</button>
+        <button data-act="save">保存</button>
+        <button data-act="load">加载</button>
+      </div>
+
+      <!-- bottom component sheet -->
+      <section id="palette" class="sheet">
+        <div class="tabs" id="palette-tabs"></div>
+        <div class="cards" id="palette-cards"></div>
+      </section>
+
+      <!-- camera joystick -->
+      <div id="joystick" title="拖动旋转视角"><div id="joystick-knob"></div></div>
+
+      <!-- inspector -->
+      <aside id="inspector" class="card hidden">
+        <div class="insp-title" id="insp-title">元件</div>
+        <div class="insp-rows" id="insp-rows"></div>
+        <div class="insp-actions">
+          <button id="btn-rotate" class="btn">旋转</button>
+          <button id="btn-delete" class="btn danger">删除</button>
+        </div>
+      </aside>
+
+      <div id="wirebar" class="card hidden">
+        <div class="wire-title">导线颜色</div>
+        <div class="swatches" id="wire-swatches"></div>
+      </div>
+
+      <div id="hud" class="muted"><span id="fps">-- fps</span><span id="perf"></span></div>
+      <div id="toast" class="toast hidden"></div>
+      <div id="labels"></div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

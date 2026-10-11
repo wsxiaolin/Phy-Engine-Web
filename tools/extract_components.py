@@ -182,6 +182,12 @@ class GLB:
         return idx
 
     def write(self, path):
+        # Scene roots = every node not referenced as a child. Components emit a
+        # single root; multi-part assets (e.g. room.glb) emit several.
+        referenced = set()
+        for n in self.json['nodes']:
+            referenced.update(n.get('children', []))
+        self.json['scenes'][0]['nodes'] = [i for i in range(len(self.json['nodes'])) if i not in referenced]
         self.json['buffers'][0]['byteLength'] = len(self.bin)
         js = json.dumps(self.json, separators=(',', ':')).encode('utf-8')
         while len(js) % 4:
@@ -251,12 +257,13 @@ class FBXCache:
     def get(self, path):
         if path in self.cache: return self.cache[path]
         f = fbx_parse(os.path.join(UNITY_ROOT, path))
-        # unit: GlobalSettings UnitScaleFactor (default 1 = cm)
+        # unit: GlobalSettings UnitScaleFactor (default 1 = cm). Unity applies
+        # fileScale = UnitScaleFactor to the FBX mesh, then cm->m (x0.01).
         unit = 1.0
         for ch in f.nodes:
             if ch.name == 'GlobalSettings':
                 usf = p70(ch, 'UnitScaleFactor')
-                if usf: unit = float(usf[0])
+                if usf is not None: unit = float(usf)
         info = {'fbx': f, 'unit': unit * 0.01, 'model_geos': {}, 'geo_by_fileid': {}}
         for i, (oid, n) in enumerate(f.by_type('Model')):
             geo = f.geometry_of(oid)

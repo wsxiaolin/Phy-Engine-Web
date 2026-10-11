@@ -1,0 +1,23 @@
+{
+  "_comment": "芯片类（prefab 无字面 pin）的 PL pin 约定表。顺序 = wire pin 索引 = pe_sim.h 特判注释（权威）。inputs/outputs 数组是 PL pin 序号。视觉位置按 ChipComponent 公式：outputs 左 x=-0.065、inputs 右 x=+0.065、z=lerp(-0.07,+0.07, i/(count-1))，旋转(0,90,0)。门电路用 prefab 字面 pin（见 catalog.json），其引擎序恰为 [输入...,输出]。",
+  "D Flipflop": {
+    "pins": ["Q", "~Q", "D", "CLK"],
+    "outputs": [0, 1],
+    "inputs": [2, 3],
+    "note": "~Q 未连线时引擎自动加反相器（pe_sim 宏展开）"
+  },
+  "Half Adder": { "pins": ["S", "C", "B", "A"], "outputs": [0, 1], "inputs": [2, 3] },
+  "Full Adder": { "pins": ["S", "Cout", "B", "Cin", "A"], "outputs": [0, 1], "inputs": [2, 3, 4] },
+  "Half Subtractor": { "pins": ["D", "Bout", "B", "A"], "outputs": [0, 1], "inputs": [2, 3] },
+  "Full Subtractor": { "pins": ["D", "Bout", "B", "Bin", "A"], "outputs": [0, 1], "inputs": [2, 3, 4] },
+  "Counter": { "pins": ["q3", "q2", "q1", "q0", "CLK", "EN"], "outputs": [0, 1, 2, 3], "inputs": [4, 5], "note": "EN 未连线时引擎自动接 1" },
+  "Random Generator": { "pins": ["q3", "q2", "q1", "q0", "CLK", "RST_N"], "outputs": [0, 1, 2, 3], "inputs": [4, 5], "note": "RST_N 低有效，未连线时自动接 1" },
+  "JK Flipflop": { "pins": ["J", "K", "CLK", "Q"], "outputs": [3], "inputs": [0, 1, 2], "note": "引擎 1:1 序（pe_sim 无特判）" },
+  "T Flipflop": { "pins": ["T", "CLK", "Q"], "outputs": [2], "inputs": [0, 1] },
+  "Real-T Flipflop": { "pins": ["T_BAR", "CLK", "Q"], "outputs": [2], "inputs": [0, 1] },
+  "Multiplier": { "pins": ["a0", "a1", "b0", "b1", "p0", "p1", "p2", "p3"], "outputs": [4, 5, 6, 7], "inputs": [0, 1, 2, 3] },
+  "Schmitt Trigger": { "pins": ["i", "o"], "outputs": [1], "inputs": [0], "note": "引擎 1:1" },
+  "Comparator": { "pins": ["A", "B", "o"], "outputs": [2], "inputs": [0, 1], "note": "属性 Ll/Hl 阈值" },
+  "8bit Input": { "pins": ["b7", "b6", "b5", "b4", "b3", "b2", "b1", "b0"], "outputs": [0, 1, 2, 3, 4, 5, 6, 7], "inputs": [], "note": "引擎 eight_bit_input.h 模型存在，pe_sim adapter 待接（M2 待办），接线前禁用仿真" },
+  "8bit Display": { "pins": ["b7", "b6", "b5", "b4", "b3", "b2", "b1", "b0"], "outputs": [], "inputs": [0, 1, 2, 3, 4, 5, 6, 7], "note": "同上待接" }
+}

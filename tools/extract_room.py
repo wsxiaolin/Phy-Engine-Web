@@ -53,6 +53,7 @@ def main():
             model_geo[objname] = (oid, geo)
 
     info = {'unit': 0.01}
+    node_indices = []
     for name, (oid, geo) in model_geo.items():
         md = mesh_data(geo[1])
         if not md: continue
@@ -70,7 +71,14 @@ def main():
         q = euler_to_quat(*rot)
         m = trs_matrix({'position': list(map(float, tr)), 'rotation': q,
                         'scale': list(map(float, sc))})
-        glb.add_node(name, mesh=mesh_idx, matrix=m)
+        node_indices.append(glb.add_node(name, mesh=mesh_idx, matrix=m))
+
+    # 房间.FBX geometry is authored Z-up (UpAxis=1 declared but data is Z-up);
+    # components are Y-up. Bake a -90deg X rotation under a single root so the
+    # room matches the component/three.js Y-up convention.
+    root = glb.add_node('Room', children=node_indices,
+                        matrix=[1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1])
+    _ = root
 
     os.makedirs(OUT, exist_ok=True)
     out_path = os.path.join(OUT, 'room.glb')
