@@ -7,13 +7,35 @@ export function wireColorHex(name) {
   return c ? c.hex : WIRE_COLORS[1].hex;
 }
 
-// Catenary sag like Unity CircuitWire.Reroute: A = 60/log10(len*100).
+// 悬链线，照抄 Unity CircuitWire.Render：
+//   A = 60/log10(len_cm)；y(t) = (B + cosh(lerp(HStart, HEnd, t))) / A
+// 13cm 导线端点等高时中点仅下垂 (cosh1-cosh0)/A ≈ 1.2cm（此前误把 A 当下垂量，
+// 6cm 下垂扎进桌面，穿模渲染成扇形）。
 function buildCurve(a, b) {
   const len = a.distanceTo(b);
-  const sag = Math.min(0.06, (60 / Math.log10(Math.max(len * 100, 2))) * 0.01);
-  const mid = a.clone().add(b).multiplyScalar(0.5);
-  mid.y -= sag;
-  return new THREE.QuadraticBezierCurve3(a, mid, b);
+  const A = 60 / Math.log10(Math.max(len * 100, 2));
+  const sY = a.y * A;
+  const tY = b.y * A;
+  let Hs = -1, He = 1, B;
+  const acosh = (x) => Math.log(x + Math.sqrt(x * x - 1));
+  if (sY > tY) {
+    B = tY - Math.cosh(He);
+    Hs = -acosh(Math.cosh(1) + (sY - tY));
+  } else if (sY < tY) {
+    B = sY - Math.cosh(Hs);
+    He = acosh(Math.cosh(1) + (tY - sY));
+  } else {
+    B = sY - Math.cosh(Hs);
+  }
+  const pts = [];
+  const N = 20;
+  for (let i = 0; i <= N; i++) {
+    const t = i / N;
+    const p = new THREE.Vector3().lerpVectors(a, b, t);
+    p.y = (B + Math.cosh(Hs + (He - Hs) * t)) / A;
+    pts.push(p);
+  }
+  return new THREE.CatmullRomCurve3(pts);
 }
 
 export class WireSystem {

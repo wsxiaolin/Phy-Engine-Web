@@ -591,6 +591,29 @@ export class App {
       if (verbose) this.ui.toast("没有可仿真的元件");
       return;
     }
+    // 引擎 build_netlist_from_wires 不做自动接地：无参考地的环路 MNA 奇异，
+    // analyze 必失败（Unity 自己的求解器无此限制）。在发给引擎的 payload 里
+    // 注入一个幽灵 Ground Component（只影响仿真，不进用户文档/存档）：
+    // 优先接第一块电池的负极（PL Pin 2 = 索引 1），无电池则接首个元件 pin0。
+    // 用户自己放了接地的则不注入。
+    const hasUserGround = sub.elements.some((e) => e.modelId === "Ground Component");
+    if (!hasUserGround) {
+      const bat = sub.elements.find((e) => e.modelId === "Battery Source");
+      const host = bat || sub.elements[0];
+      const hostPin = bat ? 1 : 0;
+      const g = {
+        id: "__ground__",
+        modelId: "Ground Component",
+        label: "Ground",
+        position: { x: 0, y: -10, z: 0 },
+        rotY: 0,
+        properties: {},
+        statistics: {},
+        broken: false,
+      };
+      sub.elements.push(g);
+      sub.wires.push({ source: "__ground__", sourcePin: 0, target: host.id, targetPin: hostPin, colorName: "黑色导线" });
+    }
     const t0 = performance.now();
     try {
       this.engine.load(JSON.stringify(sub.toPlsave()));
@@ -605,7 +628,19 @@ export class App {
       for (const e of this.experiment.elements) e.statistics = {};
       for (const e of status.Elements) {
         const el = byIdMap.get(e.Identifier);
-        if (el) el.statistics = e.Statistics || {};
+        if (el) {
+          el.statistics = e.Statistics || {};
+          // 引擎 write_back 只回填 MNA 支路电流（V源/电感），无源元件电流恒 0。
+          // 电阻按欧姆定律本地补算，Unity 端显示语义一致（I=U/R, P=U²/R）。
+          if (el.modelId === "Resistor" && Number.isFinite(el.statistics.电压)) {
+            const u = el.statistics.电压;
+            const r = Number(el.properties?.电阻) || 0;
+            if (r > 0) {
+              el.statistics.电流 = +(u / r).toFixed(6);
+              el.statistics.功率 = +((u * u) / r).toFixed(6);
+            }
+          }
+        }
       }
       this.ui.setPerf(`首屏 ${this.firstFrameMs?.toFixed(0) || "-"} ms · analyze ${dt.toFixed(1)} ms`);
       if (this.rails.selection) this.showInspector(this.experiment.getElement(this.rails.selection));

@@ -68,8 +68,11 @@ export function pinsOf(modelId) {
   const inN = spec.inputs.length;
   const pins = [];
   const zLerp = (i, n) => (n <= 1 ? 0 : -0.07 + (0.14 * i) / (n - 1));
-  for (let i = 0; i < outN; i++) pins.push({ name: spec.pins[spec.outputs[i]], position: [-0.065, 0.02, zLerp(i, outN)], isPositive: true });
-  for (let i = 0; i < inN; i++) pins.push({ name: spec.pins[spec.inputs[i]], position: [0.065, 0.02, zLerp(i, inN)], isPositive: false });
+  // Unity ChipComponent.OnPoolCreating: outputs x=-0.065 / inputs x=+0.065（Unity 空间）。
+  // GLB 为镜像空间（x 取反），故此处 outputs=+0.065 / inputs=-0.065，与门电路 prefab 的
+  // 实测 GLB pin 方向（inputs -0.06 / outputs +0.06）一致。
+  for (let i = 0; i < outN; i++) pins.push({ name: spec.pins[spec.outputs[i]], position: [0.065, 0.02, zLerp(i, outN)], isPositive: true });
+  for (let i = 0; i < inN; i++) pins.push({ name: spec.pins[spec.inputs[i]], position: [-0.065, 0.02, zLerp(i, inN)], isPositive: false });
   return pins;
 }
 

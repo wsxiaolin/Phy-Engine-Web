@@ -209,6 +209,20 @@ def _srgb_color(c):
     return [lin(c[0]), lin(c[1]), lin(c[2]), c[3]]
 
 
+
+def euler_to_quat(rx, ry, rz):
+    """Euler XYZ(deg) -> quaternion (x,y,z,w). Unity 左手系。"""
+    import math as _m
+    cx, sx = _m.cos(_m.radians(rx/2)), _m.sin(_m.radians(rx/2))
+    cy, sy = _m.cos(_m.radians(ry/2)), _m.sin(_m.radians(ry/2))
+    cz, sz = _m.cos(_m.radians(rz/2)), _m.sin(_m.radians(rz/2))
+    return [
+        sx*cy*cz + cx*sy*sz,
+        cx*sy*cz - sx*cy*sz,
+        cx*cy*sz + sx*sy*cz,
+        cx*cy*cz - sx*sy*sz,
+    ]
+
 def trs_matrix(t, mirror_x=MIRROR_X, unit=1.0):
     """Node local matrix, with Unity->three.js conversion baked in.
     three.js = M * Unity where M mirrors X. So: p' = (-x, y, z); q' = mirror; s unaffected."""
@@ -251,6 +265,53 @@ def flip_winding(indices):
     return out
 
 
+def _p3(n, name, default):
+    """p70 归一化为 3-list：部分 FBX 的 P 条目值结构不同（返回 float/None）。"""
+    v = p70(n, name)
+    if isinstance(v, (list, tuple)) and len(v) >= 3:
+        return [float(v[0]), float(v[1]), float(v[2])]
+    if isinstance(v, (int, float)):
+        return [float(v)] * 3
+    return default
+
+
+def _fbx_trs_matrix(oid, f):
+    """Model 节点的局部 TRS 4x4（行主序，FBX 原始单位，T 不乘 unit）。"""
+    n = f.objects[oid][1]
+    t = _p3(n, 'Lcl Translation', [0, 0, 0])
+    r = _p3(n, 'Lcl Rotation', [0, 0, 0])
+    s = _p3(n, 'Lcl Scaling', [1, 1, 1])
+    q = euler_to_quat(*r)
+    return trs_matrix({'position': t, 'rotation': q, 'scale': s})
+
+
+def _mmul(A, B):
+    """4x4 行主序相乘（先施 B 再施 A）。"""
+    return [sum(A[r * 4 + k] * B[k * 4 + c] for k in range(4)) for r in range(4) for c in range(4)]
+
+
+def _fbx_model_world_M(f, oid):
+    """Model 相对 FBX 场景根的世界矩阵 = 根侧矩阵连乘到叶。Unity 导入时
+    FBX 内部节点变换会保留在节点层级上；prefab 直接引用 mesh 时这些内部
+    变换必须烘进顶点（否则接线柱/电阻管等以错误姿态出现——渲染实证）。"""
+    chain = []
+    cur = oid
+    seen = set()
+    while cur and cur not in seen:
+        seen.add(cur)
+        chain.append(_fbx_trs_matrix(cur, f))
+        parent = None
+        for (ct, ch, pa, pr) in f.connections:
+            if ct == 'OO' and ch == cur and pa in f.objects and f.objects[pa][0] == 'Model':
+                parent = pa
+                break
+        cur = parent
+    M = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    for m in reversed(chain):  # 根 → 叶：M = root · mid · ... · leaf
+        M = _mmul(M, m)
+    return M
+
+
 class FBXCache:
     def __init__(self):
         self.cache = {}
@@ -264,13 +325,15 @@ class FBXCache:
             if ch.name == 'GlobalSettings':
                 usf = p70(ch, 'UnitScaleFactor')
                 if usf is not None: unit = float(usf)
-        info = {'fbx': f, 'unit': unit * 0.01, 'model_geos': {}, 'geo_by_fileid': {}}
+        info = {'fbx': f, 'unit': unit * 0.01, 'model_geos': {}, 'geo_by_fileid': {}, 'model_world_M': {}}
         for i, (oid, n) in enumerate(f.by_type('Model')):
             geo = f.geometry_of(oid)
             if geo:
                 objname = (n.prop(1) or n.name).split('\x00', 1)[0]
                 info['model_geos'][objname] = geo
-                info['geo_by_fileid'][4300000 + 2 * i] = geo
+                fid = 4300000 + 2 * i
+                info['geo_by_fileid'][fid] = geo
+                info['model_world_M'][fid] = _fbx_model_world_M(f, oid)
         self.cache[path] = info
         return info
 
@@ -293,18 +356,23 @@ def extract_component(prefab_path, ua, fbx_cache, out_dir):
     fbx_cache_ = fbx_cache
     stats = {'meshes': 0, 'verts': 0}
 
-    def emit_node(node, parent_children):
+    def emit_node(node, parent_children, skip_pin_meshes=False):
         comps = {c['class']: c['data'] for c in node['components']}
         mesh_idx = None
         mf = comps.get(33)  # MeshFilter
         mr = comps.get(23)  # MeshRenderer
-        if mf and mr and node.get('active', 1):
+        is_pin_node = str(node['name'] or '').lower().startswith('pin')
+        if mf and mr and node.get('active', 1) and not (skip_pin_meshes and is_pin_node):
+            # Pin 节点的 FBX 网格带内部节点变换（-90°X / 0.1 缩放），烘进
+            # prefab 节点后位置/比例全错（渲染实证：接线柱飘到场外）。
+            # 接线柱由前端按 catalog pin 坐标程序化生成，这里跳过其网格。
             mesh_ref = mf.get('m_Mesh')
             if isinstance(mesh_ref, dict) and mesh_ref.get('guid'):
                 fbx_path = ua.guid_map.get(mesh_ref['guid'])
                 if fbx_path and fbx_path.lower().endswith('.fbx'):
                     info = fbx_cache_.get(fbx_path)
-                    geo = info['geo_by_fileid'].get(mesh_ref.get('fileID'))
+                    fid = mesh_ref.get('fileID', 0)
+                    geo = info['geo_by_fileid'].get(fid)
                     if geo is None:
                         geo = info['model_geos'].get(node['name'])
                     if geo is None and info['model_geos']:
@@ -312,6 +380,7 @@ def extract_component(prefab_path, ua, fbx_cache, out_dir):
                     if geo is not None:
                         md = mesh_data(geo[1])
                         if md:
+                            fbx_M = info.get('model_world_M', {}).get(fid)
                             mesh_idx = _emit_mesh(glb, node, md, info, mr, ua)
                             stats['meshes'] += 1
                             stats['verts'] += len(md['positions']) // 3
@@ -320,13 +389,13 @@ def extract_component(prefab_path, ua, fbx_cache, out_dir):
         parent_children.append(node_idx)
         child_root = glb.json['nodes'][node_idx].setdefault('children', [])
         for ch in node['children']:
-            emit_node(ch, child_root)
+            emit_node(ch, child_root, skip_pin_meshes)
         return node_idx
 
     root_children = glb.json['scenes'][0]['nodes']
     # root transform itself is identity for components; start at children of root
     for ch in root['children']:
-        emit_node(ch, root_children)
+        emit_node(ch, root_children, skip_pin_meshes=True)
 
     # pins
     pins = []
@@ -369,19 +438,17 @@ def extract_component(prefab_path, ua, fbx_cache, out_dir):
 
 
 def _world_pos(pf, tr):
+    """Prefab 内变换链的世界位置：祖先 S,R,T 全链组合（旧版漏乘祖先 scale，
+    还把自身 scale 误乘进自身坐标——电流表 pin 因此算到 -5.15m）。
+    注意：结果为 Unity 空间（米），调用方负责镜像到 GLB 空间。"""
     p = tr.get('m_LocalPosition', {})
     v = [p.get('x', 0), p.get('y', 0), p.get('z', 0)]
-    q = tr.get('m_LocalRotation', {})
-    qq = [q.get('x', 0), q.get('y', 0), q.get('z', 0), q.get('w', 1)]
-    s = tr.get('m_LocalScale', {})
-    ss = [s.get('x', 1), s.get('y', 1), s.get('z', 1)]
-    v = [v[i]*ss[i] for i in range(3)]
-    # rotate then add parents
     father = tr.get('m_Father', {}).get('fileID')
     while father:
         ptr = pf['transforms'].get(father)
         if not ptr: break
-        # rotate by parent quat (approx: full TRS)
+        s = ptr.get('m_LocalScale', {})
+        v = [v[i] * s.get('xyz'[i], 1) for i in range(3)]
         pq = ptr.get('m_LocalRotation', {})
         pqq = [pq.get('x', 0), pq.get('y', 0), pq.get('z', 0), pq.get('w', 1)]
         v = _qrot_apply(pqq, v)
@@ -395,10 +462,28 @@ def _qrot_apply(q, v):
     t = [qw*x + qy*z - qz*y, qw*y + qz*x - qx*z, qw*z + qx*y - qy*x]
     return [x + 2*(qy*t[2]-qz*t[1]), y + 2*(qz*t[0]-qx*t[2]), z + 2*(qx*t[1]-qy*t[0])]
 
-def _emit_mesh(glb, node, md, info, mr, ua):
-    """Emit an FBX mesh as glTF primitives with per-corner vertex expansion."""
+def _emit_mesh(glb, node, md, info, mr, ua, fbx_M=None):
+    """Emit an FBX mesh as glTF primitives with per-corner vertex expansion.
+    fbx_M: FBX 内部节点链世界矩阵（行主序 4x4，原始单位），烘进顶点/法线，
+    使 prefab 直接引用 mesh 时与 Unity 导入效果一致。"""
     unit = info['unit']
     verts = md['positions']
+    if fbx_M and fbx_M != [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]:
+        nv = len(verts) // 3
+        baked = [0.0] * (nv * 3)
+        for i in range(nv):
+            x, y, z = verts[i*3], verts[i*3+1], verts[i*3+2]
+            baked[i*3]   = fbx_M[0]*x + fbx_M[4]*y + fbx_M[8]*z + fbx_M[12]
+            baked[i*3+1] = fbx_M[1]*x + fbx_M[5]*y + fbx_M[9]*z + fbx_M[13]
+            baked[i*3+2] = fbx_M[2]*x + fbx_M[6]*y + fbx_M[10]*z + fbx_M[14]
+        verts = baked
+        # 法线的线性部分变换在逐角循环里做
+    def _bake_normal(nx, ny, nz):
+        if not fbx_M or fbx_M == [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]:
+            return [nx, ny, nz]
+        return [fbx_M[0]*nx + fbx_M[4]*ny + fbx_M[8]*nz,
+                fbx_M[1]*nx + fbx_M[5]*ny + fbx_M[9]*nz,
+                fbx_M[2]*nx + fbx_M[6]*ny + fbx_M[10]*nz]
     polys = md['polys']
     nm = md.get('normals_mapping', 'ByPolygonVertex')
     nr = md.get('normals_raw') or []
@@ -419,7 +504,8 @@ def _emit_mesh(glb, node, md, info, mr, ua):
                 elif nm == 'ByVertice': bi = cx * 3
                 else: bi = 0
                 if bi < len(nr):
-                    normals.extend(conv_normal(nr[bi:bi+3]))
+                    bn = _bake_normal(nr[bi], nr[bi+1], nr[bi+2])
+                    normals.extend(conv_normal(bn))
             if ur:
                 if uvi is not None and (corner + k) < len(uvi):
                     ui = uvi[corner + k] * 2

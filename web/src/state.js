@@ -78,14 +78,17 @@ export class Experiment {
   }
 
   // Serialise to the Unity .plsave envelope the engine consumes.
+  // 注意：.plsave 的 Rotation 是【角度】（Unity 约定，引擎默认值 "0,180,0"），
+  // 前端内部 rotY 用弧度，此处转换。
   toPlsave(camera = { VisionCenter: "0,0,0", TargetRotation: "0,0,0" }) {
+    const deg = (rad) => +((rad * 180) / Math.PI).toFixed(4);
     const StatusSave = {
       Elements: this.elements.map((e) => ({
         ModelID: e.modelId,
         Identifier: e.id,
         Label: e.label,
         Position: `${e.position.x},${e.position.y},${e.position.z}`,
-        Rotation: `0,${e.rotY},0`,
+        Rotation: `0,${deg(e.rotY || 0)},0`,
         Properties: e.properties,
         Statistics: e.statistics,
         IsBroken: e.broken,
@@ -116,11 +119,13 @@ export class Experiment {
       : Object.values(status.Elements || {});
     for (const e of rawElements) {
       const [x, y, z] = (e.Position || "0,0,0").split(",").map(Number);
+      // .plsave Rotation 是角度，前端内部弧度
+      const rotDeg = Number(((e.Rotation || "0,0,0").split(",")[1]) || 0);
       exp.addElement({
         modelId: e.ModelID,
         label: e.Label || e.ModelID,
         position: { x, y, z },
-        rotY: Number(((e.Rotation || "0,0,0").split(",")[1]) || 0),
+        rotY: (rotDeg * Math.PI) / 180,
         properties: e.Properties || {},
         statistics: e.Statistics || {},
         identifier: e.Identifier,

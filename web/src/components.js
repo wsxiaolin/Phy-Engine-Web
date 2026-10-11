@@ -27,6 +27,17 @@ const pinGeo = new THREE.SphereGeometry(PIN_RADIUS, 10, 8);
 const pinMatIdle = new THREE.MeshBasicMaterial({ color: 0x9aa7b8, transparent: true, opacity: 0.55 });
 const pinMatHot = new THREE.MeshBasicMaterial({ color: 0x2f7de1 });
 
+// 接线柱：GLB 里 FBX 内部变换烘焙错误的 pin 网格已剔除（tools/extract_components.py），
+// 由前端按 catalog pin 坐标程序化生成 —— Unity 真身为香蕉插头座（正极红/负极黑，
+// 见 Previews/Circuits/Resistor.png），顶部金属帽。
+const POST_R = 0.0045;
+const POST_H = 0.022;
+const postGeo = new THREE.CylinderGeometry(POST_R, POST_R * 1.25, POST_H, 12);
+const postTipGeo = new THREE.SphereGeometry(POST_R * 0.9, 10, 8);
+const postMatRed = new THREE.MeshStandardMaterial({ color: 0xc23b32, roughness: 0.5, metalness: 0.1 });
+const postMatBlack = new THREE.MeshStandardMaterial({ color: 0x2c2c30, roughness: 0.5, metalness: 0.1 });
+const postTipMat = new THREE.MeshStandardMaterial({ color: 0xb8bec8, roughness: 0.35, metalness: 0.85 });
+
 // Build a placed component: GLB clone + pin anchor pick spheres + selection box.
 export async function createComponent(modelId, { pickable = true } = {}) {
   const group = new THREE.Group();
@@ -39,11 +50,9 @@ export async function createComponent(modelId, { pickable = true } = {}) {
   const size = box.getSize(new THREE.Vector3());
   group.userData.size = size;
 
-  // Recenter model so its footprint sits on the table and rotates about its centre.
-  const center = box.getCenter(new THREE.Vector3());
-  clone.position.x -= center.x;
-  clone.position.z -= center.z;
-  clone.position.y -= box.min.y;
+  // Unity 保真：不做 recenter。prefab 根原点即桌面接触点与旋转中心
+  // （Unity 里元件根节点 y=桌面高度、模型自根向上长、旋转绕根）。
+  // 引线端点用 catalog 的 pin 数据（与 GLB 节点矩阵同源，tools/fix_pins.py）。
   group.add(clone);
 
   const pins = pinsOf(modelId);
@@ -51,8 +60,25 @@ export async function createComponent(modelId, { pickable = true } = {}) {
   anchors.name = "pins";
   group.add(anchors);
   for (let i = 0; i < pins.length; i++) {
+    const [px, py, pz] = pins[i].position;
+    // 香蕉插头座（常驻可见）：正极红/负极黑，顶金属帽；导线端点落在柱顶
+    const bodyMat = pins[i].isPositive ? postMatRed : postMatBlack;
+    const post = new THREE.Mesh(postGeo, bodyMat);
+    post.position.set(px, py - POST_H / 4, pz);
+    post.castShadow = true;
+    post.userData.pinIndex = i;
+    post.userData.pinName = pins[i].name;
+    post.userData.isPin = true;
+    anchors.add(post);
+    const tip = new THREE.Mesh(postTipGeo, postTipMat);
+    tip.position.set(px, py + POST_H / 4, pz);
+    tip.userData.pinIndex = i;
+    tip.userData.pinName = pins[i].name;
+    tip.userData.isPin = true;
+    anchors.add(tip);
+    // 拾取球（比柱身大，hover/连线命中用）
     const marker = new THREE.Mesh(pinGeo, pinMatIdle.clone());
-    marker.position.set(pins[i].position[0], pins[i].position[1], pins[i].position[2]);
+    marker.position.set(px, py, pz);
     marker.userData.pinIndex = i;
     marker.userData.pinName = pins[i].name;
     marker.userData.isPin = true;
@@ -75,12 +101,14 @@ export function setPinsVisible(group, visible) {
   const anchors = group.getObjectByName("pins");
   if (!anchors) return;
   anchors.children.forEach((m) => {
-    m.visible = visible;
+    // 金属柱常驻；仅切换拾取标记球
+    if (m.geometry === pinGeo) m.visible = visible;
   });
 }
 
 export function highlightPin(mesh, on) {
   if (!mesh) return;
+  if (mesh.geometry !== pinGeo) return; // 金属柱共享材质，不做换色
   mesh.material = on ? pinMatHot : pinMatIdle;
   mesh.scale.setScalar(on ? 1.6 : 1);
 }
