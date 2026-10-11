@@ -40,11 +40,21 @@ export function initScene(canvas) {
   controls.enablePan = false;
   controls.update();
 
-  const hemi = new THREE.HemisphereLight(0xffffff, 0x9aa7b8, 0.75);
+  // 灯光参数照抄 Unity Scene Circuits.unity（一比一对照）：
+  // 环境光 gradient：sky(0.478,0.475,0.5) ground(0.384,0.769,1)，AmbientMode 3
+  const hemi = new THREE.HemisphereLight(0x7a7980, 0x62c4ff, 1.0);
   scene.add(hemi);
 
-  const key = new THREE.DirectionalLight(0xfff2dd, 1.05);
-  key.position.set(1.6, 3.8, 1.8);
+  // Unity LH→GLB RH 镜像：方向向量 x 取反
+  const mirrorDir = (v) => v.set(-v.x, v.y, v.z);
+  const qToDir = (x, y, z, w) => {
+    const q = new THREE.Quaternion(x, y, z, w);
+    return new THREE.Vector3(0, 0, 1).applyQuaternion(q); // Unity light forward = +Z
+  };
+
+  // 平行光1（367406135）：色(1,0.941,0.741) 强度0.5 rot(-0.483,0.224,-0.129,-0.837)
+  const key = new THREE.DirectionalLight(0xfff0bd, 0.5);
+  key.position.copy(mirrorDir(qToDir(-0.4829629, 0.22414394, -0.12940957, -0.83651626)));
   key.castShadow = true;
   key.shadow.mapSize.set(2048, 2048);
   const s = 4.5;
@@ -57,8 +67,10 @@ export function initScene(canvas) {
   key.shadow.bias = -0.0005;
   scene.add(key);
 
-  const fill = new THREE.DirectionalLight(0xdce8ff, 0.35);
-  fill.position.set(-2.2, 2.4, -1.6);
+  // 平行光2（1370817081）：色(1,0.984,0.890) 强度1 pos(0,3,14.38) rot(0.016,-0.326,0.944,0.048)
+  const fill = new THREE.DirectionalLight(0xfffae3, 1.0);
+  const d2 = mirrorDir(qToDir(0.016420886, -0.3262683, 0.94393986, 0.047507923));
+  fill.position.set(0, 3, 14.38).add(d2.multiplyScalar(5));
   scene.add(fill);
 
   const roomGroup = new THREE.Group();
