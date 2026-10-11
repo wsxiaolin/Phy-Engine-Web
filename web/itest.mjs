@@ -58,6 +58,11 @@ const r = await page.evaluate(async () => {
   out.lastSimErr = app.lastSimError || null;
   out.hasSim = app.hasSimulated;
   out.expect = "电流约 0.06";
+  const dff = await mk("D Flipflop", -0.45, 0.3);
+  const li = await mk("Logic Input", -0.55, -0.2, { "开关": 1 });
+  app.experiment.addWire(li.id, 0, dff.id, 2, "绿色导线"); // D<-逻辑输入
+  app.syncWires();
+  try { app.simulate(true); out.clkOk = true; for (let i=0;i<3;i++) app.engine.digitalClk(); out.clkOk = true; } catch (e) { out.clkOk = String(e); }
   return out;
 });
 await page.evaluate(() => {

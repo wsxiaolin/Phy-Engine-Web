@@ -78,6 +78,7 @@ export class App {
       if (!this.hasSimulated) {
         // First press acts as "run": run a full analyze and show feedback.
         this.hasSimulated = true;
+        this.running = true;
         this.simulate(true);
         pause.classList.add("active");
         this.ui.toast("仿真已启动 · 再按暂停");
@@ -780,8 +781,24 @@ export class App {
   }
 
   loop() {
+    this._lastT = performance.now();
+    this._clkAcc = 0;
     const render = () => {
       requestAnimationFrame(render);
+      const now = performance.now();
+      const dt = Math.min(0.1, (now - this._lastT) / 1000);
+      this._lastT = now;
+      // 数字时钟驱动（Unity Speed 档位：1s/s = 每秒 1 次 clk 步进）
+      if (this.running && this.hasSimulated && this.engine.circuit) {
+        const rate = [1, 2, 0.5, 0.2][this.speedIdx] ?? 1;
+        this._clkAcc += dt * rate;
+        if (this._clkAcc >= 1) {
+          const steps = Math.floor(this._clkAcc);
+          this._clkAcc -= steps;
+          for (let i = 0; i < steps; i++) this.engine.digitalClk();
+          this.scheduleSimulate();
+        }
+      }
       this.applyJoystick();
       this.world.controls.update();
       if (this.rails.selection) {
