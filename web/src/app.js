@@ -766,16 +766,30 @@ export class App {
   }
 
   updateLabels() {
+    // Unity GetLabel/CombineLabel 规则：有效数字+单位符号、零值省略、逗号合并
+    const fmt = (val, unit) => {
+      const v = Number(val);
+      if (!Number.isFinite(v) || v === 0) return "";
+      const abs = Math.abs(v);
+      const num = abs >= 100 ? v.toFixed(0) : abs >= 10 ? v.toFixed(1) : v.toFixed(2);
+      return `${num}${unit}`;
+    };
     const entries = [];
     for (const el of this.experiment.elements) {
-      if (!el.statistics || (!("电压" in el.statistics) && !("电流" in el.statistics))) continue;
       const g = this.elementObjects.get(el.id);
       if (!g) continue;
+      const parts = [];
+      const st = el.statistics || {};
+      if ("电压" in st) parts.push(fmt(st["电压"], "V"));
+      if ("电流" in st) parts.push(fmt(st["电流"], "A"));
+      if ("功率" in st && !("电压" in st)) parts.push(fmt(st["功率"], "W"));
+      // 数字状态（Logic Output / 触发器）：H/L
+      if ("状态" in st) parts.push(st["状态"] ? "H" : "L");
+      const text = parts.filter(Boolean).join(", ");
+      if (!text) continue;
       const p = new THREE.Vector3(0, (g.userData.size?.y || 0.05) + 0.06, 0);
       g.localToWorld(p);
-      const v = Number(el.statistics["电压"]).toFixed(2);
-      const i = Number(el.statistics["电流"]).toFixed(3);
-      entries.push({ id: el.id, world: p, text: `${v}V  ${i}A` });
+      entries.push({ id: el.id, world: p, text });
     }
     this.ui.updateLabels(entries, this.world.camera, this.world.renderer);
   }
