@@ -12,12 +12,12 @@ const srv = createServer((req, res) => {
   res.writeHead(200, { "Content-Type": MIME[extname(f)] || "application/octet-stream" });
   res.end(readFileSync(f));
 });
-await new Promise((r) => srv.listen(8937, r));
+await new Promise((r) => srv.listen(8941, r));
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
-await page.goto("http://localhost:8937/", { waitUntil: "networkidle" });
+await page.goto("http://localhost:8941/", { waitUntil: "networkidle" });
 await page.waitForTimeout(1500);
 const r = await page.evaluate(async () => {
   const app = window.__app;
@@ -68,11 +68,15 @@ const r = await page.evaluate(async () => {
 });
 await page.evaluate(() => {
   const app = window.__app;
+  { const swG = app.elementObjects.get([...app.experiment.elements].find((e) => /Switch/.test(e.modelId)).id);
+    window.__poleNames = []; swG.traverse((o) => window.__poleNames.push(o.name + (o.rotation.x ? "@" + o.rotation.x.toFixed(2) : ""))); }
+  app.toggleInteractive([...app.experiment.elements].find((e) => /Switch/.test(e.modelId)).id);
   const cam = app.world.camera, c = app.world.controls;
   cam.position.set(0, 1.6, 0.9); c.target.set(0, 0.78, 0); c.update();
 });
 await page.waitForTimeout(500);
 await page.screenshot({ path: "../build/interact_final.png" });
+r.poleNames = await page.evaluate(() => window.__poleNames);
 console.log(JSON.stringify(r, null, 1));
 console.log("PAGEERRORS:", errors.length, errors[0] || "");
 await browser.close(); srv.close();

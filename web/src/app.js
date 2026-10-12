@@ -405,7 +405,20 @@ export class App {
     group.rotation.y = el.rotY || 0;
     this.world.scene.add(group);
     this.elementObjects.set(el.id, group);
+    this.syncPole(el, group);
     return group;
+  }
+
+  // 开关拨杆姿态（GLTFLoader 后节点名为 "Pole"，原始 rotation.x=0.79 即
+  // 翘起断开位；闭合压平到 0。Unity 端由 Animator 驱动，此处按属性直达）
+  syncPole(el, group) {
+    const g = group || this.elementObjects.get(el.id);
+    if (!g) return;
+    const pole = g.getObjectByName("Pole");
+    if (!pole) return;
+    const on = Number(el.properties["开关"] ?? 0) !== 0;
+    pole.rotation.x = on ? 0 : 0.79;
+    g.userData.pole = pole;
   }
 
   // Programmatic placement (also used by tests).
@@ -475,6 +488,7 @@ export class App {
     if (/Switch|Logic Input/.test(el.modelId)) {
       const cur = Number(el.properties["开关"] ?? 0);
       el.properties["开关"] = cur ? 0 : 1;
+      this.syncPole(el);
       this.ui.toast(`${el.label}：${el.properties["开关"] ? "闭合" : "断开"}`);
       this.scheduleSimulate();
       this.showInspector(el);
@@ -492,6 +506,7 @@ export class App {
         value: v,
         onChange: (val) => {
           el.properties[k] = Number.isNaN(Number(val)) ? val : Number(val);
+          if (k === "开关") this.syncPole(el);
           this.scheduleSimulate();
         },
       });
