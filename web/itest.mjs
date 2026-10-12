@@ -42,6 +42,7 @@ const r = await page.evaluate(async () => {
   // 补回红线（删除验证完成），恢复闭合回路
   app.experiment.addWire(bat.id, 1, res.id, 0, "红色导线");
   app.syncWires();
+  // 绕行验证：红线上放一个电阻挡路（已同步 obstacles）
   // 3) 开关切换
   out.swBefore = sw.properties["开关"];
   app.toggleInteractive(sw.id);
