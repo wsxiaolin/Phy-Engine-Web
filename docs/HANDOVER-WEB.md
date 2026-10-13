@@ -79,9 +79,15 @@ Unity Physics-Lab 电路模式的 Web 复刻**已可用**：87 元件摆放/旋�
 
 ## 4. 遗留与建议顺序
 
-1. **36 元件批量 VLM 对照**：batch_shot.mjs 就绪（catalog 读取已修正，跑一次出 6 张
-   网格图）。重点看：门类芯片丝印方向、仪表表盘、传感器造型与官方预览图差异。
-   （上次会话因平台网关故障未跑成，脚本本身没验证过——首跑可能要小修）
+1. **36 元件批量 VLM 对照**：batch_shot.mjs 就绪（首跑中断，仅 grid_0/grid_1 落盘，
+   全量应 6 张）。grid_0 初步发现（build/grid_0.png）：
+   - **Basic Capacitor 本体悬空**——GLB 原点与 mesh y 偏移不符，疑提取时 Y 偏移
+     丢失；排查：dump 该 GLB 节点 min/max y，对照 Unity prefab 里电容本体局部 y
+   - 互感器/变压器类**超长底板溢出 0.3m 格位**（摆放问题非模型问题，batch 脚本
+     对大元件的间距要按 catalog 尺寸自适应）
+   - 右下一块**空底板只有一个红柱**（无主体 mesh，ModelID 待定位——从脚本第 4 格
+     `names[3]` 对回去）
+   - 电感/555 芯片丝印/开关类 ✓ 与官方一致
 2. **预览部署**：CF Pages 需 sin 在 Dashboard 连 repo（Build command
    `cd web && npm run build`，输出 web/dist）；GH Pages 等 org 升级；公开仓方案
    会带出 GLB 资产与 docs/，sin 已知悉未决。
