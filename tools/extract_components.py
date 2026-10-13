@@ -9,7 +9,7 @@ Coordinate system note:
 """
 import os, sys, json, math, struct
 sys.path.insert(0, os.path.dirname(__file__))
-from unity_yaml import UnityAssets, parse_prefab, scene_tree, parse_material, UNITY_ROOT, load_yaml_docs
+from unity_yaml import UnityAssets, parse_prefab, scene_tree, parse_material, UNITY_ROOT, load_yaml_docs, safe_name
 from fbx_binary import parse as fbx_parse, mesh_data, p70
 
 OUT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'build', 'assets'))
@@ -415,7 +415,7 @@ def extract_component(prefab_path, ua, fbx_cache, out_dir):
         # world position: compose up to root (root is at origin)
         pos = _world_pos(pf, pin_tr)
         pins.append({
-            'name': go.get('m_Name', ''),
+            'name': safe_name(go.get('m_Name', '')),
             'position': conv_pos(pos, 1.0),
             'isPositive': bool(mb.get('IsPositive', 0)),
         })

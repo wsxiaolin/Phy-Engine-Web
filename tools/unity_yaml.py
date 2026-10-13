@@ -91,6 +91,16 @@ def parse_prefab(path):
             'components': components, 'monobehaviours': monobehaviours,
             'go_comps': go_comps, 'docs': docs}
 
+def safe_name(v):
+    """m_Name 防御：PyYAML 1.1 会把裸 On/Off/Yes/No/True/False 解析成布尔，
+    导致 GLB 节点名变成 true/false → three.js GLTFLoader sanitizeNodeName 崩溃
+    （Air_Switch.glb 曾因此炸掉批量截图）。按 Unity 常见命名还原首字母大写形式。"""
+    if isinstance(v, bool):
+        return 'On' if v else 'Off'
+    if v is None:
+        return ''
+    return v if isinstance(v, str) else str(v)
+
 def scene_tree(pf, root_fileid=None):
     """Build scene-graph tree from parsed prefab: nodes with transform + components."""
     transforms = pf['transforms']
@@ -113,7 +123,7 @@ def scene_tree(pf, root_fileid=None):
         go = gameobjects.get(goid, {})
         comps = pf['go_comps'].get(goid, [])
         node = {
-            'name': go.get('m_Name', ''),
+            'name': safe_name(go.get('m_Name', '')),
             'active': go.get('m_IsActive', 1),
             'transform': _read_transform(tr),
             'components': [],

@@ -186,22 +186,47 @@ export class App {
 
   bindPointer() {
     const el = this.canvas;
-    el.addEventListener("pointerdown", (e) => this.onPointerDown(e));
+    this._activePtrs = new Set(); // 触摸活动指针（双指缩放手势判定）
+    el.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "mouse") {
+        this.onPointerDown(e);
+        return;
+      }
+      this._activePtrs.add(e.pointerId);
+      // 双指 = 捏合缩放（OrbitControls dolly）：撤销单指拖拽，控制权交还相机
+      if (this._activePtrs.size >= 2) {
+        this.rails.dragging = null;
+        this.world.controls.enabled = true;
+        return;
+      }
+      const handled = this.onPointerDown(e);
+      // 单指命中交互（拖元件/选 pin/接线）时暂禁相机旋转，避免拖拽带动视角
+      if (handled) this.world.controls.enabled = false;
+    });
+    const release = (e) => {
+      this._activePtrs.delete(e.pointerId);
+      if (this._activePtrs.size === 0) this.world.controls.enabled = true;
+      this.rails.dragging = null;
+    };
     el.addEventListener("pointermove", (e) => this.onPointerMove(e));
-    el.addEventListener("pointerup", () => (this.rails.dragging = null));
+    el.addEventListener("pointerup", release);
+    el.addEventListener("pointercancel", release);
     el.addEventListener("contextmenu", (e) => e.preventDefault());
     // Unity: scroll wheel rotates the hovered/selected component in 30° steps.
-    el.addEventListener(
+    // capture 阶段拦截，独占旋转语义（空白处滚轮仍走 OrbitControls 缩放）
+    document.addEventListener(
       "wheel",
       (e) => {
+        if (!this.canvas.contains(e.target)) return;
         if (this.hover || this.rails.selection) {
           e.preventDefault();
+          e.stopImmediatePropagation();
           const id = this.hover?.userData.elementId || this.rails.selection;
           const step = Math.sign(e.deltaY) * (Math.PI / 6); // 30°
           this.rotateBy(id, step);
         }
       },
-      { passive: false },
+      { passive: false, capture: true },
     );
   }
 
@@ -263,6 +288,7 @@ export class App {
 
   // ---- interaction -----------------------------------------------------
 
+  // 返回 true = 本次按下命中交互（拖元件/pin/接线/放置），触摸端据此暂禁相机旋转
   onPointerDown(e) {
     if (e.button === 2) {
       // right-click: rotate hovered/selected
@@ -270,7 +296,7 @@ export class App {
       const p = this.pick();
       const g = p?.group || this.rails.selection;
       if (g) this.rotate(typeof g === "object" ? g.userData.elementId : g);
-      return;
+      return false;
     }
     this.setPointer(e);
 
@@ -279,7 +305,7 @@ export class App {
     const pinHit = this.pickPin(e.clientX, e.clientY);
     if (this.rails.pendingWire && pinHit) {
       this.handlePin(pinHit.group, pinHit.pin.userData.pinIndex);
-      return;
+      return true;
     }
 
     const p = this.pick();
@@ -287,17 +313,17 @@ export class App {
       const id = p.group.userData.elementId;
       if (this.rails.selection === id) {
         // 已选中：开关类二次点击=拨动开关（Unity: 开关面板拨杆）
-        if (this.toggleInteractive(id)) return;
+        if (this.toggleInteractive(id)) return true;
         if (pinHit && pinHit.group.userData.elementId === id) {
           this.handlePin(p.group, pinHit.pin.userData.pinIndex);
-          return;
+          return true;
         }
       }
       this.select(p.group);
       this.rails.dragging = { id, moved: false };
       const el = this.experiment.getElement(id);
       this._dragStart = { x: el.position.x, z: el.position.z, px: e.clientX, py: e.clientY };
-      return;
+      return true;
     }
 
     // 导线点选（Unity: 点导线选中，Delete 删除）
@@ -307,7 +333,7 @@ export class App {
         const view = this.wireSystem.views.get(wHits[0].object.userData.wire);
         if (view) {
           this.selectWire(view);
-          return;
+          return true;
         }
       }
     }
@@ -315,10 +341,11 @@ export class App {
     if (this.rails.placing) {
       const pt = this.planePoint();
       if (pt) this.commitPlacing(pt);
-      return;
+      return true;
     }
     this.selectWire(null);
     this.select(null);
+    return false;
   }
 
   onPointerMove(e) {
@@ -838,7 +865,7 @@ export class App {
       this.updateLabels();
 
       this.frames = (this.frames || 0) + 1;
-      const now = performance.now();
+      // 复用本帧开头取的 now（841 行曾重复声明 const now，导致构建失败）
       if (!this.fpsStart) this.fpsStart = now;
       if (now - this.fpsStart >= 1000) {
         this.ui.setFps((this.frames * 1000) / (now - this.fpsStart));

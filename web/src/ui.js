@@ -18,6 +18,39 @@ export class UI {
     this._toastTimer = null;
     this.labels = new Map();
     this._paletteOpen = true;
+    this.bindDrawerGesture(); // 移动端：元件抽屉上下滑动开合（Unity 平板同款）
+  }
+
+  // 抽屉滑动手势：在 tab 栏（把手区）上下滑动 >30px 切换开合；
+  // 绑在 tabs 而非整个 sheet，避免与卡片列表纵向滚动冲突。
+  bindDrawerGesture() {
+    const bar = this.tabsEl;
+    let startY = null, fired = false;
+    bar.addEventListener(
+      "touchstart",
+      (e) => {
+        if (e.touches.length === 1) {
+          startY = e.touches[0].clientY;
+          fired = false;
+        } else startY = null;
+      },
+      { passive: true },
+    );
+    bar.addEventListener(
+      "touchmove",
+      (e) => {
+        if (startY === null || fired || e.touches.length !== 1) return;
+        const dy = e.touches[0].clientY - startY;
+        if (Math.abs(dy) > 30) {
+          this.setPaletteOpen(dy < 0); // 上滑展开 / 下滑收起
+          fired = true;
+        }
+      },
+      { passive: true },
+    );
+    const end = () => (startY = null);
+    bar.addEventListener("touchend", end, { passive: true });
+    bar.addEventListener("touchcancel", end, { passive: true });
   }
 
   buildPalette(onPick) {
@@ -149,7 +182,8 @@ export class UI {
   }
 
   setFps(fps) {
-    this.fpsEl.textContent = `${fps.toFixed(0)} fps`;
+    // <10 fps 保留 1 位小数：headless/低端机 0.3fps 不会误显为 0
+    this.fpsEl.textContent = `${fps >= 10 ? Math.round(fps) : fps.toFixed(1)} fps`;
   }
 
   setPerf(text) {
