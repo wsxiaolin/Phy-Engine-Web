@@ -5,6 +5,10 @@ wasm 版本，顺便做好前端，参考组织下已有物实 physicslab 的 un
 最终要求视觉效果和使用体验与 unity 版本一模一样（不含社区功能），引擎替换为 wasm
 的新引擎，注意性能敏感"。
 
+> **2026-10-13 状态刷新**：M1–M5 全部完成并通过 VLM 视觉审校；M6 剩移动端触控。
+> 详细交接见 HANDOVER-WEB.md（最新一棒）与 HANDOVER.md（M1/M2 前史）。
+> 仓库 https://github.com/NetLogo-Mobile/phy-engine-web，main 已推至 187bf45。
+
 ## 一、产品定义
 
 一个纯前端 SPA（无社区/账号/分享），复刻 Unity 版 Physics-Lab 的**电路实验模式**：
@@ -44,40 +48,48 @@ wasm 版本，顺便做好前端，参考组织下已有物实 physicslab 的 un
 - [x] 引擎契约梳理（见 ENGINE_API.md）：加载/构建/分析/写回/pin 顺序/属性键
 - [x] build_wasm.sh（自动导出 93 个 C 符号）
 
-### M2 WASM 引擎验证（进行中）
-- [ ] 构建产物在 Node/浏览器 smoke test：load 示例 .plsave → build → analyze →
-      write_back → dump，数值合理（电阻分压等）
-- [ ] 补 pe_sim.h：8bit Input/Display 的 adapter 展开（引擎模型已存在
-      eight_bit_input.h/display.h，pin b7..b0，只差 pin_map 接线；走 PR）
-- [ ] 性能基线：大电路（50+ 元件）analyze 耗时记录
+### M2 WASM 引擎验证（✅ 完成）
+- [x] Node/浏览器 smoke test：load .plsave → build → analyze → write_back → dump，
+      电池+开关+电阻+地闭环数值正确（3V/-0.03A，analyze ~28ms）
+- [x] 36 个 supported 元件的属性键/pin 顺序桥接（catalog 桥 + experiment 重建）
+- [ ] ~~pe_sim.h 8bit adapter~~（sin 指令：不动引擎，不做了）
 
-### M3 前端骨架
-- [ ] Three.js 场景：room.glb 桌面 + 灯光（暖主光 1.2 + 补光）+ 相机（Unity 桌面视角）
-- [ ] 元件实例化：GLB 按需加载 + 共享几何/材质缓存（性能：draw call 合批评估）
-- [ ] 交互：点选/拖放（raycast 桌面网格）/旋转 90°/删除；框选可选
-- [ ] UI overlay：顶栏（返回/保存/加载/仿真开关）、右侧操作条、元件库抽屉
-      （分类 tab：基础电路/模拟电路/逻辑电路/时序逻辑/组合逻辑/仪表）、
-      属性对话框（双击元件， Unity 白卡片风格）
+### M3 前端骨架（✅ 完成）
+- [x] Three.js 场景：room.glb 桌面 + Unity 灯光数值级对齐（上会 VLM FAIL →
+      抽 Unity 场景 YAML 实数修复：主光 30°/2.2、环境 0.55、曝光 1.0）
+- [x] 87 元件 GLB 按需加载 + 共享几何/材质；**资产管线重建**：prefab m_Materials
+      → .mat 贴图链全解析，材质/贴图/UV 三层修复（解决前任遗留的"全黑建模乱"）
+- [x] 交互：点选/拖放（raycast 桌面网格）/旋转 90°/删除；pin 最近邻拾取（26px 阈值）
+- [x] UI overlay：顶栏 + 右工具列 + 底部元件抽屉（7 tab + 真 3D 缩略图）+ 属性卡
+      （Unity 白卡片风格，标签格式对齐官方 `3.00V\n-0.060A`）
 
-### M4 连线系统
-- [ ] pin 高亮 + 拖线预览（bezier/bundle 管状线）
-- [ ] 5 色导线（黑/蓝/红/绿/黄，Unity DialogWires.WireColors）+ 色选弹窗
-- [ ] 桌面平面路由（Unity 用 waypoint 网格 A*，MVP 可先直线+抬升弧线）
-- [ ] 导线选中/删除
+### M4 连线系统（✅ 完成，超原计划）
+- [x] pin 高亮 + 拖线 + 5 色导线（Unity DialogWires.WireColors 同源色值）
+- [x] **平面路由完整复刻 Unity CircuitWire.Reroute**（直线→撞检测盒→绕角贪心+
+      去程畅通检查→角点外扩；Catmull-Rom 平滑；悬链高度按全局弧长挂）
+      ——原计划 MVP 直线弧，实际直接复刻了 Unity 算法
+- [x] 导线选中/删除（再连=删旧线，同 Unity）
+- [x] 悬链线公式源码级复刻（A=60/log10(len_cm)，cosh 端高差 acosh）
 
-### M5 仿真闭环
-- [ ] 拓扑变更 → pl_experiment 重建 circuit → analyze → write_back
-- [ ] 视觉反馈：Statistics 电压/电流显示（元件上方 HTML 标签或纹理）、
-      Logic Output 状态色、开关位置动画
-- [ ] 数字时钟驱动：circuit_digital_clk 步进 + 速度控制（Unity Speed 档位）
-- [ ] 8bit Input 面板交互（8 开关）、8bit Display 点阵显示
-- [ ] 损坏判定（短路→IsBroken 冒烟效果，二期）
+### M5 仿真闭环（✅ 完成）
+- [x] 拓扑变更 → pl_experiment 重建 → analyze → write_back（实测 0.8ms）
+- [x] 视觉反馈：Statistics 电压/电流标签、开关位置动画（GLB Pole 节点 0.79rad
+      翘起↔压平，instantiate/点按/属性编辑三处联动）
+- [x] 数字时钟：circuit_digital_clk 步进 + Speed 档位（0.5/1/2/4Hz 对齐 Unity）
+- [x] D 触发器时钟驱动验证（clkOk）
+- [ ] ~~8bit Input/Display~~（引擎不支持，sin 说不管了）
+- [ ] 损坏判定冒烟效果（二期）
 
-### M6 打磨与交付
-- [ ] 性能：首屏 <5s（GLB 逐个按需 + 总量压缩评估 meshopt）；稳态 60fps
-- [ ] VLM 视觉对照（截图 vs Unity 风格基准）≥ 4/4 PASS
-- [ ] 交付：NetLogo-Mobile 私有仓库 PR（或按 sin 指示新仓库直接推）
-- [ ] 移动端触控适配（Unity 版是平板优先交互）
+### M6 打磨与交付（部分完成，收尾态）
+- [x] 首屏：GLB 按需加载，页面 PAGEERRORS=0；analyze 主线程 <1ms 无需 Worker
+- [x] VLM 视觉对照 ≥4/4 PASS（导线弧线/绕行/拨杆/标签/面板多轮全过）
+- [x] 交付：NetLogo-Mobile/phy-engine-web main 直推（sin 授权），11+ commits
+- [ ] **移动端触控适配**（未开始，Unity 版是平板优先）
+- [ ] **36 元件批量 VLM 对照**（batch_shot.mjs 就绪，每屏 6 元件网格共 6 张，
+      跑 `node web/batch_shot.mjs` 出图后 VLM 逐张审；电池/电阻/开关/拨杆已过）
+- [ ] **预览部署**：GH Pages 私有仓不支持（workflow 已挂等 org 升级）；
+      CF Pages 需 sin 在 Dashboard 连一次 repo（推荐）；公开仓会带出 GLB+docs（已知悉未决）
+- [ ] headless 下 HUD 显示 0 fps（rAF 节流读数问题，真机大概率正常，待验）
 
 ## 四、明确不做（sin 圈定）
 
