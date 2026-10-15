@@ -124,6 +124,36 @@ class GLB:
         self.json['meshes'].append({'name': name, 'primitives': [prim]})
         return mi
 
+    def add_mesh_multi(self, name, prims):
+        """prims: list of dicts {positions, normals, uvs, indices, matidx}.
+        One glTF mesh with one primitive per material slot (Unity submesh parity)."""
+        out_prims = []
+        for p in prims:
+            prim = {}
+            prim['attributes'] = {'POSITION': self.accessor(p['positions'], 'f', 'VEC3'),
+                                  'NORMAL': self.accessor(p['normals'], 'f', 'VEC3')}
+            if p.get('uvs'):
+                prim['attributes']['TEXCOORD_0'] = self.accessor(p['uvs'], 'f', 'VEC2')
+            indices = p['indices']
+            comp = 'H' if max(indices) < 65536 else 'I'
+            if comp == 'H':
+                data = struct.pack(f'<{len(indices)}H', *indices)
+                bvt = 34963
+                self._pad()
+                off = len(self.bin); self.bin.extend(data)
+                self.json['bufferViews'].append({'buffer': 0, 'byteOffset': off, 'byteLength': len(data), 'target': bvt})
+                self.json['accessors'].append({'bufferView': len(self.json['bufferViews']) - 1, 'componentType': 5123,
+                                               'count': len(indices), 'type': 'SCALAR', 'min': [min(indices)], 'max': [max(indices)]})
+                prim['indices'] = len(self.json['accessors']) - 1
+            else:
+                prim['indices'] = self.accessor(indices, 'I', 'SCALAR')
+            if p.get('matidx') is not None:
+                prim['material'] = p['matidx']
+            out_prims.append(prim)
+        mi = len(self.json['meshes'])
+        self.json['meshes'].append({'name': name, 'primitives': out_prims})
+        return mi
+
     def add_material(self, mat):  # mat: parsed .mat dict with resolved texture path
         m = {'name': mat.get('name', 'mat'),
              'pbrMetallicRoughness': {'baseColorFactor': _srgb_color(mat.get('color') or [1,1,1,1])}}
@@ -381,7 +411,7 @@ def extract_component(prefab_path, ua, fbx_cache, out_dir):
                         md = mesh_data(geo[1])
                         if md:
                             fbx_M = info.get('model_world_M', {}).get(fid)
-                            mesh_idx = _emit_mesh(glb, node, md, info, mr, ua)
+                            mesh_idx = _emit_mesh(glb, node, md, info, mr, ua, fbx_M)
                             stats['meshes'] += 1
                             stats['verts'] += len(md['positions']) // 3
         node_idx = glb.add_node(node['name'] or 'node', mesh=mesh_idx,
@@ -490,22 +520,59 @@ def _emit_mesh(glb, node, md, info, mr, ua, fbx_M=None):
     um = md.get('uvs_mapping', 'ByPolygonVertex')
     ur = md.get('uvs_raw') or []
     uvi = md.get('uv_index')
-    positions, normals, uvs, indices = [], [], [], []
-    vc = 0
+    # ---- 材质槽（Unity submesh 对齐）----
+    mat_mapping = md.get('mat_mapping', 'AllSame')
+    mat_indices = md.get('mat_indices') or []
+
+    def _slot_of_poly(pi, corner):
+        if mat_mapping == 'ByPolygon' and pi < len(mat_indices):
+            return int(mat_indices[pi])
+        if mat_mapping == 'ByPolygonVertex' and corner < len(mat_indices):
+            return int(mat_indices[corner])
+        return 0
+
+    # ---- 解析 renderer 全部材质槽 ----
+    parsed_mats = []
+    mats = mr.get('m_Materials') or []
+    for mref in mats:
+        m = None
+        if isinstance(mref, dict) and mref.get('guid'):
+            mat_path = ua.guid_map.get(mref['guid'])
+            if mat_path and mat_path.endswith('.mat'):
+                m = parse_material(os.path.join(UNITY_ROOT, mat_path))
+                m['name'] = os.path.splitext(os.path.basename(mat_path))[0]
+                if m.get('maintex'):
+                    m['maintex_path'] = ua.guid_map.get(m['maintex'])
+        parsed_mats.append(m)
+    if not parsed_mats:
+        parsed_mats = [None]
+
+    def _matidx_for_slot(slot):
+        if slot < len(parsed_mats):
+            m = parsed_mats[slot]
+        else:
+            m = None
+        if m is None:
+            return glb.add_material({'name': f'default_s{slot}'})
+        return glb.add_material(m)
+
+    # 顶点槽位预解析（避免逐角重复查询）：每 poly 记录每角的法线/UV 索引
+    per_poly_meta = []  # (slot, [(cx, bi, ui), ...])
     corner = 0
-    for poly in polys:
+    for pi, poly in enumerate(polys):
         if len(poly) < 3:
             corner += len(poly)
             continue
+        slot = _slot_of_poly(pi, corner)
+        metas = []
         for k, cx in enumerate(poly):
-            positions.extend(conv_pos(verts[cx*3:cx*3+3], unit))
+            bi = None
             if nr:
                 if nm == 'ByPolygonVertex': bi = (corner + k) * 3
                 elif nm == 'ByVertice': bi = cx * 3
                 else: bi = 0
-                if bi < len(nr):
-                    bn = _bake_normal(nr[bi], nr[bi+1], nr[bi+2])
-                    normals.extend(conv_normal(bn))
+                if bi is not None and bi >= len(nr): bi = None
+            ui = None
             if ur:
                 if uvi is not None and (corner + k) < len(uvi):
                     ui = uvi[corner + k] * 2
@@ -513,32 +580,53 @@ def _emit_mesh(glb, node, md, info, mr, ua, fbx_M=None):
                     ui = cx * 2
                 else:
                     ui = (corner + k) * 2
-                if ui + 1 < len(ur):
-                    uvs.extend([ur[ui], 1.0 - ur[ui+1]])
-            vc += 1
-        for k in range(1, len(poly) - 1):
-            indices.extend([vc - len(poly), vc - len(poly) + k, vc - len(poly) + k + 1])
+                if ui is not None and ui + 1 >= len(ur): ui = None
+            metas.append((cx, bi, ui))
+        per_poly_meta.append((slot, metas))
         corner += len(poly)
-    if MIRROR_X:
-        indices = flip_winding(indices)
-    if not normals:
-        normals = _face_normals(positions, indices)
-    # material
-    matidx = None
-    mats = mr.get('m_Materials') or []
-    if mats:
-        m0 = mats[0]
-        if isinstance(m0, dict) and m0.get('guid'):
-            mat_path = ua.guid_map.get(m0['guid'])
-            if mat_path and mat_path.endswith('.mat'):
-                mat = parse_material(os.path.join(UNITY_ROOT, mat_path))
-                mat['name'] = os.path.splitext(os.path.basename(mat_path))[0]
-                if mat.get('maintex'):
-                    mat['maintex_path'] = ua.guid_map.get(mat['maintex'])
-                matidx = glb.add_material(mat)
-    if matidx is None:
-        matidx = glb.add_material({'name': 'default'})
-    return glb.add_mesh(node['name'], positions, normals, uvs, indices, matidx)
+
+    # 按材质槽聚合 primitive
+    groups = {}
+    for slot, metas in per_poly_meta:
+        g = groups.setdefault(slot, {'positions': [], 'normals': [], 'uvs': [], 'indices': [], 'vc': 0})
+        np_ = len(metas)
+        base = g['vc']
+        for (cx, bi, ui) in metas:
+            g['positions'].extend(conv_pos(verts[cx*3:cx*3+3], unit))
+            if nr and bi is not None:
+                bn = _bake_normal(nr[bi], nr[bi+1], nr[bi+2])
+                g['normals'].extend(conv_normal(bn))
+            if ur and ui is not None:
+                g['uvs'].extend([ur[ui], 1.0 - ur[ui+1]])
+            g['vc'] += 1
+        for k in range(1, np_ - 1):
+            g['indices'].extend([base, base + k, base + k + 1])
+
+    # 无多边形的兜底（理论上不会走到）
+    if not groups:
+        return None
+
+    if len(groups) == 1:
+        slot, g = next(iter(groups.items()))
+        if MIRROR_X:
+            g['indices'] = flip_winding(g['indices'])
+        if not g['normals']:
+            g['normals'] = _face_normals(g['positions'], g['indices'])
+        matidx = _matidx_for_slot(slot)
+        return glb.add_mesh(node['name'], g['positions'], g['normals'], g['uvs'], g['indices'], matidx)
+
+    # 多材质：每槽一个 primitive，材质槽号对应 m_Materials[slot]
+    prims = []
+    for slot in sorted(groups):
+        g = groups[slot]
+        if MIRROR_X:
+            g['indices'] = flip_winding(g['indices'])
+        if not g['normals']:
+            g['normals'] = _face_normals(g['positions'], g['indices'])
+        prims.append({'positions': g['positions'], 'normals': g['normals'],
+                      'uvs': g['uvs'] or None, 'indices': g['indices'],
+                      'matidx': _matidx_for_slot(slot)})
+    return glb.add_mesh_multi(node['name'], prims)
 
 def _face_normals(positions, indices):
     normals = [0.0] * (len(positions) // 3 * 3)
