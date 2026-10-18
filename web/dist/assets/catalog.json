@@ -20,7 +20,7 @@
     "position": [
      0.06,
      0.02,
-     -0.0
+     -1.5038357e-09
     ],
     "isPositive": false
    }
@@ -28,7 +28,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Basic_Capacitor.glb",
-  "glbBytes": 485408
+  "glbBytes": 489312
  },
  {
   "ModelID": "Basic Diode",
@@ -51,7 +51,7 @@
     "position": [
      0.06,
      0.02,
-     -0.0
+     -1.5038357e-09
     ],
     "isPositive": false
    }
@@ -59,7 +59,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Basic_Diode.glb",
-  "glbBytes": 477944
+  "glbBytes": 484580
  },
  {
   "ModelID": "Basic Inductor",
@@ -90,7 +90,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Basic_Inductor.glb",
-  "glbBytes": 736504
+  "glbBytes": 742440
  },
  {
   "ModelID": "Current Source",
@@ -112,7 +112,7 @@
     "name": "Negative Pin",
     "position": [
      0.06,
-     0.02,
+     0.01999998,
      0.0
     ],
     "isPositive": false
@@ -137,7 +137,7 @@
     "position": [
      0.06,
      0.02,
-     -0.0
+     -1.5038357e-09
     ],
     "isPositive": true
    }
@@ -145,7 +145,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Ground_Component.glb",
-  "glbBytes": 366660
+  "glbBytes": 369068
  },
  {
   "ModelID": "Light-Emitting Diode",
@@ -168,7 +168,7 @@
     "position": [
      0.06,
      0.02,
-     -0.0
+     -1.5038357e-09
     ],
     "isPositive": false
    }
@@ -176,7 +176,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Light-Emitting_Diode.glb",
-  "glbBytes": 1106320
+  "glbBytes": 872076
  },
  {
   "ModelID": "Mutual Inductor",
@@ -188,36 +188,36 @@
    {
     "name": "Pin 1",
     "position": [
-     -0.062765,
-     0.02,
-     -0.025
+     -0.06276500108295244,
+     0.019999999810800542,
+     -0.02500000118113918
     ],
     "isPositive": true
    },
    {
     "name": "Pin 2",
     "position": [
-     0.062765,
-     0.02,
-     -0.025
+     0.06276499268295042,
+     0.020000008398299282,
+     -0.024999997415239034
     ],
     "isPositive": false
    },
    {
     "name": "Pin 3",
     "position": [
-     -0.062765,
-     0.020008,
-     0.024812
+     -0.06276500108462636,
+     0.020007972792278797,
+     0.024812026861410742
     ],
     "isPositive": true
    },
    {
     "name": "Pin 4",
     "position": [
-     0.062765,
-     0.02,
-     0.025
+     0.06276499268295163,
+     0.020000004504999114,
+     0.025000001181138612
     ],
     "isPositive": false
    }
@@ -225,7 +225,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Mutual_Inductor.glb",
-  "glbBytes": 508544
+  "glbBytes": 540456
  },
  {
   "ModelID": "N-MOSFET",
@@ -359,7 +359,7 @@
     "name": "Pin 1",
     "position": [
      -0.06,
-     0.02,
+     0.01999998,
      -0.025
     ],
     "isPositive": true
@@ -368,7 +368,7 @@
     "name": "Pin 2",
     "position": [
      0.06,
-     0.02,
+     0.01999998,
      -0.025
     ],
     "isPositive": false
@@ -377,7 +377,7 @@
     "name": "Pin 3",
     "position": [
      -0.06,
-     0.02,
+     0.01999998,
      0.025
     ],
     "isPositive": true
@@ -386,7 +386,7 @@
     "name": "Pin 4",
     "position": [
      0.06,
-     0.02,
+     0.01999998,
      0.025
     ],
     "isPositive": false
@@ -454,7 +454,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Relay_Component.glb",
-  "glbBytes": 589380
+  "glbBytes": 595316
  },
  {
   "ModelID": "Tapped Transformer",
@@ -504,7 +504,7 @@
     "name": "Pin 5",
     "position": [
      -0.0,
-     0.02,
+     0.01999998,
      0.025
     ],
     "isPositive": false
@@ -577,25 +577,25 @@
     "position": [
      -0.06,
      0.02,
-     -0.0
+     -5.2453667999999994e-09
     ],
     "isPositive": false
    },
    {
     "name": "Pin 2",
     "position": [
-     0.06,
+     0.0600000021855695,
      0.02,
-     -0.025
+     -0.0249999947546332
     ],
     "isPositive": false
    },
    {
     "name": "Pin 3",
     "position": [
-     0.06,
+     0.059999997814430495,
      0.02,
-     0.025
+     0.025000005245366802
     ],
     "isPositive": false
    }
@@ -626,7 +626,7 @@
     "position": [
      0.06,
      0.02,
-     -0.0
+     -1.5038357e-09
     ],
     "isPositive": false
    }
@@ -658,7 +658,7 @@
     "position": [
      0.06,
      0.02,
-     -0.0
+     -1.5038357e-09
     ],
     "isPositive": false
    }
@@ -756,7 +756,7 @@
     "position": [
      0.06,
      0.02,
-     -0.0
+     -1.5038357e-09
     ],
     "isPositive": false
    }
@@ -764,7 +764,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Incandescent_Lamp.glb",
-  "glbBytes": 1000808
+  "glbBytes": 1001596
  },
  {
   "ModelID": "Push Switch",
@@ -787,7 +787,7 @@
     "position": [
      0.06,
      0.02,
-     -0.0
+     -1.5038357e-09
     ],
     "isPositive": false
    }
@@ -818,7 +818,7 @@
     "position": [
      0.06,
      0.02,
-     -0.0
+     -1.5038357e-09
     ],
     "isPositive": false
    }
@@ -909,36 +909,36 @@
    {
     "name": "Pin 1",
     "position": [
-     0.000383,
-     0.001895,
-     -0.00604
+     0.00038312002500000004,
+     0.0018952852500000001,
+     -0.006040406999999999
     ],
     "isPositive": false
    },
    {
     "name": "Pin 2",
     "position": [
-     0.000383,
-     0.001895,
-     -0.00604
+     0.00038312002500000004,
+     0.0018952852500000001,
+     -0.006040406999999999
     ],
     "isPositive": false
    },
    {
     "name": "Pin 3",
     "position": [
-     0.000383,
-     0.001895,
-     -0.00604
+     0.00038312002500000004,
+     0.0018952852500000001,
+     -0.006040406999999999
     ],
     "isPositive": true
    },
    {
     "name": "Pin 4",
     "position": [
-     0.000383,
-     0.001895,
-     -0.00604
+     0.00038312002500000004,
+     0.0018952852500000001,
+     -0.006040406999999999
     ],
     "isPositive": true
    }
@@ -946,7 +946,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Slide_Rheostat.glb",
-  "glbBytes": 1161392
+  "glbBytes": 1225048
  },
  {
   "ModelID": "Student Source",
@@ -959,7 +959,7 @@
     "name": "Pin 1",
     "position": [
      -0.0,
-     0.06786,
+     0.067860365,
      0.0
     ],
     "isPositive": true
@@ -968,7 +968,7 @@
     "name": "Pin 2",
     "position": [
      -0.0,
-     0.06786,
+     0.067860365,
      0.0
     ],
     "isPositive": false
@@ -976,8 +976,8 @@
    {
     "name": "Pin 3",
     "position": [
-     0.1274,
-     0.06786,
+     0.12740004,
+     0.067860365,
      0.0
     ],
     "isPositive": true
@@ -985,8 +985,8 @@
    {
     "name": "Pin 4",
     "position": [
-     0.1778,
-     0.06786,
+     0.17779994,
+     0.067860365,
      0.0
     ],
     "isPositive": true
@@ -995,7 +995,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Student_Source.glb",
-  "glbBytes": 172844
+  "glbBytes": 175720
  },
  {
   "ModelID": "Comparator",
@@ -1122,7 +1122,7 @@
     "name": "Negative Pin",
     "position": [
      0.06,
-     0.02,
+     0.01999998,
      0.0
     ],
     "isPositive": false
@@ -1153,7 +1153,7 @@
     "name": "Pin 2",
     "position": [
      0.06,
-     0.02,
+     0.01999998,
      0.0
     ],
     "isPositive": false
@@ -1216,7 +1216,7 @@
     "name": "Negative Pin",
     "position": [
      0.06,
-     0.02,
+     0.01999998,
      0.0
     ],
     "isPositive": false
@@ -1382,7 +1382,7 @@
     "position": [
      0.09,
      0.02,
-     -0.0
+     -1.5038357e-09
     ],
     "isPositive": false
    }
@@ -1390,7 +1390,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Color_Light-Emitting_Diode.glb",
-  "glbBytes": 1106812
+  "glbBytes": 872568
  },
  {
   "ModelID": "Dual Light-Emitting Diode",
@@ -1413,7 +1413,7 @@
     "position": [
      0.06,
      0.02,
-     -0.0
+     -1.5038357e-09
     ],
     "isPositive": false
    }
@@ -1421,7 +1421,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Dual_Light-Emitting_Diode.glb",
-  "glbBytes": 1643952
+  "glbBytes": 1175468
  },
  {
   "ModelID": "Electric Bell",
@@ -1434,7 +1434,7 @@
     "name": "Pin 1",
     "position": [
      -0.06,
-     0.02,
+     0.01999998,
      0.0
     ],
     "isPositive": true
@@ -1443,7 +1443,7 @@
     "name": "Pin 2",
     "position": [
      0.06,
-     0.02,
+     0.01999998,
      0.0
     ],
     "isPositive": false
@@ -1452,7 +1452,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Electric_Bell.glb",
-  "glbBytes": 728676
+  "glbBytes": 819668
  },
  {
   "ModelID": "Electric Fan",
@@ -1466,7 +1466,7 @@
     "position": [
      -0.06,
      0.02,
-     -0.0
+     -9.676555e-10
     ],
     "isPositive": true
    },
@@ -1475,7 +1475,7 @@
     "position": [
      0.06,
      0.02,
-     -0.0
+     -1.5038357e-09
     ],
     "isPositive": false
    }
@@ -1483,7 +1483,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Electric_Fan.glb",
-  "glbBytes": 1343600
+  "glbBytes": 1262812
  },
  {
   "ModelID": "Musical Box",
@@ -1506,7 +1506,7 @@
     "position": [
      0.06,
      0.02,
-     -0.0
+     -1.5038357e-09
     ],
     "isPositive": false
    }
@@ -1514,7 +1514,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Musical_Box.glb",
-  "glbBytes": 4165612
+  "glbBytes": 2539056
  },
  {
   "ModelID": "Resistance Law",
@@ -1527,7 +1527,7 @@
     "name": "Pin 1",
     "position": [
      -0.14,
-     0.02,
+     0.019999999999999997,
      0.0472
     ],
     "isPositive": true
@@ -1536,7 +1536,7 @@
     "name": "Pin 2",
     "position": [
      -0.14,
-     0.02,
+     0.019999999999999997,
      0.0151
     ],
     "isPositive": true
@@ -1545,8 +1545,8 @@
     "name": "Pin 3",
     "position": [
      -0.14,
-     0.02,
-     -0.0199
+     0.019999999999999997,
+     -0.019899998
     ],
     "isPositive": true
    },
@@ -1554,8 +1554,8 @@
     "name": "Pin 4",
     "position": [
      -0.14,
-     0.02,
-     -0.0522
+     0.019999999999999997,
+     -0.052199997
     ],
     "isPositive": true
    },
@@ -1563,7 +1563,7 @@
     "name": "Pin 5",
     "position": [
      0.14,
-     0.02,
+     0.019999999999999997,
      0.0472
     ],
     "isPositive": false
@@ -1572,7 +1572,7 @@
     "name": "Pin 6",
     "position": [
      0.14,
-     0.02,
+     0.019999999999999997,
      0.0151
     ],
     "isPositive": false
@@ -1581,8 +1581,8 @@
     "name": "Pin 7",
     "position": [
      0.14,
-     0.02,
-     -0.0199
+     0.019999999999999997,
+     -0.019899998
     ],
     "isPositive": false
    },
@@ -1590,8 +1590,8 @@
     "name": "Pin 8",
     "position": [
      0.14,
-     0.02,
-     -0.0522
+     0.019999999999999997,
+     -0.052199997
     ],
     "isPositive": false
    }
@@ -1612,7 +1612,7 @@
     "name": "Pin 1",
     "position": [
      -0.06,
-     0.02,
+     0.01999998,
      0.0
     ],
     "isPositive": true
@@ -1621,7 +1621,7 @@
     "name": "Pin 2",
     "position": [
      0.06,
-     0.02,
+     0.01999998,
      0.0
     ],
     "isPositive": false
@@ -1630,7 +1630,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Simple_Instrument.glb",
-  "glbBytes": 1452524
+  "glbBytes": 1309276
  },
  {
   "ModelID": "Solenoid",
@@ -1642,7 +1642,7 @@
    {
     "name": "Pin 1",
     "position": [
-     0.01155,
+     0.0115499943,
      0.18705,
      -0.04485
     ],
@@ -1651,27 +1651,27 @@
    {
     "name": "Pin 2",
     "position": [
-     -0.00555,
+     -0.0055500045,
      0.18705,
-     -0.04275
+     -0.042750003
     ],
     "isPositive": false
    },
    {
     "name": "Pin 3",
     "position": [
-     -0.0219,
+     -0.021899991,
      0.18705,
-     -0.0444
+     -0.044400003
     ],
     "isPositive": true
    },
    {
     "name": "Pin 4",
     "position": [
-     0.0231,
+     0.0231000105,
      0.18705,
-     -0.04215
+     -0.0421499985
     ],
     "isPositive": false
    }
@@ -1679,7 +1679,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Solenoid.glb",
-  "glbBytes": 919748
+  "glbBytes": 953824
  },
  {
   "ModelID": "Spark Gap",
@@ -1691,18 +1691,18 @@
    {
     "name": "Pin 1",
     "position": [
-     0.04,
+     0.0399999982515444,
      0.02,
-     0.02
+     0.0200000034969112
     ],
     "isPositive": true
    },
    {
     "name": "Pin 2",
     "position": [
-     -0.04,
+     -0.0400000017484556,
      0.02,
-     0.02
+     0.019999996503088802
     ],
     "isPositive": false
    }
@@ -1710,7 +1710,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Spark_Gap.glb",
-  "glbBytes": 585288
+  "glbBytes": 600792
  },
  {
   "ModelID": "Tesla Coil",
@@ -1723,8 +1723,8 @@
     "name": "Pin 1",
     "position": [
      -0.055,
-     0.02,
-     -0.0
+     0.01999998,
+     -4.8082528999999995e-09
     ],
     "isPositive": true
    },
@@ -1732,8 +1732,8 @@
     "name": "Pin 2",
     "position": [
      0.055,
-     0.02,
-     0.0
+     0.01999998,
+     4.8082528999999995e-09
     ],
     "isPositive": false
    }
@@ -1753,18 +1753,18 @@
    {
     "name": "Pin 1",
     "position": [
-     -0.05258,
+     -0.05258000196673327,
      0.05016,
-     -0.01562
+     -0.01562000362909114
     ],
     "isPositive": true
    },
    {
     "name": "Pin 2",
     "position": [
-     0.05468,
+     0.05468003024084011,
      0.05016,
-     -0.01562
+     -0.015620023221520465
     ],
     "isPositive": false
    }
@@ -1772,7 +1772,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Air_Switch.glb",
-  "glbBytes": 181144
+  "glbBytes": 193384
  },
  {
   "ModelID": "Fuse Component",
@@ -1793,9 +1793,9 @@
    {
     "name": "Pin 2",
     "position": [
-     0.058,
+     0.057999999999999996,
      0.02,
-     -0.0
+     -1.5038357e-09
     ],
     "isPositive": true
    }
@@ -1803,7 +1803,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Fuse_Component.glb",
-  "glbBytes": 399340
+  "glbBytes": 400976
  },
  {
   "ModelID": "Simple Ammeter",
@@ -1815,8 +1815,8 @@
    {
     "name": "Pin 1",
     "position": [
-     -0.0487,
-     0.0327,
+     -0.048700002,
+     0.032700002,
      0.063
     ],
     "isPositive": false
@@ -1824,8 +1824,8 @@
    {
     "name": "Pin 2",
     "position": [
-     -0.003,
-     0.0327,
+     -0.0030000003,
+     0.032700002,
      0.063
     ],
     "isPositive": true
@@ -1833,8 +1833,8 @@
    {
     "name": "Pin 3",
     "position": [
-     0.0409,
-     0.0327,
+     0.040899998,
+     0.032700002,
      0.063
     ],
     "isPositive": true
@@ -1856,36 +1856,36 @@
    {
     "name": "Pin 1",
     "position": [
-     -0.0546,
-     0.03906,
-     0.10969
+     -0.05460000000000001,
+     0.03906002465535981,
+     0.10969005076839908
     ],
     "isPositive": true
    },
    {
     "name": "Pin 2",
     "position": [
-     0.0224,
-     0.03906,
-     0.10969
+     0.022400000000000003,
+     0.03906002465535981,
+     0.10969005076839908
     ],
     "isPositive": false
    },
    {
     "name": "Pin 3",
     "position": [
-     -0.0224,
-     0.03906,
-     0.10969
+     -0.022400000000000003,
+     0.039060055455376524,
+     0.10969008576841432
     ],
     "isPositive": true
    },
    {
     "name": "Pin 4",
     "position": [
-     0.0546,
-     0.03906,
-     0.10969
+     0.05460000000000001,
+     0.039060055455376524,
+     0.10969008576841432
     ],
     "isPositive": false
    }
@@ -1905,8 +1905,8 @@
    {
     "name": "Pin 1",
     "position": [
-     -0.0487,
-     0.0327,
+     -0.048700002,
+     0.032700002,
      0.063
     ],
     "isPositive": false
@@ -1914,8 +1914,8 @@
    {
     "name": "Pin 2",
     "position": [
-     -0.003,
-     0.0327,
+     -0.0030000003,
+     0.032700002,
      0.063
     ],
     "isPositive": true
@@ -1923,8 +1923,8 @@
    {
     "name": "Pin 3",
     "position": [
-     0.0409,
-     0.0327,
+     0.040899998,
+     0.032700002,
      0.063
     ],
     "isPositive": true
@@ -1933,7 +1933,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Galvanometer.glb",
-  "glbBytes": 614756
+  "glbBytes": 594144
  },
  {
   "ModelID": "Microammeter",
@@ -1945,8 +1945,8 @@
    {
     "name": "Pin 1",
     "position": [
-     -0.0487,
-     0.0327,
+     -0.048700002,
+     0.032700002,
      0.063
     ],
     "isPositive": false
@@ -1954,8 +1954,8 @@
    {
     "name": "Pin 2",
     "position": [
-     -0.003,
-     0.0327,
+     -0.0030000003,
+     0.032700002,
      0.063
     ],
     "isPositive": true
@@ -1963,8 +1963,8 @@
    {
     "name": "Pin 3",
     "position": [
-     0.0409,
-     0.0327,
+     0.040899998,
+     0.032700002,
      0.063
     ],
     "isPositive": true
@@ -1973,7 +1973,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Microammeter.glb",
-  "glbBytes": 614764
+  "glbBytes": 594152
  },
  {
   "ModelID": "Multimeter",
@@ -1985,18 +1985,18 @@
    {
     "name": "Pin 1",
     "position": [
-     0.0648,
-     0.0312,
-     0.091
+     0.06480000829050442,
+     0.031200000000000002,
+     0.09100000139416699
     ],
     "isPositive": true
    },
    {
     "name": "Pin 2",
     "position": [
-     0.0648,
-     0.0312,
-     0.117
+     0.0648000096740289,
+     0.031200000000000002,
+     0.11700000277769146
     ],
     "isPositive": false
    }
@@ -2004,7 +2004,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Multimeter.glb",
-  "glbBytes": 1079832
+  "glbBytes": 1067592
  },
  {
   "ModelID": "Resistance Box",
@@ -2016,18 +2016,18 @@
    {
     "name": "Pin 1",
     "position": [
-     -0.061732,
-     0.104521,
-     -0.051062
+     -0.061731815,
+     0.10452074,
+     -0.05106175
     ],
     "isPositive": true
    },
    {
     "name": "Pin 2",
     "position": [
-     0.063602,
-     0.104521,
-     -0.050438
+     0.06360203,
+     0.10452074,
+     -0.050437808
     ],
     "isPositive": false
    }
@@ -2035,7 +2035,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Resistance_Box.glb",
-  "glbBytes": 956764
+  "glbBytes": 918144
  },
  {
   "ModelID": "Simple Voltmeter",
@@ -2047,8 +2047,8 @@
    {
     "name": "Pin 1",
     "position": [
-     -0.0487,
-     0.0327,
+     -0.048700002,
+     0.032700002,
      0.063
     ],
     "isPositive": false
@@ -2056,8 +2056,8 @@
    {
     "name": "Pin 2",
     "position": [
-     -0.003,
-     0.0327,
+     -0.0030000003,
+     0.032700002,
      0.063
     ],
     "isPositive": true
@@ -2065,8 +2065,8 @@
    {
     "name": "Pin 3",
     "position": [
-     0.0409,
-     0.0327,
+     0.040899998,
+     0.032700002,
      0.063
     ],
     "isPositive": true
@@ -2075,7 +2075,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Simple_Voltmeter.glb",
-  "glbBytes": 614748
+  "glbBytes": 594136
  },
  {
   "ModelID": "8bit Input",
@@ -2200,7 +2200,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "And_Gate.glb",
-  "glbBytes": 541344
+  "glbBytes": 565704
  },
  {
   "ModelID": "Imp Gate",
@@ -2240,7 +2240,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Imp_Gate.glb",
-  "glbBytes": 541300
+  "glbBytes": 569528
  },
  {
   "ModelID": "Logic Input",
@@ -2262,7 +2262,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Logic_Input.glb",
-  "glbBytes": 2161212
+  "glbBytes": 1926964
  },
  {
   "ModelID": "Logic Output",
@@ -2284,7 +2284,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Logic_Output.glb",
-  "glbBytes": 2126080
+  "glbBytes": 1891840
  },
  {
   "ModelID": "Nand Gate",
@@ -2324,7 +2324,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Nand_Gate.glb",
-  "glbBytes": 541296
+  "glbBytes": 566404
  },
  {
   "ModelID": "Nimp Gate",
@@ -2364,7 +2364,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Nimp_Gate.glb",
-  "glbBytes": 541304
+  "glbBytes": 567076
  },
  {
   "ModelID": "No Gate",
@@ -2378,7 +2378,7 @@
     "position": [
      -0.06,
      0.02,
-     -0.0
+     -5.2453667999999994e-09
     ],
     "isPositive": false
    },
@@ -2387,7 +2387,7 @@
     "position": [
      0.06,
      0.02,
-     0.0
+     5.2453667999999994e-09
     ],
     "isPositive": true
    }
@@ -2395,7 +2395,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "No_Gate.glb",
-  "glbBytes": 540888
+  "glbBytes": 565840
  },
  {
   "ModelID": "Nor Gate",
@@ -2435,7 +2435,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Nor_Gate.glb",
-  "glbBytes": 541332
+  "glbBytes": 568860
  },
  {
   "ModelID": "Or Gate",
@@ -2475,7 +2475,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Or_Gate.glb",
-  "glbBytes": 541328
+  "glbBytes": 569032
  },
  {
   "ModelID": "Xnor Gate",
@@ -2515,7 +2515,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Xnor_Gate.glb",
-  "glbBytes": 541292
+  "glbBytes": 570760
  },
  {
   "ModelID": "Xor Gate",
@@ -2555,7 +2555,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Xor_Gate.glb",
-  "glbBytes": 541296
+  "glbBytes": 570020
  },
  {
   "ModelID": "Yes Gate",
@@ -2569,7 +2569,7 @@
     "position": [
      -0.06,
      0.02,
-     -0.0
+     -5.2453667999999994e-09
     ],
     "isPositive": false
    },
@@ -2578,7 +2578,7 @@
     "position": [
      0.06,
      0.02,
-     0.0
+     5.2453667999999994e-09
     ],
     "isPositive": true
    }
@@ -2586,7 +2586,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Yes_Gate.glb",
-  "glbBytes": 540888
+  "glbBytes": 566076
  },
  {
   "ModelID": "Accelerometer",
@@ -2916,7 +2916,7 @@
     "position": [
      0.06,
      0.02,
-     -0.0
+     -1.5038357e-09
     ],
     "isPositive": false
    }
@@ -2924,7 +2924,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Photodiode.glb",
-  "glbBytes": 478188
+  "glbBytes": 502060
  },
  {
   "ModelID": "Photoresistor",
@@ -2947,7 +2947,7 @@
     "position": [
      0.06,
      0.02,
-     -0.0
+     -1.5038357e-09
     ],
     "isPositive": false
    }
@@ -2977,7 +2977,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Proximity_Sensor.glb",
-  "glbBytes": 2125940
+  "glbBytes": 1891700
  },
  {
   "ModelID": "555 Timer",
