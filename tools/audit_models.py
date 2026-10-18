@@ -17,7 +17,8 @@ import os, sys, json, struct, glob
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from unity_yaml import UnityAssets, parse_prefab, parse_material, scene_tree, UNITY_ROOT
 from extract_components import (trs_matrix, _mmul, conv_pos, _srgb_color,
-                                MIRROR_X)
+                                MIRROR_X, FBXCache, BUILTIN_PRIMS,
+                                BUILTIN_GUID, _builtin_primitive_md)
 from fbx_binary import parse as fbx_parse, mesh_data, p70
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))
@@ -103,51 +104,33 @@ def glb_node_aabbs(j, bin_chunk):
     return worlds, per_node
 
 # ------------------------------------------------------------- prefab side
-class FbxCache:
-    def __init__(self):
-        self.cache = {}
-    def get(self, path):
-        if path in self.cache:
-            return self.cache[path]
-        f = fbx_parse(os.path.join(UNITY_ROOT, path))
-        unit = 1.0
-        for ch in f.nodes:
-            if ch.name == 'GlobalSettings':
-                usf = p70(ch, 'UnitScaleFactor')
-                if usf is not None:
-                    unit = float(usf)
-        info = {'fbx': f, 'unit': unit * 0.01, 'model_geos': {},
-                'geo_by_fileid': {}, 'model_world_M': {}}
-        for i, (oid, n) in enumerate(f.by_type('Model')):
-            geo = f.geometry_of(oid)
-            if geo:
-                objname = (n.prop(1) or n.name).split('\x00', 1)[0]
-                info['model_geos'][objname] = geo
-                fid = 4300000 + 2 * i
-                info['geo_by_fileid'][fid] = geo
-                info['model_world_M'][fid] = None  # filled lazily below
-        # world matrices via extractor helper need (f, oid); store oids too
-        info['model_oids'] = [oid for oid, n in f.by_type('Model') if f.geometry_of(oid)]
-        for i, oid in enumerate(info['model_oids']):
-            from extract_components import _fbx_model_world_M
-            info['model_world_M'][4300000 + 2 * i] = _fbx_model_world_M(f, oid)
-        self.cache[path] = info
-        return info
+# FBXCache 复用提取器实现（extract_components.FBXCache）——审计 pf 侧理论值
+# 必须与提取语义逐字节同源，避免审计器自造映射造成假阳/假阴。
 
 def mesh_local_aabb(info, fid, node_name):
-    geo = info['geo_by_fileid'].get(fid)
-    if geo is None:
-        geo = info['model_geos'].get(node_name)
-    if geo is None and info['model_geos']:
-        geo = next(iter(info['model_geos'].values()))
-    if geo is None:
-        return None
-    md = mesh_data(geo)
-    if not md:
-        return None
-    unit = info['unit']
-    verts = md['positions']
-    fbx_M = info['model_world_M'].get(fid)
+    # Unity 内置基元：与提取器 _builtin_primitive_md 逐字节同源（unit=1，无 fbx_M）
+    if fid in BUILTIN_PRIMS:
+        md = _builtin_primitive_md(fid)
+        unit, verts, fbx_M = 1.0, md['positions'], None
+    else:
+        geo = info['geo_by_fileid'].get(fid)
+        if geo is None:
+            geo = info['model_geos'].get(node_name)
+        # 无 next(iter()) 随机兜底：取错几何的比较毫无意义（宁缺勿错）
+        if geo is None:
+            return None
+        md = mesh_data(geo)
+        if not md:
+            return None
+        unit = info['unit']
+        verts = md['positions']
+        fbx_M = info['model_world_M'].get(fid)
+    # 仅统计多边形引用的顶点：FBX 顶点表常含未被引用的孤儿顶点，
+    # Unity 不会渲染它们（按索引缓冲渲染），全表统计会造成 bbox 假阳性
+    polys = md.get('polys') or []
+    if polys:
+        ref = sorted({vi for poly in polys for vi in poly})
+        verts = [c for vi in ref for c in verts[vi*3:vi*3+3]]
     if fbx_M and fbx_M != IDENT_M:
         nv = len(verts) // 3
         baked = [0.0] * (nv * 3)
@@ -170,7 +153,8 @@ def walk_prefab(node, parent_M, depth, out):
     comps = {c['class']: c['data'] for c in node['components']}
     mf, mr = comps.get(33), comps.get(23)
     rec = {'node': node, 'world': W, 'depth': depth, 'mn': None, 'mx': None,
-           'mats': [], 'name': node['name'], 'active': node.get('active', 1)}
+           'mats': [], 'name': node['name'], 'active': node.get('active', 1),
+           'mesh_guid': None, 'mesh_fid': 0}
     if mf and mr:
         mesh_ref = mf.get('m_Mesh') or {}
         rec['mesh_guid'] = mesh_ref.get('guid') if isinstance(mesh_ref, dict) else None
@@ -209,8 +193,10 @@ def audit_one(prefab_path, glb_path, ua, fbx_cache):
     tree = scene_tree(pf)
     j, bin_chunk = read_glb(glb_path)
     issues = []
+    pin_procedural = []
 
     # ---- A. node hierarchy ----
+    # GLB scene 根 = prefab 根（extractor 从 root['children'] 起发射），根名不入 GLB
     pf_names = []
     def names_pf(n, acc):
         acc.append(str(n['name']))
@@ -218,9 +204,11 @@ def audit_one(prefab_path, glb_path, ua, fbx_cache):
             names_pf(c, acc)
     for root in tree:
         names_pf(root, pf_names)
+    root_names = {str(root['name']) for root in tree}
     glb_names = [n.get('name', '') for n in j['nodes']]
     missing_nodes = [x for x in pf_names if x and x not in glb_names
-                     and not x.lower().startswith('pin')]
+                     and not x.lower().startswith('pin')
+                     and x not in root_names]
     if missing_nodes:
         issues.append(f'NODES-MISSING: {missing_nodes}')
 
@@ -231,11 +219,19 @@ def audit_one(prefab_path, glb_path, ua, fbx_cache):
     active_renderers = [r for r in recs if r['active'] and r['mesh_guid']]
 
     worlds, per_node = glb_node_aabbs(j, bin_chunk)
+    # GLB 侧按 DFS 序给每个名字建立 mesh 节点出现列表；prefab 侧同样 DFS 序
+    # 消费出现序号 —— 同名兄弟节点（Unity 允许重名）不可按名字合并 bbox。
     name2gidx = {}
     for idx, n in enumerate(j['nodes']):
         nm = n.get('name', '')
         if nm and n.get('mesh') is not None:
             name2gidx.setdefault(nm, []).append(idx)
+    name_ctr = {}
+    def next_gidx(nm):
+        lst = name2gidx.get(nm) or []
+        k = name_ctr.get(nm, 0)
+        name_ctr[nm] = k + 1
+        return [lst[k]] if k < len(lst) else []
 
     comp_pf_mn = [1e9]*3; comp_pf_mx = [-1e9]*3
     comp_glb_mn = [1e9]*3; comp_glb_mx = [-1e9]*3
@@ -243,7 +239,13 @@ def audit_one(prefab_path, glb_path, ua, fbx_cache):
 
     # ---- B/C/D per renderer ----
     for r in active_renderers:
-        is_pin = depth1_pin = (r['depth'] == 1 and str(r['name'] or '').lower().startswith('pin'))
+        # 提取器语义：skip_pin_meshes 自根起对所有后代生效——任何名为 pin* 的节点
+        # 都不发射网格（其 FBX 内部变换烘焙全错，引脚由前端按 catalog 坐标程序化生成）。
+        # 审计同口径：计入 pin_procedural，不算缺陷。
+        is_pin = str(r['name'] or '').lower().startswith('pin')
+        if is_pin:
+            pin_procedural.append(r['name'])
+            continue
         # D. geometry AABB (prefab theory)
         fbx_path = ua.guid_map.get(r['mesh_guid'])
         pf_mn = pf_mx = None
@@ -252,9 +254,11 @@ def audit_one(prefab_path, glb_path, ua, fbx_cache):
             box = mesh_local_aabb(info, r['mesh_fid'], r['name'])
             if box:
                 pf_mn, pf_mx = xform_aabb(box[0], box[1], r['world'])
-        gidxs = name2gidx.get(str(r['name']), [])
-        if is_pin:
-            continue  # pin meshes are intentionally skipped by extractor
+        elif r['mesh_guid'] == BUILTIN_GUID and r['mesh_fid'] in BUILTIN_PRIMS:
+            box = mesh_local_aabb(None, r['mesh_fid'], r['name'])
+            if box:
+                pf_mn, pf_mx = xform_aabb(box[0], box[1], r['world'])
+        gidxs = next_gidx(str(r['name']))
         if not gidxs:
             issues.append(f'MESH-MISSING: renderer {r["name"]} has no GLB node/mesh')
             continue
@@ -330,6 +334,7 @@ def audit_one(prefab_path, glb_path, ua, fbx_cache):
         'glb': os.path.basename(glb_path),
         'nodes_pf': len(pf_names), 'nodes_glb': len(glb_names),
         'renderers': len(active_renderers),
+        'pin_procedural': pin_procedural,
         'aabb_pf': [round(v, 4) for v in comp_pf_mn + comp_pf_mx],
         'aabb_glb': [round(v, 4) for v in comp_glb_mn + comp_glb_mx],
         'issues': issues,
@@ -337,13 +342,28 @@ def audit_one(prefab_path, glb_path, ua, fbx_cache):
 
 def main():
     ua = UnityAssets()
-    fbx_cache = FbxCache()
+    fbx_cache = FBXCache()
     glb_dir = sys.argv[1] if len(sys.argv) > 1 else os.path.join(REPO, 'build/assets/components')
     out_json = sys.argv[2] if len(sys.argv) > 2 else '/tmp/audit_report.json'
     rows = []
     for p in sorted(glob.glob(os.path.join(
             UNITY_ROOT, 'Assets/Resources/Experiments/**/*.prefab'), recursive=True)):
+        # ModelID 以 prefab 根节点 CircuitComponent(114) 字段为准（与提取器同源），
+        # 文件名含连字符（And-Gate.prefab）不可直接映射 GLB 名
         model_id = os.path.splitext(os.path.basename(p))[0]
+        try:
+            pf = parse_prefab(p)
+            tree = scene_tree(pf)
+            mid = None
+            if tree:
+                for c in tree[0]['components']:
+                    if c['class'] == 114 and c['data'].get('ModelID'):
+                        mid = str(c['data']['ModelID'])
+                        break
+            if mid:
+                model_id = mid
+        except Exception:
+            pass
         glb = os.path.join(glb_dir, model_id.replace(' ', '_') + '.glb')
         if not os.path.exists(glb):
             rows.append({'prefab': model_id, 'glb': None, 'issues': ['GLB-MISSING']})

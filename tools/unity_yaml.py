@@ -91,6 +91,36 @@ def parse_prefab(path):
             'components': components, 'monobehaviours': monobehaviours,
             'go_comps': go_comps, 'docs': docs}
 
+def fbx_meta_mesh_names(fbx_rel_path):
+    """权威 fileID→对象名 映射（Unity ModelImporter）。
+
+    FBX 内部 Mesh 对象在 Unity 里的 fileID 由导入器分配，记录在 FBX 的
+    .meta 里：旧版 `ModelImporter.fileIDToRecycleName`（int: name），
+    新版 `internalIDToNameTable`（[{first:{fileID},second:name},...]）。
+    提取/审计两侧都必须用这张表对齐 prefab m_Mesh.fileID → FBX 子网格，
+    禁止用 4300000+2i 遍历序猜测（顺序与导入器分配序不同，会张冠李戴）。
+    返回 {fileID(int): name(str)}；meta 缺失或无表时返回 {}。
+    """
+    meta_path = os.path.join(UNITY_ROOT, fbx_rel_path + '.meta')
+    try:
+        with open(meta_path, 'r', encoding='utf-8', errors='replace') as f:
+            meta = yaml.safe_load(f) or {}
+    except Exception:
+        return {}
+    mi = meta.get('ModelImporter') or {}
+    out = {}
+    for k, v in (mi.get('fileIDToRecycleName') or {}).items():
+        try:
+            out[int(k)] = str(v)
+        except Exception:
+            pass
+    for e in (mi.get('internalIDToNameTable') or []):
+        try:
+            out[int(e['first']['fileID'])] = str(e['second'])
+        except Exception:
+            pass
+    return out
+
 def safe_name(v):
     """m_Name 防御：PyYAML 1.1 会把裸 On/Off/Yes/No/True/False 解析成布尔，
     导致 GLB 节点名变成 true/false → three.js GLTFLoader sanitizeNodeName 崩溃

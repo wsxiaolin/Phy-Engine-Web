@@ -1,0 +1,70 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<script type="importmap">
+{"imports":{"three":"/node_modules/three/build/three.module.js","three/addons/":"/node_modules/three/examples/jsm/"}}
+</script>
+<style>html,body{margin:0;padding:0;background:#d8dde3;overflow:hidden}canvas{display:block}</style>
+</head><body>
+<canvas id="cv" width="720" height="720"></canvas>
+<script type="module">
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+// 光照/色调映射与 web src/scene.js 同套（对比公平性）：ACESFilmic 0.88 + RoomEnvironment
+const cv = document.getElementById('cv');
+const renderer = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: false });
+renderer.setPixelRatio(1);
+renderer.setSize(720, 720, false);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.88;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0xd8dde3);
+const pmrem = new THREE.PMREMGenerator(renderer);
+scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+const hemi = new THREE.HemisphereLight(0x7a7980, 0x62c4ff, 1.0);
+scene.add(hemi);
+const key = new THREE.DirectionalLight(0xfff0bd, 0.5);
+key.position.set(3, 6, 4);
+scene.add(key);
+const fill = new THREE.DirectionalLight(0xfffae3, 1.0);
+fill.position.set(-4, 2, -3);
+scene.add(fill);
+
+const camera = new THREE.PerspectiveCamera(30, 1, 0.01, 100);   // fov=30 与 web scene.js 一致
+const loader = new GLTFLoader();
+let current = null;
+
+// 归一化取景：包围盒中心 + 半径，dir 与 web 端 shot_pairs 完全一致
+const DIR = new THREE.Vector3(0.62, 0.55, 0.9).normalize();
+function frame(obj) {
+  const box = new THREE.Box3().setFromObject(obj);
+  const c = box.getCenter(new THREE.Vector3());
+  const s = box.getSize(new THREE.Vector3());
+  const radius = Math.max(s.x, s.y, s.z, 0.01) * 0.5 * Math.sqrt(3);
+  const fovY = (camera.fov * Math.PI) / 180;
+  const fovX = 2 * Math.atan(Math.tan(fovY / 2) * camera.aspect);
+  const dist = radius / Math.tan(Math.min(fovY, fovX) / 2) * 1.12;
+  camera.position.copy(c).addScaledVector(DIR, dist);
+  camera.near = Math.max(dist / 100, 0.005);
+  camera.far = dist * 100;
+  camera.updateProjectionMatrix();
+  camera.lookAt(c);
+  return { size: [s.x, s.y, s.z], center: [c.x, c.y, c.z] };
+}
+
+window.loadGlb = async (url) => {
+  if (current) { scene.remove(current); current = null; }
+  const gltf = await loader.loadAsync(url);
+  current = gltf.scene;
+  scene.add(current);
+  const info = frame(current);
+  renderer.render(scene, camera);
+  return info;
+};
+window.renderOnce = () => renderer.render(scene, camera);
+</script>
+</body></html>

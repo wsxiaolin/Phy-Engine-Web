@@ -9,7 +9,8 @@ Coordinate system note:
 """
 import os, sys, json, math, struct
 sys.path.insert(0, os.path.dirname(__file__))
-from unity_yaml import UnityAssets, parse_prefab, scene_tree, parse_material, UNITY_ROOT, load_yaml_docs, safe_name
+from unity_yaml import (UnityAssets, parse_prefab, scene_tree, parse_material,
+                        UNITY_ROOT, load_yaml_docs, safe_name, fbx_meta_mesh_names)
 from fbx_binary import parse as fbx_parse, mesh_data, p70
 
 OUT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'build', 'assets'))
@@ -356,16 +357,169 @@ class FBXCache:
                 usf = p70(ch, 'UnitScaleFactor')
                 if usf is not None: unit = float(usf)
         info = {'fbx': f, 'unit': unit * 0.01, 'model_geos': {}, 'geo_by_fileid': {}, 'model_world_M': {}}
+        name_geo = {}  # FBX 模型名 → (oid, geometry)
         for i, (oid, n) in enumerate(f.by_type('Model')):
-            geo = f.geometry_of(oid)
-            if geo:
+            g = f.geometry_of(oid)
+            if g:
                 objname = (n.prop(1) or n.name).split('\x00', 1)[0]
-                info['model_geos'][objname] = geo
+                info['model_geos'].setdefault(objname, g[1])
+                name_geo.setdefault(objname, (oid, g[1]))
                 fid = 4300000 + 2 * i
+                info['geo_by_fileid'].setdefault(fid, g[1])
+                info['model_world_M'].setdefault(fid, _fbx_model_world_M(f, oid))
+        # 权威映射覆盖：.meta fileIDToRecycleName 是 Unity 导入器真实分配的
+        # fileID→对象名，与 FBX 遍历序不同，prefab m_Mesh.fileID 按它取几何。
+        meta = fbx_meta_mesh_names(path)
+        for fid, nm in sorted(meta.items()):
+            if 4300000 <= fid < 4400000 and nm in name_geo:
+                oid, geo = name_geo[nm]
                 info['geo_by_fileid'][fid] = geo
                 info['model_world_M'][fid] = _fbx_model_world_M(f, oid)
         self.cache[path] = info
         return info
+
+
+def _builtin_quad_md():
+    """Unity 内置 Quad 基元的网格数据（1x1 XY 平面，法线 -Z，UV 左下原点）。
+    实验件用它承载符号图标（如互感器 Icon + 互感.png）与白板面。"""
+    return {
+        'positions': [-0.5, -0.5, 0, 0.5, -0.5, 0, -0.5, 0.5, 0, 0.5, 0.5, 0],
+        'polys': [[0, 3, 1], [0, 2, 3]],
+        'normals_raw': [0, 0, -1] * 4,
+        'normals_mapping': 'ByVertice',
+        'uvs_raw': [0, 0, 1, 0, 0, 1, 1, 1],
+        'uvs_mapping': 'ByVertice',
+        'uv_index': None,
+        'mat_mapping': 'AllSame',
+    }
+
+BUILTIN_GUID = '0000000000000000e000000000000000'
+
+# Unity 内置基元 fileID（BuiltinExtraIDs）：Cube/Cylinder/Sphere/Capsule/Plane/Quad。
+# 实证映射：10210=Quad（270 处图标，渲染验证）；10209=Plane（Portal Laboratory
+# "Shadow Plane" 命名 + Relay Icon/接地/Pin Particle 缩放语义）；10202=Cube（
+# Lighthouse 浮筒 0.71×0.01×0.4 薄板）；10206/10207/10208 仅场景特效引用
+# （按 Unity 惯例表 Cylinder/Sphere/Capsule 处理，不影响 87 元件）。
+
+def _face_md(o, du, dv, n, uvs=None):
+    """单面基元：o=原点，du/dv=边向量，n=法线；CCW（cross(du,dv)=n）。"""
+    v0, v1, v2, v3 = o, [o[i]+du[i] for i in range(3)], [o[i]+dv[i] for i in range(3)], [o[i]+du[i]+dv[i] for i in range(3)]
+    return {
+        'positions': [*v0, *v1, *v2, *v3],
+        'polys': [[0, 2, 1], [1, 2, 3]],
+        'normals_raw': list(n) * 4,
+        'normals_mapping': 'ByVertice',
+        'uvs_raw': uvs or [0, 0, 1, 0, 0, 1, 1, 1],
+        'uvs_mapping': 'ByVertice',
+        'uv_index': None,
+        'mat_mapping': 'AllSame',
+    }
+
+def _merge_mds(mds):
+    """合并多面基元网格数据（重建 poly 顶点索引）。"""
+    pos, polys, nrm, uvs = [], [], [], []
+    for md in mds:
+        base = len(pos) // 3
+        pos += md['positions']
+        nrm += md['normals_raw']
+        uvs += md['uvs_raw']
+        for p in md['polys']:
+            polys.append([i + base for i in p])
+    return {
+        'positions': pos, 'polys': polys,
+        'normals_raw': nrm, 'normals_mapping': 'ByVertice',
+        'uvs_raw': uvs, 'uvs_mapping': 'ByVertice',
+        'uv_index': None, 'mat_mapping': 'AllSame',
+    }
+
+def _builtin_primitive_md(fid):
+    """Unity 内置基元的网格数据（Unity 本地空间，Y 上，米制：随 prefab 缩放）。"""
+    if fid == 10210:
+        return _builtin_quad_md()
+    if fid == 10209:
+        # Plane：10x10 XZ 平面，法线 +Y
+        return _face_md([-5, 0, -5], [10, 0, 0], [0, 0, 10], [0, 1, 0])
+    if fid == 10202:
+        # Cube：1x1x1 居中，6 面独立法线
+        faces = [
+            (_face_md([-0.5, -0.5, -0.5], [1, 0, 0], [0, 0, 1], [0, 0, -1])),   # -Z
+            (_face_md([0.5, -0.5, 0.5], [-1, 0, 0], [0, 0, -1], [0, 0, 1])),    # +Z
+            (_face_md([-0.5, -0.5, 0.5], [0, 0, -1], [0, 1, 0], [-1, 0, 0])),   # -X
+            (_face_md([0.5, -0.5, -0.5], [0, 0, 1], [0, 1, 0], [1, 0, 0])),     # +X
+            (_face_md([-0.5, 0.5, -0.5], [1, 0, 0], [0, 0, 1], [0, 1, 0])),     # +Y
+            (_face_md([-0.5, -0.5, 0.5], [1, 0, 0], [0, 0, -1], [0, -1, 0])),   # -Y
+        ]
+        return _merge_mds(faces)
+    if fid == 10206:
+        # Cylinder：r=0.5, h=2（Y -1..1），48 段侧面 + 双端盖
+        import math
+        N = 48
+        side, caps = [], []
+        for i in range(N):
+            a0, a1 = 2*math.pi*i/N, 2*math.pi*(i+1)/N
+            c0, s0, c1, s1 = math.cos(a0), math.sin(a0), math.cos(a1), math.sin(a1)
+            n0 = [c0, 0, s0]; n1 = [c1, 0, s1]
+            side.append({
+                'positions': [0.5*c0, -1, 0.5*s0, 0.5*c1, -1, 0.5*s1, 0.5*c0, 1, 0.5*s0, 0.5*c1, 1, 0.5*s1],
+                'polys': [[0, 2, 1], [1, 2, 3]],
+                'normals_raw': [*n0, *n1, *n0, *n1],
+                'normals_mapping': 'ByVertice',
+                'uvs_raw': [i/N, 0, (i+1)/N, 0, i/N, 1, (i+1)/N, 1],
+                'uvs_mapping': 'ByVertice', 'uv_index': None, 'mat_mapping': 'AllSame',
+            })
+            caps.append({
+                'positions': [0, -1, 0, 0.5*c0, -1, 0.5*s0, 0.5*c1, -1, 0.5*s1],
+                'polys': [[0, 1, 2]], 'normals_raw': [0, -1, 0]*3,
+                'normals_mapping': 'ByVertice', 'uvs_raw': [0.5, 0.5, 0.5+0.5*c0, 0.5+0.5*s0, 0.5+0.5*c1, 0.5+0.5*s1],
+                'uvs_mapping': 'ByVertice', 'uv_index': None, 'mat_mapping': 'AllSame',
+            })
+            caps.append({
+                'positions': [0, 1, 0, 0.5*c0, 1, 0.5*s0, 0.5*c1, 1, 0.5*s1],
+                'polys': [[0, 2, 1]], 'normals_raw': [0, 1, 0]*3,
+                'normals_mapping': 'ByVertice', 'uvs_raw': [0.5, 0.5, 0.5+0.5*c0, 0.5+0.5*s0, 0.5+0.5*c1, 0.5+0.5*s1],
+                'uvs_mapping': 'ByVertice', 'uv_index': None, 'mat_mapping': 'AllSame',
+            })
+        return _merge_mds(side + caps)
+    if fid in (10207, 10208):
+        # Sphere：r=0.5；Capsule：r=0.5 圆柱段 h=1 + 上下半球（总高 2）
+        import math
+        sphere = fid == 10207
+        pos, polys, nrm, uvs = [], [], [], []
+        W, H = 32, 24 if sphere else 12
+        rings = []
+        for j in range(H + 1):
+            ring = []
+            if sphere:
+                phi = -math.pi/2 + math.pi*j/H
+                y, r = 0.5*math.sin(phi), 0.5*math.cos(phi)
+                ny, nr = math.sin(phi), math.cos(phi)
+            else:
+                if j <= H/2:
+                    phi = -math.pi/2 + (math.pi/2)*(j/(H/2))
+                    y = -0.5 + 0.5*math.sin(phi)
+                    ny, nr = math.sin(phi), math.cos(phi)
+                else:
+                    phi = (math.pi/2)*((j-H/2)/(H/2))
+                    y = 0.5 + 0.5*math.sin(phi)
+                    ny, nr = math.sin(phi), math.cos(phi)
+            for i in range(W):
+                th = 2*math.pi*i/W
+                ring.append(len(pos)//3)
+                pos += [r*math.cos(th), y, r*math.sin(th)]
+                nrm += [nr*math.cos(th), ny, nr*math.sin(th)]
+                uvs += [i/W, j/H]
+            rings.append(ring)
+        for j in range(H):
+            for i in range(W):
+                i2 = (i+1) % W
+                polys += [[rings[j][i], rings[j+1][i], rings[j][i2]],
+                          [rings[j][i2], rings[j+1][i], rings[j+1][i2]]]
+        return {'positions': pos, 'polys': polys, 'normals_raw': nrm,
+                'normals_mapping': 'ByVertice', 'uvs_raw': uvs,
+                'uvs_mapping': 'ByVertice', 'uv_index': None, 'mat_mapping': 'AllSame'}
+    raise ValueError(f'unsupported builtin primitive fileID={fid}')
+
+BUILTIN_PRIMS = {10202, 10206, 10207, 10208, 10209, 10210}
 
 
 def extract_component(prefab_path, ua, fbx_cache, out_dir):
@@ -405,15 +559,20 @@ def extract_component(prefab_path, ua, fbx_cache, out_dir):
                     geo = info['geo_by_fileid'].get(fid)
                     if geo is None:
                         geo = info['model_geos'].get(node['name'])
-                    if geo is None and info['model_geos']:
-                        geo = next(iter(info['model_geos'].values()))
                     if geo is not None:
-                        md = mesh_data(geo[1])
+                        md = mesh_data(geo)
                         if md:
                             fbx_M = info.get('model_world_M', {}).get(fid)
                             mesh_idx = _emit_mesh(glb, node, md, info, mr, ua, fbx_M)
                             stats['meshes'] += 1
                             stats['verts'] += len(md['positions']) // 3
+                elif mesh_ref.get('guid') == BUILTIN_GUID and mesh_ref.get('fileID') in BUILTIN_PRIMS:
+                    # Unity 内置基元（Quad 承载符号图标/白板，Plane 为接地/Icon 面片），
+                    # 顶点为 Unity 本地空间数据，走与 FBX 同一条 conv 发射管线
+                    md = _builtin_primitive_md(mesh_ref['fileID'])
+                    mesh_idx = _emit_mesh(glb, node, md, {'unit': 1.0}, mr, ua)
+                    stats['meshes'] += 1
+                    stats['verts'] += len(md['positions']) // 3
         node_idx = glb.add_node(node['name'] or 'node', mesh=mesh_idx,
                                  matrix=trs_matrix(node['transform']))
         parent_children.append(node_idx)
@@ -584,6 +743,13 @@ def _emit_mesh(glb, node, md, info, mr, ua, fbx_M=None):
             metas.append((cx, bi, ui))
         per_poly_meta.append((slot, metas))
         corner += len(poly)
+
+    # Unity 导入语义：Mesh 的子网格号 = 该几何实际用到的 FBX 材质索引按
+    # 升序重编（renderer.m_Materials 与子网格一一对应）。FBX 原始索引可能
+    # 跳号（如几何只用 1 号材质），直接透传会错位成 default_s{slot}。
+    used = sorted({s for s, _ in per_poly_meta})
+    rank = {m: i for i, m in enumerate(used)}
+    per_poly_meta = [(rank[s], mt) for s, mt in per_poly_meta]
 
     # 按材质槽聚合 primitive
     groups = {}

@@ -1,0 +1,2484 @@
+[
+ {
+  "prefab": "Basic Capacitor.prefab",
+  "glb": "Basic_Capacitor.glb",
+  "nodes_pf": 12,
+  "nodes_glb": 11,
+  "renderers": 9,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.2657,
+   6.4177,
+   6.3211,
+   12.5342
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.2657,
+   6.4177,
+   6.3211,
+   12.5342
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Basic Diode.prefab",
+  "glb": "Basic_Diode.glb",
+  "nodes_pf": 10,
+  "nodes_glb": 9,
+  "renderers": 7,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.01,
+   0.0982,
+   0.0491,
+   0.0143
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.01,
+   0.0982,
+   0.0491,
+   0.0143
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Basic Inductor.prefab",
+  "glb": "Basic_Inductor.glb",
+  "nodes_pf": 10,
+  "nodes_glb": 9,
+  "renderers": 7,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.0297,
+   0.0982,
+   0.0647,
+   0.0297
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.0297,
+   0.0982,
+   0.0647,
+   0.0297
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Current Source.prefab",
+  "glb": "Current_Source.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 4,
+  "pin_procedural": [],
+  "aabb_pf": [
+   -0.1475,
+   -0.0491,
+   -0.046,
+   0.1473,
+   0.0811,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.1475,
+   -0.0491,
+   -0.046,
+   0.1473,
+   0.0811,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Ground Component.prefab",
+  "glb": "Ground_Component.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 3,
+  "pin_procedural": [
+   "Pin 1"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.025,
+   0.0982,
+   0.0491,
+   0.025
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.025,
+   0.0982,
+   0.0491,
+   0.025
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Light-Emitting Diode.prefab",
+  "glb": "Light-Emitting_Diode.glb",
+  "nodes_pf": 9,
+  "nodes_glb": 8,
+  "renderers": 6,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -3.0983,
+   -0.0491,
+   -0.01,
+   0.0982,
+   0.0592,
+   0.0157
+  ],
+  "aabb_glb": [
+   -3.0983,
+   -0.0491,
+   -0.01,
+   0.0982,
+   0.0592,
+   0.0157
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Mutual Inductor.prefab",
+  "glb": "Mutual_Inductor.glb",
+  "nodes_pf": 13,
+  "nodes_glb": 12,
+  "renderers": 11,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3",
+   "Pin 4"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.1774,
+   -0.0143,
+   0.0982,
+   0.1882,
+   0.0949
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.1774,
+   -0.0143,
+   0.0982,
+   0.1882,
+   0.0949
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "N-MOSFET.prefab",
+  "glb": "N-MOSFET.glb",
+  "nodes_pf": 6,
+  "nodes_glb": 5,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.1282,
+   -0.0491,
+   -0.01,
+   0.1281,
+   0.0491,
+   0.0143
+  ],
+  "aabb_glb": [
+   -0.1282,
+   -0.0491,
+   -0.01,
+   0.1281,
+   0.0491,
+   0.0143
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Operational Amplifier.prefab",
+  "glb": "Operational_Amplifier.glb",
+  "nodes_pf": 6,
+  "nodes_glb": 5,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.1282,
+   -0.0491,
+   -0.01,
+   0.1281,
+   0.0491,
+   0.0143
+  ],
+  "aabb_glb": [
+   -0.1282,
+   -0.0491,
+   -0.01,
+   0.1281,
+   0.0491,
+   0.0143
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "P-MOSFET.prefab",
+  "glb": "P-MOSFET.glb",
+  "nodes_pf": 6,
+  "nodes_glb": 5,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.1282,
+   -0.0491,
+   -0.01,
+   0.1281,
+   0.0491,
+   0.0143
+  ],
+  "aabb_glb": [
+   -0.1282,
+   -0.0491,
+   -0.01,
+   0.1281,
+   0.0491,
+   0.0143
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Recticifier.prefab",
+  "glb": "Rectifier.glb",
+  "nodes_pf": 8,
+  "nodes_glb": 7,
+  "renderers": 6,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3",
+   "Pin 4"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.0219,
+   0.0982,
+   0.0491,
+   0.0204
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.0219,
+   0.0982,
+   0.0491,
+   0.0204
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Relay Element.prefab",
+  "glb": "Relay_Component.glb",
+  "nodes_pf": 12,
+  "nodes_glb": 11,
+  "renderers": 10,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3",
+   "Pin 4",
+   "Pin 5"
+  ],
+  "aabb_pf": [
+   -0.5909,
+   -0.0491,
+   -1.2368,
+   0.0982,
+   0.0491,
+   0.0391
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.0185,
+   0.0982,
+   0.0491,
+   0.0391
+  ],
+  "issues": [
+   "BBOX-Z 底板: pf=[-1.2368,-1.2125] glb=[-0.0100,0.0143]",
+   "BBOX-X 继电器: pf=[-0.5909,-0.5372] glb=[-0.0270,0.0267]",
+   "BBOX-Z Icon: pf=[-0.0121,0.0179] glb=[-0.0151,0.0149]"
+  ]
+ },
+ {
+  "prefab": "Tapped Transformer.prefab",
+  "glb": "Tapped_Transformer.glb",
+  "nodes_pf": 9,
+  "nodes_glb": 8,
+  "renderers": 7,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3",
+   "Pin 4",
+   "Pin 5"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.01,
+   0.0982,
+   0.0491,
+   0.0334
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.01,
+   0.0982,
+   0.0491,
+   0.0334
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Transformer.prefab",
+  "glb": "Transformer.glb",
+  "nodes_pf": 8,
+  "nodes_glb": 7,
+  "renderers": 6,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3",
+   "Pin 4"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.01,
+   0.0982,
+   0.0491,
+   0.0334
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.01,
+   0.0982,
+   0.0491,
+   0.0334
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Transistor.prefab",
+  "glb": "Transistor.glb",
+  "nodes_pf": 7,
+  "nodes_glb": 6,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.0556,
+   0.0982,
+   0.0491,
+   0.0554
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.0556,
+   0.0982,
+   0.0491,
+   0.0554
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Battery Source.prefab",
+  "glb": "Battery_Source.glb",
+  "nodes_pf": 7,
+  "nodes_glb": 6,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.0125,
+   0.0982,
+   0.0491,
+   0.0179
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.0125,
+   0.0982,
+   0.0491,
+   0.0179
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Buzzer.prefab",
+  "glb": "Buzzer.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 4,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.019,
+   0.0982,
+   0.0491,
+   0.019
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.019,
+   0.0982,
+   0.0491,
+   0.019
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "DPDT Switch.prefab",
+  "glb": "DPDT_Switch.glb",
+  "nodes_pf": 17,
+  "nodes_glb": 16,
+  "renderers": 14,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3",
+   "Pin 4",
+   "Pin 5",
+   "Pin 6"
+  ],
+  "aabb_pf": [
+   -0.1282,
+   -0.0491,
+   -0.0224,
+   0.1281,
+   0.0564,
+   0.0591
+  ],
+  "aabb_glb": [
+   -0.1282,
+   -0.0491,
+   -0.0224,
+   0.1281,
+   0.0564,
+   0.0591
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Incandescent Lamp.prefab",
+  "glb": "Incandescent_Lamp.glb",
+  "nodes_pf": 10,
+  "nodes_glb": 9,
+  "renderers": 6,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.2722,
+   0.2722,
+   0.3379,
+   0.0143
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.2722,
+   0.2722,
+   0.3379,
+   0.0143
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Push Switch.prefab",
+  "glb": "Push_Switch.glb",
+  "nodes_pf": 8,
+  "nodes_glb": 7,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.01,
+   0.0982,
+   0.0491,
+   0.0234
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.01,
+   0.0982,
+   0.0491,
+   0.0234
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Resistor.prefab",
+  "glb": "Resistor.glb",
+  "nodes_pf": 6,
+  "nodes_glb": 5,
+  "renderers": 4,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.0372,
+   0.0982,
+   0.0491,
+   0.0143
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.0372,
+   0.0982,
+   0.0491,
+   0.0143
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "SPDT Switch.prefab",
+  "glb": "SPDT_Switch.glb",
+  "nodes_pf": 11,
+  "nodes_glb": 10,
+  "renderers": 8,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.0381,
+   0.0982,
+   0.0723,
+   0.019
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.0381,
+   0.0982,
+   0.0723,
+   0.019
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Simple Switch.prefab",
+  "glb": "Simple_Switch.glb",
+  "nodes_pf": 9,
+  "nodes_glb": 8,
+  "renderers": 6,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.0317,
+   0.0982,
+   0.0828,
+   0.0295
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.0317,
+   0.0982,
+   0.0828,
+   0.0295
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Slide Rheostat.prefab",
+  "glb": "Slide_Rheostat.glb",
+  "nodes_pf": 8,
+  "nodes_glb": 7,
+  "renderers": 6,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3",
+   "Pin 4"
+  ],
+  "aabb_pf": [
+   -0.05,
+   0.0013,
+   -0.0041,
+   0.0004,
+   0.0378,
+   -0.0039
+  ],
+  "aabb_glb": [
+   -0.05,
+   0.0013,
+   -0.0041,
+   0.0004,
+   0.0378,
+   -0.0039
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Student Source.prefab",
+  "glb": "Student_Source.glb",
+  "nodes_pf": 13,
+  "nodes_glb": 12,
+  "renderers": 8,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3",
+   "Pin 4"
+  ],
+  "aabb_pf": [
+   -0.1443,
+   0.0012,
+   -0.0925,
+   0.207,
+   0.179,
+   0.0808
+  ],
+  "aabb_glb": [
+   -0.1443,
+   0.0012,
+   -0.0925,
+   0.207,
+   0.179,
+   0.0808
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Comparator.prefab",
+  "glb": "Comparator.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 3,
+  "pin_procedural": [
+   "Pin Template"
+  ],
+  "aabb_pf": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Full Adder.prefab",
+  "glb": "Full_Adder.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 3,
+  "pin_procedural": [
+   "Pin Template"
+  ],
+  "aabb_pf": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Full Subtractor.prefab",
+  "glb": "Full_Subtractor.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 3,
+  "pin_procedural": [
+   "Pin Template"
+  ],
+  "aabb_pf": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Half Adder.prefab",
+  "glb": "Half_Adder.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 3,
+  "pin_procedural": [
+   "Pin Template"
+  ],
+  "aabb_pf": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Half Subtractor.prefab",
+  "glb": "Half_Subtractor.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 3,
+  "pin_procedural": [
+   "Pin Template"
+  ],
+  "aabb_pf": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Multiplier.prefab",
+  "glb": "Multiplier.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 3,
+  "pin_procedural": [
+   "Pin Template"
+  ],
+  "aabb_pf": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Pulse Source.prefab",
+  "glb": "Pulse_Source.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 4,
+  "pin_procedural": [],
+  "aabb_pf": [
+   -0.1475,
+   -0.0491,
+   -0.046,
+   0.1473,
+   0.0811,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.1475,
+   -0.0491,
+   -0.046,
+   0.1473,
+   0.0811,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Sawtooth Source.prefab",
+  "glb": "Sawtooth_Source.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 4,
+  "pin_procedural": [],
+  "aabb_pf": [
+   -0.1475,
+   -0.0491,
+   -0.046,
+   0.1473,
+   0.0811,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.1475,
+   -0.0491,
+   -0.046,
+   0.1473,
+   0.0811,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Schmitt Trigger.prefab",
+  "glb": "Schmitt_Trigger.glb",
+  "nodes_pf": 7,
+  "nodes_glb": 6,
+  "renderers": 4,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.1443,
+   -0.0491,
+   -0.046,
+   0.1441,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.1443,
+   -0.0491,
+   -0.046,
+   0.1441,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Sinewave Source.prefab",
+  "glb": "Sinewave_Source.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 4,
+  "pin_procedural": [],
+  "aabb_pf": [
+   -0.1475,
+   -0.0491,
+   -0.046,
+   0.1473,
+   0.0811,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.1475,
+   -0.0491,
+   -0.046,
+   0.1473,
+   0.0811,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Square Source.prefab",
+  "glb": "Square_Source.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 4,
+  "pin_procedural": [],
+  "aabb_pf": [
+   -0.1475,
+   -0.0491,
+   -0.046,
+   0.1473,
+   0.0811,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.1475,
+   -0.0491,
+   -0.046,
+   0.1473,
+   0.0811,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Triangle Source.prefab",
+  "glb": "Triangle_Source.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 4,
+  "pin_procedural": [],
+  "aabb_pf": [
+   -0.1475,
+   -0.0491,
+   -0.046,
+   0.1473,
+   0.0811,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.1475,
+   -0.0491,
+   -0.046,
+   0.1473,
+   0.0811,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "8bit Display.prefab",
+  "glb": "8bit_Display.glb",
+  "nodes_pf": 19,
+  "nodes_glb": 18,
+  "renderers": 10,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3",
+   "Pin 4",
+   "Pin 5",
+   "Pin 6",
+   "Pin 7",
+   "Pin 8"
+  ],
+  "aabb_pf": [
+   -0.2072,
+   -0.0491,
+   -0.01,
+   0.207,
+   0.0491,
+   0.259
+  ],
+  "aabb_glb": [
+   -0.2072,
+   -0.0491,
+   -0.01,
+   0.207,
+   0.0491,
+   0.259
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Color Light-Emitting Diode.prefab",
+  "glb": "Color_Light-Emitting_Diode.glb",
+  "nodes_pf": 11,
+  "nodes_glb": 10,
+  "renderers": 8,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3",
+   "Pin 4"
+  ],
+  "aabb_pf": [
+   -3.0783,
+   -0.0733,
+   -0.0157,
+   0.1465,
+   0.0732,
+   0.0143
+  ],
+  "aabb_glb": [
+   -3.0783,
+   -0.0733,
+   -0.0157,
+   0.1465,
+   0.0732,
+   0.0143
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Dual Light-Emitting Diode.prefab",
+  "glb": "Dual_Light-Emitting_Diode.glb",
+  "nodes_pf": 13,
+  "nodes_glb": 12,
+  "renderers": 9,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -3.0983,
+   -0.0491,
+   -0.0407,
+   0.0982,
+   0.0592,
+   0.0407
+  ],
+  "aabb_glb": [
+   -3.0983,
+   -0.0491,
+   -0.0407,
+   0.0982,
+   0.0592,
+   0.0407
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Electric Bell.prefab",
+  "glb": "Electric_Bell.glb",
+  "nodes_pf": 7,
+  "nodes_glb": 6,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -5.7682,
+   -0.1006,
+   7.3942,
+   0.0491,
+   78.7109
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -5.7682,
+   -0.1006,
+   7.3942,
+   0.0491,
+   78.7109
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Electric Fan.prefab",
+  "glb": "Electric_Fan.glb",
+  "nodes_pf": 7,
+  "nodes_glb": 6,
+  "renderers": 5,
+  "pin_procedural": [],
+  "aabb_pf": [
+   -0.1089,
+   -0.0491,
+   -0.037,
+   0.1092,
+   0.0847,
+   0.1001
+  ],
+  "aabb_glb": [
+   -0.1089,
+   -0.0491,
+   -0.037,
+   0.1092,
+   0.0847,
+   0.1001
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Musical Box.prefab",
+  "glb": "Musical_Box.glb",
+  "nodes_pf": 7,
+  "nodes_glb": 6,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.4117,
+   -0.108,
+   -0.0346,
+   0.1342,
+   0.1448,
+   0.2338
+  ],
+  "aabb_glb": [
+   -0.4117,
+   -0.108,
+   -0.0346,
+   0.1342,
+   0.1448,
+   0.2338
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Resistance Law.prefab",
+  "glb": "Resistance_Law.glb",
+  "nodes_pf": 16,
+  "nodes_glb": 15,
+  "renderers": 13,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3",
+   "Pin 4",
+   "Pin 5",
+   "Pin 6",
+   "Pin 7",
+   "Pin 8"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0982,
+   -0.0823,
+   0.0982,
+   0.0982,
+   0.0817
+  ],
+  "aabb_glb": [
+   -0.0861,
+   -0.0982,
+   -0.0823,
+   0.1105,
+   0.0982,
+   0.0817
+  ],
+  "issues": [
+   "BBOX-X 对象001: pf=[-0.0598,0.0630] glb=[-0.0290,0.0937]",
+   "BBOX-X 对象002: pf=[-0.0596,0.0628] glb=[-0.0289,0.0935]",
+   "BBOX-X 对象003: pf=[-0.0591,0.0623] glb=[-0.0284,0.0930]",
+   "BBOX-X 对象004: pf=[-0.0607,0.0637] glb=[-0.0300,0.0945]",
+   "BBOX-X 底板: pf=[-0.0983,0.0982] glb=[-0.0861,0.1105]"
+  ]
+ },
+ {
+  "prefab": "Simple Instrument.prefab",
+  "glb": "Simple_Instrument.glb",
+  "nodes_pf": 10,
+  "nodes_glb": 9,
+  "renderers": 7,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -3.1273,
+   -5.7682,
+   -0.1006,
+   7.3942,
+   0.0491,
+   78.7109
+  ],
+  "aabb_glb": [
+   -3.1273,
+   -5.7682,
+   -0.1006,
+   7.3942,
+   0.0491,
+   78.7109
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Solenoid.prefab",
+  "glb": "Solenoid.glb",
+  "nodes_pf": 16,
+  "nodes_glb": 15,
+  "renderers": 9,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3",
+   "Pin 4"
+  ],
+  "aabb_pf": [
+   -0.4135,
+   -0.0486,
+   -0.4533,
+   0.0554,
+   0.3562,
+   0.2779
+  ],
+  "aabb_glb": [
+   -0.4135,
+   -0.0486,
+   -0.4533,
+   0.0554,
+   0.3562,
+   0.2779
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Spark Gap.prefab",
+  "glb": "Spark_Gap.glb",
+  "nodes_pf": 12,
+  "nodes_glb": 11,
+  "renderers": 7,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.1372,
+   -0.0491,
+   -0.0251,
+   0.1772,
+   0.0551,
+   0.0638
+  ],
+  "aabb_glb": [
+   -0.1372,
+   -0.0491,
+   -0.0251,
+   0.1772,
+   0.0551,
+   0.0638
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Tesla Coil.prefab",
+  "glb": "Tesla_Coil.glb",
+  "nodes_pf": 8,
+  "nodes_glb": 7,
+  "renderers": 4,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.1282,
+   -0.0491,
+   -0.0143,
+   0.1281,
+   0.0491,
+   0.0164
+  ],
+  "aabb_glb": [
+   -0.1282,
+   -0.0491,
+   -0.0143,
+   0.1281,
+   0.0491,
+   0.0164
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Air Switch.prefab",
+  "glb": "Air_Switch.glb",
+  "nodes_pf": 7,
+  "nodes_glb": 6,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.1895,
+   -0.06,
+   -0.0514,
+   -0.0147,
+   0.0823,
+   0.0148
+  ],
+  "aabb_glb": [
+   -0.1895,
+   -0.06,
+   -0.0514,
+   -0.0147,
+   0.0823,
+   0.0148
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Fuse Component.prefab",
+  "glb": "Fuse_Component.glb",
+  "nodes_pf": 9,
+  "nodes_glb": 8,
+  "renderers": 6,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.2816,
+   0.0982,
+   0.0491,
+   0.7083
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.2816,
+   0.0982,
+   0.0491,
+   0.7083
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Ammeter.prefab",
+  "glb": "Simple_Ammeter.glb",
+  "nodes_pf": 9,
+  "nodes_glb": 8,
+  "renderers": 6,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -23.6172,
+   -6.481,
+   -15.1811,
+   13.5197,
+   20.0056,
+   13.6179
+  ],
+  "aabb_glb": [
+   -23.6172,
+   -6.481,
+   -15.1811,
+   13.5197,
+   20.0056,
+   13.6179
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Electricity Meter.prefab",
+  "glb": "Electricity_Meter.glb",
+  "nodes_pf": 7,
+  "nodes_glb": 6,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3",
+   "Pin 4"
+  ],
+  "aabb_pf": [
+   2.2433,
+   3.9758,
+   -9.6933,
+   8.3807,
+   8.9751,
+   -5.1946
+  ],
+  "aabb_glb": [
+   2.2433,
+   3.9758,
+   -9.6933,
+   8.3807,
+   8.9751,
+   -5.1946
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Galvanometer.prefab",
+  "glb": "Galvanometer.glb",
+  "nodes_pf": 9,
+  "nodes_glb": 8,
+  "renderers": 6,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -14.007,
+   -6.481,
+   -19.0855,
+   7.5854,
+   20.0056,
+   13.6179
+  ],
+  "aabb_glb": [
+   -14.007,
+   -6.481,
+   -19.0855,
+   7.5854,
+   20.0056,
+   13.6179
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Microammeter.prefab",
+  "glb": "Microammeter.glb",
+  "nodes_pf": 9,
+  "nodes_glb": 8,
+  "renderers": 6,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -39.4675,
+   -3.2914,
+   -19.0855,
+   6.8502,
+   20.0056,
+   13.6179
+  ],
+  "aabb_glb": [
+   -39.4675,
+   -3.2914,
+   -19.0855,
+   6.8502,
+   20.0056,
+   13.6179
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Multimeter.prefab",
+  "glb": "Multimeter.glb",
+  "nodes_pf": 8,
+  "nodes_glb": 7,
+  "renderers": 4,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.0026,
+   -13.5492,
+   -30.1055,
+   32.8249,
+   14.476,
+   11.7409
+  ],
+  "aabb_glb": [
+   -0.0026,
+   -13.5492,
+   -30.1055,
+   32.8249,
+   14.476,
+   11.7409
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Resistance Box.prefab",
+  "glb": "Resistance_Box.glb",
+  "nodes_pf": 11,
+  "nodes_glb": 10,
+  "renderers": 9,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.0517,
+   0.0017,
+   -0.0173,
+   0.0534,
+   0.1142,
+   0.0311
+  ],
+  "aabb_glb": [
+   -0.0517,
+   0.0017,
+   -0.0173,
+   0.0534,
+   0.1142,
+   0.0311
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Voltmeter.prefab",
+  "glb": "Simple_Voltmeter.glb",
+  "nodes_pf": 9,
+  "nodes_glb": 8,
+  "renderers": 6,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -55.3629,
+   -6.481,
+   -19.0855,
+   6.8502,
+   20.0056,
+   13.6179
+  ],
+  "aabb_glb": [
+   -55.3629,
+   -6.481,
+   -19.0855,
+   6.8502,
+   20.0056,
+   13.6179
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "8bit Input.prefab",
+  "glb": "8bit_Input.glb",
+  "nodes_pf": 19,
+  "nodes_glb": 18,
+  "renderers": 10,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3",
+   "Pin 4",
+   "Pin 5",
+   "Pin 6",
+   "Pin 7",
+   "Pin 8"
+  ],
+  "aabb_pf": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "And-Gate.prefab",
+  "glb": "And_Gate.glb",
+  "nodes_pf": 11,
+  "nodes_glb": 10,
+  "renderers": 9,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.513,
+   0.0982,
+   0.0491,
+   0.513
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.513,
+   0.0982,
+   0.0491,
+   0.513
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Imp-Gate.prefab",
+  "glb": "Imp_Gate.glb",
+  "nodes_pf": 11,
+  "nodes_glb": 10,
+  "renderers": 9,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.513,
+   0.0982,
+   0.0491,
+   0.513
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.513,
+   0.0982,
+   0.0491,
+   0.513
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Logic Input.prefab",
+  "glb": "Logic_Input.glb",
+  "nodes_pf": 12,
+  "nodes_glb": 11,
+  "renderers": 7,
+  "pin_procedural": [
+   "Pin 1"
+  ],
+  "aabb_pf": [
+   -3.1383,
+   -0.5968,
+   -0.01,
+   0.0982,
+   0.0559,
+   0.1807
+  ],
+  "aabb_glb": [
+   -3.1383,
+   -0.5968,
+   -0.01,
+   0.0982,
+   0.0559,
+   0.1807
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Logic Output.prefab",
+  "glb": "Logic_Output.glb",
+  "nodes_pf": 8,
+  "nodes_glb": 7,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1"
+  ],
+  "aabb_pf": [
+   -3.0983,
+   -0.0491,
+   -0.01,
+   0.0982,
+   0.0559,
+   0.1807
+  ],
+  "aabb_glb": [
+   -3.0983,
+   -0.0491,
+   -0.01,
+   0.0982,
+   0.0559,
+   0.1807
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Nand-Gate.prefab",
+  "glb": "Nand_Gate.glb",
+  "nodes_pf": 11,
+  "nodes_glb": 10,
+  "renderers": 9,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.513,
+   0.0982,
+   0.0491,
+   0.513
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.513,
+   0.0982,
+   0.0491,
+   0.513
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Nimp-Gate.prefab",
+  "glb": "Nimp_Gate.glb",
+  "nodes_pf": 11,
+  "nodes_glb": 10,
+  "renderers": 9,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.515,
+   0.0982,
+   0.0491,
+   0.513
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.515,
+   0.0982,
+   0.0491,
+   0.513
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "No-Gate.prefab",
+  "glb": "No_Gate.glb",
+  "nodes_pf": 9,
+  "nodes_glb": 8,
+  "renderers": 7,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.5,
+   0.0982,
+   0.0491,
+   0.5
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.5,
+   0.0982,
+   0.0491,
+   0.5
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Nor-Gate.prefab",
+  "glb": "Nor_Gate.glb",
+  "nodes_pf": 11,
+  "nodes_glb": 10,
+  "renderers": 9,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.513,
+   0.0982,
+   0.0491,
+   0.513
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.513,
+   0.0982,
+   0.0491,
+   0.513
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Or-Gate.prefab",
+  "glb": "Or_Gate.glb",
+  "nodes_pf": 11,
+  "nodes_glb": 10,
+  "renderers": 9,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.513,
+   0.0982,
+   0.0491,
+   0.513
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.513,
+   0.0982,
+   0.0491,
+   0.513
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Xnor-Gate.prefab",
+  "glb": "Xnor_Gate.glb",
+  "nodes_pf": 11,
+  "nodes_glb": 10,
+  "renderers": 9,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.513,
+   0.0982,
+   0.0491,
+   0.513
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.513,
+   0.0982,
+   0.0491,
+   0.513
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Xor-Gate.prefab",
+  "glb": "Xor_Gate.glb",
+  "nodes_pf": 11,
+  "nodes_glb": 10,
+  "renderers": 9,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.513,
+   0.0982,
+   0.0491,
+   0.513
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.513,
+   0.0982,
+   0.0491,
+   0.513
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Yes-Gate.prefab",
+  "glb": "Yes_Gate.glb",
+  "nodes_pf": 9,
+  "nodes_glb": 8,
+  "renderers": 7,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.5,
+   0.0982,
+   0.0491,
+   0.5
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.5,
+   0.0982,
+   0.0491,
+   0.5
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Accelerometer.prefab",
+  "glb": "Accelerometer.glb",
+  "nodes_pf": 6,
+  "nodes_glb": 5,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.1443,
+   -0.0491,
+   -0.046,
+   0.1441,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.1443,
+   -0.0491,
+   -0.046,
+   0.1441,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Analog Joystick.prefab",
+  "glb": "Analog_Joystick.glb",
+  "nodes_pf": 15,
+  "nodes_glb": 14,
+  "renderers": 13,
+  "pin_procedural": [
+   "Pin X1",
+   "Pin X2",
+   "Pin X3",
+   "Pin Y1",
+   "Pin Y2",
+   "Pin Y3"
+  ],
+  "aabb_pf": [
+   -0.2072,
+   -0.0491,
+   -0.01,
+   0.207,
+   0.8616,
+   1.0417
+  ],
+  "aabb_glb": [
+   -0.2072,
+   -0.0491,
+   -0.01,
+   0.207,
+   0.8616,
+   1.0417
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Attitude Sensor.prefab",
+  "glb": "Attitude_Sensor.glb",
+  "nodes_pf": 6,
+  "nodes_glb": 5,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.1443,
+   -0.0491,
+   -0.046,
+   0.1441,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.1443,
+   -0.0491,
+   -0.046,
+   0.1441,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Gravity Sensor.prefab",
+  "glb": "Gravity_Sensor.glb",
+  "nodes_pf": 6,
+  "nodes_glb": 5,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.1443,
+   -0.0491,
+   -0.046,
+   0.1441,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.1443,
+   -0.0491,
+   -0.046,
+   0.1441,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Gyroscope.prefab",
+  "glb": "Gyroscope.glb",
+  "nodes_pf": 6,
+  "nodes_glb": 5,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.1443,
+   -0.0491,
+   -0.046,
+   0.1441,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.1443,
+   -0.0491,
+   -0.046,
+   0.1441,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Linear Accelerometer.prefab",
+  "glb": "Linear_Accelerometer.glb",
+  "nodes_pf": 6,
+  "nodes_glb": 5,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.1443,
+   -0.0491,
+   -0.046,
+   0.1441,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.1443,
+   -0.0491,
+   -0.046,
+   0.1441,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Magnetic Field Sensor.prefab",
+  "glb": "Magnetic_Field_Sensor.glb",
+  "nodes_pf": 6,
+  "nodes_glb": 5,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2",
+   "Pin 3"
+  ],
+  "aabb_pf": [
+   -0.1443,
+   -0.0491,
+   -0.046,
+   0.1441,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.1443,
+   -0.0491,
+   -0.046,
+   0.1441,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Photo Diode.prefab",
+  "glb": "Photodiode.glb",
+  "nodes_pf": 11,
+  "nodes_glb": 10,
+  "renderers": 8,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.0409,
+   0.0982,
+   0.0491,
+   0.0143
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.0409,
+   0.0982,
+   0.0491,
+   0.0143
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Photo Resistor.prefab",
+  "glb": "Photoresistor.glb",
+  "nodes_pf": 7,
+  "nodes_glb": 6,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1",
+   "Pin 2"
+  ],
+  "aabb_pf": [
+   -0.0983,
+   -0.0491,
+   -0.01,
+   0.0982,
+   0.0491,
+   0.0143
+  ],
+  "aabb_glb": [
+   -0.0983,
+   -0.0491,
+   -0.01,
+   0.0982,
+   0.0491,
+   0.0143
+  ],
+  "issues": [
+   "MESH-MISSING: renderer 光敏电阻 has no GLB node/mesh",
+   "MESH-MISSING: renderer Mesh6 has no GLB node/mesh"
+  ]
+ },
+ {
+  "prefab": "Proximity Sensor.prefab",
+  "glb": "Proximity_Sensor.glb",
+  "nodes_pf": 7,
+  "nodes_glb": 6,
+  "renderers": 5,
+  "pin_procedural": [
+   "Pin 1"
+  ],
+  "aabb_pf": [
+   -3.0783,
+   -0.0491,
+   -0.013,
+   0.0982,
+   0.0559,
+   0.1807
+  ],
+  "aabb_glb": [
+   -3.0783,
+   -0.0491,
+   -0.013,
+   0.0982,
+   0.0559,
+   0.1807
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "555 Timer.prefab",
+  "glb": "555_Timer.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 3,
+  "pin_procedural": [
+   "Pin Template"
+  ],
+  "aabb_pf": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Counter.prefab",
+  "glb": "Counter.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 3,
+  "pin_procedural": [
+   "Pin Template"
+  ],
+  "aabb_pf": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "D Flipflop.prefab",
+  "glb": "D_Flipflop.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 3,
+  "pin_procedural": [
+   "Pin Template"
+  ],
+  "aabb_pf": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "JK Flipflop.prefab",
+  "glb": "JK_Flipflop.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 3,
+  "pin_procedural": [
+   "Pin Template"
+  ],
+  "aabb_pf": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Random Generator.prefab",
+  "glb": "Random_Generator.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 3,
+  "pin_procedural": [
+   "Pin Template"
+  ],
+  "aabb_pf": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "Real T Flipflop.prefab",
+  "glb": "Real-T_Flipflop.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 3,
+  "pin_procedural": [
+   "Pin Template"
+  ],
+  "aabb_pf": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ },
+ {
+  "prefab": "T Flipflop.prefab",
+  "glb": "T_Flipflop.glb",
+  "nodes_pf": 5,
+  "nodes_glb": 4,
+  "renderers": 3,
+  "pin_procedural": [
+   "Pin Template"
+  ],
+  "aabb_pf": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "aabb_glb": [
+   -0.2072,
+   -0.0491,
+   -0.046,
+   0.207,
+   0.0491,
+   0.0239
+  ],
+  "issues": []
+ }
+]

@@ -9,3 +9,6 @@ __pycache__/
 # 提取中间产物保留（GLB 走 LFS），但临时文件不入库
 *.log
 .DS_Store
+
+# Unity 源参照 dump（65MB 原始数据，本地留存不入库）
+build/refdump/

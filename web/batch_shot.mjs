@@ -81,7 +81,19 @@ for (let g = 0; g * 6 < names.length; g++) {
     c.target.set(0, 0.78, 0);
     c.update();
   }, group);
-  await page.waitForTimeout(600);
+  // 慢沙盒兼容：0.3fps 下固定等待会抢在首帧前截到灰屏（2026-10-18）。
+  // 确定性等待：房间网格（Table001）进入场景后再留 4s 供相机移动后的帧呈现。
+  await page.waitForFunction(
+    () => {
+      const a = window.app;
+      if (!a) return false;
+      let found = false;
+      a.world.scene?.traverse((o) => { if (o.name === "Table001") found = true; });
+      return found;
+    },
+    { timeout: 60000 }
+  ).catch(() => {});
+  await page.waitForTimeout(4000);
   await page.screenshot({ path: `../build/grid_${g}.png` });
   console.log("shot", g, group.map((x) => x.label).join(","));
 }
