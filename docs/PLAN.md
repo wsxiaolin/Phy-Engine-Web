@@ -5,9 +5,14 @@ wasm 版本，顺便做好前端，参考组织下已有物实 physicslab 的 un
 最终要求视觉效果和使用体验与 unity 版本一模一样（不含社区功能），引擎替换为 wasm
 的新引擎，注意性能敏感"。
 
-> **2026-10-13 状态刷新**：M1–M5 全部完成并通过 VLM 视觉审校；M6 剩移动端触控。
-> 详细交接见 HANDOVER-WEB.md（最新一棒）与 HANDOVER.md（M1/M2 前史）。
-> 仓库 https://github.com/NetLogo-Mobile/phy-engine-web，main 已推至 187bf45。
+> **2026-10-18 收尾刷新（phyengine 超时，林澈 代收尾）**：M1–M5 完成；M6 仅剩预览部署
+> 与 HUD fps 待验（移动端触控已于 dc7ffb3 完成）；M7 建模保真审计 96%（问题 244→10）；
+> M8 功能规范补齐未开始。**整体完成度 ≈ 85%**（按里程碑体量加权：M1–M5 100%、
+> M6 ~90%、M7 96%、M8 0%）。详细交接见 HANDOVER-WEB.md。
+> 仓库 https://github.com/NetLogo-Mobile/phy-engine-web，main 已推至 **b97a4c3**
+> （收尾提交：审计管线 v2 工具 + 对照截图管线四件套 + audit_report_v2，其后另有本 PLAN 文档笔）。
+> ⚠️ 收尾环境缺 git-lfs：重提取产物（87 GLB + catalog×2）已在本地产出并验证
+> （build EXIT=0），暂无法以 LFS 指针推送，滞留本地待环境恢复后补推（见 M7 末项）。
 
 ## 一、产品定义
 
@@ -80,16 +85,44 @@ wasm 版本，顺便做好前端，参考组织下已有物实 physicslab 的 un
 - [ ] ~~8bit Input/Display~~（引擎不支持，sin 说不管了）
 - [ ] 损坏判定冒烟效果（二期）
 
-### M6 打磨与交付（部分完成，收尾态）
+### M6 打磨与交付（✅ 基本完成）
 - [x] 首屏：GLB 按需加载，页面 PAGEERRORS=0；analyze 主线程 <1ms 无需 Worker
 - [x] VLM 视觉对照 ≥4/4 PASS（导线弧线/绕行/拨杆/标签/面板多轮全过）
-- [x] 交付：NetLogo-Mobile/phy-engine-web main 直推（sin 授权），11+ commits
-- [ ] **移动端触控适配**（未开始，Unity 版是平板优先）
-- [ ] **36 元件批量 VLM 对照**（batch_shot.mjs 就绪，每屏 6 元件网格共 6 张，
-      跑 `node web/batch_shot.mjs` 出图后 VLM 逐张审；电池/电阻/开关/拨杆已过）
+- [x] 交付：NetLogo-Mobile/phy-engine-web main 直推（sin 授权）
+- [x] **移动端触控适配**（dc7ffb3，2026-10-15）
 - [ ] **预览部署**：GH Pages 私有仓不支持（workflow 已挂等 org 升级）；
       CF Pages 需 sin 在 Dashboard 连一次 repo（推荐）；公开仓会带出 GLB+docs（已知悉未决）
 - [ ] headless 下 HUD 显示 0 fps（rAF 节流读数问题，真机大概率正常，待验）
+
+### M7 建模保真审计与 Unity 对照（🔶 96%，2026-10-16 ~ 10-18 轮）
+- [x] 审计管线 v2（1482c4d）：audit_models 与提取器同源（复用 FBXCache，
+      消除 fileID→子网格解析假阳性）+ .meta fileIDToRecycleName 权威映射
+      + Unity 内置基元支持（Quad/Plane/Cube/Cylinder）
+- [x] 87 元件全量重提取（10-18）：审计问题 **244 → 10**
+      （NODES-MISSING 87→0、MESH-MISSING 145→2、BBOX 116→8）；
+      报告 build/audit_report_v2.json；重提取后 web build EXIT=0、应用内渲染探针验证通过
+- [x] 对照截图管线四件套入库：tools/prefab_ref_dump.py（Unity 源 refdump）→
+      web/refshot.mjs + web/refshot.html（Unity 源参照截图）→ web/shot_pairs.mjs
+      （web 端截图）→ tools/compose_pairs.py（成对拼图+网格总览）
+- [x] batch_shot 慢沙盒兼容修复（600ms→5s 等待：0.3fps 下 600ms < 1 帧会截到灰屏）
+- [ ] 剩余 10 项真实建模缺陷：Relay_Component×3（底板 Z / 继电器 X / Icon Z）、
+      Resistance_Law×5（对象001-004 X 轴 / 底板 X）、Photoresistor×2（光敏电阻、
+      Mesh6 mesh missing）
+- [ ] Unity 内置 Quad 图标面片的材质/贴图层级对照（重提取后图标面片可见，
+      白色长条形态待与 Unity 渲染层对照修正）
+- [ ] Unity vs web 成对对比图 0/36（管线就绪未跑批）+ VLM 逐张审；
+      参照截图 3/87（And Gate/Battery Source/Resistor）
+- [ ] **重提取产物补推**：87 GLB + catalog×2 已本地验证（EXIT=0），收尾环境缺 git-lfs
+      无法推送；恢复后需先 `git lfs install` 再提交（.glb/.png/.wasm 走 LFS，勿裸提交）
+
+### M8 功能规范补齐（⬜ 未开始，2026-10-16 sin 新增范围）
+依据 shared/specs/Unity电学模块功能规范.md（M4/M5 已覆盖导线连接、电路求解、
+存档读写的基础能力，本里程碑对齐规范补缺口）：
+- [ ] 示波器（规范 §3.2 社区实验搭法 / §3.4 Web 实现建议为基线）
+- [ ] 逐元件参数调节补全（规范 §2 八类全集对照现有属性卡逐一补齐）
+- [ ] 电表类（规范 §4：电流表/电压表/灵敏电流计/微安表/多用电表/电能表）
+- [ ] 导线连接与电路求解规格核对（规范 §5）
+- [ ] 存档 .plsave 双向兼容验证（规范 §7：CircuitExperimentStatus JSON / Interactions.Serialize）
 
 ## 四、明确不做（sin 圈定）
 
