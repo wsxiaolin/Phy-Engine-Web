@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "[1] PASS: 几何形状、颜色材质、丝印文字及引脚细节均高度一致，无明显异常。\n[2] PASS: 几何形状、颜色材质、丝印文字及引脚细节均高度一致，无明显异常。\n[3] PASS: 几何形状、颜色材质、丝印文字及引脚细节均高度一致，无明显异常。\n[4] PASS: 几何形状、颜色材质、丝印文字及引脚细节均高度一致，无明显异常。\n[5] PASS: 几何形状、颜色材质、丝印文字及引脚细节均高度一致，无明显异常。\n[6] PASS: 几何形状、颜色材质、丝印文字及引脚细节均高度一致，无明显异常。",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1792339330,
+  "id": "2026101900020729c34aef80014100",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "2026101900020729c34aef80014100",
+  "usage": {
+    "completion_tokens": 163,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1410,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1573
+  }
+}

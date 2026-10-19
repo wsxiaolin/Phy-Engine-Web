@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "[1] FAIL: 主体几何形状严重失真，Unity版为宽大的矩形底座配大红色按钮，Web版被压扁成细长条且按钮极小。\n[2] FAIL: 主体细节完全丢失，Unity版具有完整的3D外壳、红色开关手柄和大型接线柱，Web版仅显示为一个扁平的薄片且接线柱几乎不可见。\n[3] FAIL: 接线柱形态与主体比例错误，Unity版拥有4个粗壮的立体接线柱和突出的变压器核心，Web版接线柱变为细小的圆柱且核心细节丢失。\n[4] FAIL: 主体表面细节与接线柱尺寸不符，Unity版中央有立体的芯片模型和4个标准接线柱，Web版芯片消失且整体被压扁成无厚度的线条状。\n[5] FAIL: 主体高度与散热片细节缺失，Unity版具有明显的厚度和复杂的金属散热鳍片结构，Web版被极度压扁，散热片细节几乎无法辨认。\n[6] FAIL: 元件构成完整性不足，Unity版是一个包含大按钮、指示灯和双接线柱的整体模块，Web版将这些部件拆散且按钮尺寸比例严重失调。",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1792339820,
+  "id": "20261019001014f5117fdf55ae49f7",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20261019001014f5117fdf55ae49f7",
+  "usage": {
+    "completion_tokens": 255,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1655,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1910
+  }
+}

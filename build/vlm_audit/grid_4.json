@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "[1] PASS: 比较器(Comparator)的几何形状、黑色材质、丝印文字及引脚位置均高度一致，无明显差异。\n[2] PASS: JK触发器(JK Flipflop)的轮廓、颜色、文字细节及引脚分布与原版完全匹配，渲染准确。\n[3] PASS: T触发器(T Flipflop)的模型结构、材质表现及整体比例与Unity源数据保持一致，无异常。\n[4] PASS: 实时T触发器(Real-T Flipflop)的视觉特征、部件布局及颜色纹理均符合原版标准。\n[5] PASS: 乘法器(Multiplier)的多引脚布局、红色/黑色引脚区分、主体模型及文字细节均精确还原。\n[6] PASS: D触发器(D Flipflop)的几何外形、材质质感、丝印内容及引脚配置均与原版无显著偏差。",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1792339327,
+  "id": "20261019000203793b7ee69e01483b",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20261019000203793b7ee69e01483b",
+  "usage": {
+    "completion_tokens": 202,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1410,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1612
+  }
+}

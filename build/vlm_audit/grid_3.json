@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "[1] PASS: Xnor Gate（异或非门）的几何形状、轮廓、颜色及引脚位置均高度一致，无明显异常。\n[2] PASS: Imp Gate（蕴含门）的几何形状、轮廓、颜色及引脚位置均高度一致，无明显异常。\n[3] PASS: Nimp Gate（非蕴含门）的几何形状、轮廓、颜色及引脚位置均高度一致，无明显异常。\n[4] PASS: Yes Gate（是门/缓冲器）的几何形状、轮廓、颜色及引脚位置均高度一致，无明显异常。\n[5] PASS: No No Gate（非门/反相器）的几何形状、轮廓、颜色及引脚位置均高度一致，无明显异常。\n[6] PASS: Schmitt Trigger（施密特触发器）的长方体几何形状、黑色材质、表面丝印文字细节均一致，比例与摆放角度匹配，无明显异常。",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1792339323,
+  "id": "202610190002007c8286b92ad241d2",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "202610190002007c8286b92ad241d2",
+  "usage": {
+    "completion_tokens": 200,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1410,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1610
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "第1张是3D模型渲染图，具有明显的立体感、光照效果，电阻体呈圆柱状且两端有立体接线柱。\n第2张是2D平面图标/电路符号图，为或门的标准电路符号，无立体感与真实光照。\n第3张是3D模型渲染图，具有立体感、光照效果，变压器主体为块状结构且四周有立体接线柱。\n第4张是3D模型渲染图，具有强烈的立体感、真实光照，空气开关外壳有细节纹理且两侧有立体接线柱。",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1792339898,
+  "id": "202610190011368783dfdf4f4c485c",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "202610190011368783dfdf4f4c485c",
+  "usage": {
+    "completion_tokens": 119,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 245,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 364
+  }
+}

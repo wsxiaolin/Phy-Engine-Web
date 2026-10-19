@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "[1] FAIL: Web版完全丢失了电路板的3D几何体、材质贴图及所有接线柱，仅显示为桌面上两条白线。\n[2] FAIL: Web版完全丢失了电路板的3D几何体、材质贴图及所有接线柱，仅显示为桌面上两条白线。\n[3] FAIL: Web版完全丢失了电路板的3D几何体、材质贴图及所有接线柱，仅显示为桌面上两条白线。\n[4] FAIL: Web版完全丢失了电路板的3D几何体、材质贴图及所有接线柱，仅显示为桌面上两条白线。\n[5] FAIL: Web版完全丢失了电路板的3D几何体、材质贴图及所有接线柱，仅显示为桌面上两条白线。",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1792339876,
+  "id": "20261019001033deda78824d074997",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20261019001033deda78824d074997",
+  "usage": {
+    "completion_tokens": 171,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1527,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1698
+  }
+}

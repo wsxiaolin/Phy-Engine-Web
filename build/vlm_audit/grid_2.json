@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "[1] PASS: 几何形状（长方体与矩形块）、颜色（黑色哑光材质）及相对位置均一致，无异常。\n[2] PASS: 几何轮廓、白色引线/黑色主体颜色及细节完全匹配，无异常。\n[3] PASS: 几何形状、材质颜色及引线布局高度一致，无可见差异。\n[4] PASS: 轮廓结构、颜色表现及部件比例均符合原版标准，无异常。\n[5] PASS: 几何特征、视觉外观及空间关系保持一致，渲染结果准确。\n[6] PASS: 形状、颜色及细节纹理均与源数据吻合，无明显偏差。",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1792339319,
+  "id": "20261019000156afd104aa3b9f4d56",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20261019000156afd104aa3b9f4d56",
+  "usage": {
+    "completion_tokens": 151,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1410,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1561
+  }
+}

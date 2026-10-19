@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "[1] PASS: 几何形状、颜色（黑色主体+红色按钮）及材质高度一致，无明显异常。\n[2] FAIL: Web版渲染的“空气开关”几何形状与Unity原版严重不符。原版为复杂的白色多面体结构，Web版显示为扁平的灰色方块；且Web版场景中出现了原版没有的红色和黑色圆柱体部件。\n[3] FAIL: Web版渲染的“变压器”在主体侧面额外出现了红色和黑色的圆柱体引脚/部件，而Unity原版中该元件无此类外部突出物。\n[4] FAIL: Web版渲染的“互感器”在两端额外出现了红色和黑色的圆柱体部件，且丝印文字/标记的清晰度与位置与原版存在细微偏差。\n[5] FAIL: Web版渲染的“整流器”在两侧额外出现了红色和黑色的圆柱体引脚，而Unity原版为纯净的长方体，无外部连接件。\n[6] FAIL: Web版渲染的“逻辑输入”左侧多出了一个灰色的矩形薄片部件，且整体比例和相对位置与Unity原版不完全一致。",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1792339316,
+  "id": "2026101900015076d263f291b2497b",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "2026101900015076d263f291b2497b",
+  "usage": {
+    "completion_tokens": 244,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1410,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1654
+  }
+}

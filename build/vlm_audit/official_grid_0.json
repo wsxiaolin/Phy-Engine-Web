@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "[1] FAIL: Web版丢失了接地符号、底座厚度及所有接线柱，仅显示为一个扁平的黑色长条。\n[2] FAIL: Web版丢失了电阻主体（色环圆柱）、底座及所有接线柱，仅显示为一个扁平的黑色长条。\n[3] FAIL: Web版完全未渲染该元件（或渲染为错误的室内场景），丢失了电容符号、电解电容模型及所有接线柱。\n[4] FAIL: Web版丢失了电感线圈（环形）、底座及大部分接线柱细节，整体被严重压扁且比例失调。\n[5] FAIL: Web版丢失了电池本体、固定支架及接线柱，仅显示为一个带有简单凹槽的扁平长条。\n[6] FAIL: Web版丢失了开关拨杆、白色固定座及接线柱，且整体几何形状和比例与Unity版差异巨大。",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1792339810,
+  "id": "2026101900100567e59d8643454eac",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "2026101900100567e59d8643454eac",
+  "usage": {
+    "completion_tokens": 189,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1911,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 2100
+  }
+}

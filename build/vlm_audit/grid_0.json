@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "[1] PASS: 几何形状、颜色材质、丝印文字均一致，无明显异常。\n[2] PASS: 几何形状、颜色材质一致，Unity版无丝印，Web版也无丝印，符合预期。\n[3] FAIL: Web版渲染了完整的3D场景背景（墙壁、窗户、地板），而Unity版仅渲染元件本身；元件几何形状和颜色基本一致，但背景环境差异巨大。\n[4] PASS: 几何形状、颜色材质、顶部金属环细节均一致，无明显异常。\n[5] PASS: 几何形状、颜色材质、表面凹槽细节均一致，无明显异常。\n[6] FAIL: Web版多出了红色的部件（可能是指示灯或额外引脚），且连接杆/手柄的材质颜色与Unity版（白色/浅灰）存在明显差异（Web版偏暗或有色差）。",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1792339310,
+  "id": "20261019000146ef3d34ab84cb4aa2",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20261019000146ef3d34ab84cb4aa2",
+  "usage": {
+    "completion_tokens": 191,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1410,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1601
+  }
+}
