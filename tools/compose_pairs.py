@@ -14,7 +14,7 @@ BG = (224, 227, 232)
 os.makedirs(OUT, exist_ok=True)
 
 cat = json.load(open(os.path.join(ROOT, 'build/assets/catalog.json')))
-items = cat.get('items', cat)
+items = cat.get('items') if isinstance(cat, dict) else cat
 SUPPORTED = ["Ground Component", "Resistor", "Basic Capacitor", "Basic Inductor", "Battery Source", "Simple Switch", "Push Switch", "Air Switch", "Transformer", "Mutual Inductor", "Rectifier", "Logic Input", "Logic Output", "Or Gate", "And Gate", "Nand Gate", "Nor Gate", "Xor Gate", "Xnor Gate", "Imp Gate", "Nimp Gate", "Yes Gate", "No Gate", "Schmitt Trigger", "Comparator", "JK Flipflop", "T Flipflop", "Real-T Flipflop", "Multiplier", "D Flipflop", "Half Adder", "Full Adder", "Half Subtractor", "Full Subtractor", "Counter", "Random Generator"]
 friendly = {i['ModelID']: i.get('FriendlyName', '') for i in items}
 

@@ -15,6 +15,13 @@ from fbx_binary import parse as fbx_parse, mesh_data, p70
 
 OUT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'build', 'assets'))
 MIRROR_X = True
+# 烘焙开关：1 = 把 FBX 内部 Model 链世界矩阵烘进顶点（1482c4d 起的旧行为）；
+# 0 = 顶点保持 Model 局部空间，prefab 节点 TRS 承担全部变换（Unity 导入语义）。
+# 2026-10-19 定谳：默认改 0。官方预览（unity/.../Previews/Circuits，真 ground truth）
+# A/B 裁决 Rectifier/Transformer——baked FAIL（整流器被压扁/变压器变细长条），
+# nobake 双双 PASS；1482c4d 的 bake 与 .meta 权威映射同批引入，.meta 修复了
+# 19.3m 芯片巨物（保留），bake 则是回归源。需要旧行为时 BAKE_FBX_M=1。
+BAKE_FBX_M = os.environ.get('BAKE_FBX_M', '0') != '0'
 
 # CircuitComponent MonoBehaviour fields we need
 def quatch(t):
@@ -267,15 +274,26 @@ def trs_matrix(t, mirror_x=MIRROR_X, unit=1.0):
     else:
         q2 = q
         p = [p[0]*unit, p[1]*unit, p[2]*unit]
-    # quaternion to matrix (column-major math, output row-major for glTF)
+    # quaternion to matrix：flat 布局 = 列主序（glTF matrix 字段 / three.js elements 同序）。
+    # 上面 m 的四元数部分恰好按「数学矩阵的列」分组写入（m[0..2]=R 第0列…），
+    # 与 glTF 列主序规范一致——此部分一直是对的。
     x, y, z, w = q2
     m = [1-2*(y*y+z*z), 2*(x*y+z*w), 2*(x*z-y*w), 0.0,
          2*(x*y-z*w), 1-2*(x*x+z*z), 2*(y*z+x*w), 0.0,
          2*(x*z+y*w), 2*(y*z-x*w), 1-2*(x*x+y*y), 0.0,
          p[0], p[1], p[2], 1.0]
-    # apply scale
-    for i in range(3):
-        m[i*4+0] *= s[0]; m[i*4+1] *= s[1]; m[i*4+2] *= s[2]
+    # apply scale：R·S 语义 = 数学矩阵「列 j」整体 × s[j]（Unity TRS 先缩放后旋转）。
+    # 列主序 flat 下列 j 的三个元素是 m[j*4+0..2]。
+    # 2026-10-19 修复记录：旧版按行主序下标 m[i*4+c]×=s[c] 相乘，等于把缩放挂到
+    # diag(s)·R（父轴缩放、错误一侧）——非均匀缩放+旋转共存的节点（门电路
+    # Icon/Output/Input 面片 scale=(0.03,0.0024,1.0)+rot 90°X）y/z 挂反成 1m 巨物；
+    # 纯平移/均匀缩放节点不受影响，且 refdump 与提取同错导致数值审计无法发现
+    # （同源盲区），直到官方预览对照（Previews/Circuits 真基准）才暴露。
+    # 同日第二次修复：曾试图整体转置数组补救——但转置会把平移转到底行（行向量
+    # 约定，glTF 读成零平移）且旋转被求逆（Rᵀ）。正确做法只改本循环。
+    for j in range(3):
+        for r in range(3):
+            m[j*4+r] *= s[j]
     return m
 
 
@@ -317,8 +335,15 @@ def _fbx_trs_matrix(oid, f):
 
 
 def _mmul(A, B):
-    """4x4 行主序相乘（先施 B 再施 A）。"""
-    return [sum(A[r * 4 + k] * B[k * 4 + c] for k in range(4)) for r in range(4) for c in range(4)]
+    """4x4 矩阵相乘，A·B（列主序 flat，与 glTF/three.js 一致；先施 B 再施 A）。
+    2026-10-19 修复记录：旧版按行主序下标相乘，在列主序 flat 上等价于算出 B·A
+    （乘序颠倒）。BAKE_FBX_M 烘焙路径的失败是双 bug 叠加：本乘序颠倒 +
+    trs_matrix 缩放挂错侧（diag(s)·R 而非 R·diag(s)），官方预览 A/B 裁决的
+    「Rectifier 压扁/Transformer 细长条」两症皆由此来。两处已同批修复；
+    烘焙路径理论恢复可用，但保持默认关闭（nobake 已过官方对照）。"""
+    # out[j*4+i] = (A·B)[i][j] = Σ_k A[i][k]·B[k][j]，列主序下 A[i][k]=A_flat[k*4+i]
+    return [sum(A[k*4+i]*B[j*4+k] for k in range(4))
+            for j in range(4) for i in range(4)]
 
 
 def _fbx_model_world_M(f, oid):
@@ -657,6 +682,8 @@ def _emit_mesh(glb, node, md, info, mr, ua, fbx_M=None):
     使 prefab 直接引用 mesh 时与 Unity 导入效果一致。"""
     unit = info['unit']
     verts = md['positions']
+    if not BAKE_FBX_M:
+        fbx_M = None   # 不烘：顶点保持 Model 局部空间（Unity 导入语义）
     if fbx_M and fbx_M != [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]:
         nv = len(verts) // 3
         baked = [0.0] * (nv * 3)

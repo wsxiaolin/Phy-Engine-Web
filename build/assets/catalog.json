@@ -454,7 +454,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Relay_Component.glb",
-  "glbBytes": 595316
+  "glbBytes": 595312
  },
  {
   "ModelID": "Tapped Transformer",
@@ -603,7 +603,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Transistor.glb",
-  "glbBytes": 875756
+  "glbBytes": 875760
  },
  {
   "ModelID": "Battery Source",
@@ -733,7 +733,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "DPDT_Switch.glb",
-  "glbBytes": 479404
+  "glbBytes": 479408
  },
  {
   "ModelID": "Incandescent Lamp",
@@ -1390,7 +1390,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Color_Light-Emitting_Diode.glb",
-  "glbBytes": 872568
+  "glbBytes": 872572
  },
  {
   "ModelID": "Dual Light-Emitting Diode",
@@ -1452,7 +1452,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Electric_Bell.glb",
-  "glbBytes": 819668
+  "glbBytes": 819664
  },
  {
   "ModelID": "Electric Fan",
@@ -1599,7 +1599,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Resistance_Law.glb",
-  "glbBytes": 382292
+  "glbBytes": 382296
  },
  {
   "ModelID": "Simple Instrument",
@@ -1630,7 +1630,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Simple_Instrument.glb",
-  "glbBytes": 1309276
+  "glbBytes": 1309272
  },
  {
   "ModelID": "Solenoid",
@@ -1843,7 +1843,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Simple_Ammeter.glb",
-  "glbBytes": 594196
+  "glbBytes": 594204
  },
  {
   "ModelID": "Electricity Meter",
@@ -1933,7 +1933,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Galvanometer.glb",
-  "glbBytes": 594144
+  "glbBytes": 594152
  },
  {
   "ModelID": "Microammeter",
@@ -1973,7 +1973,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Microammeter.glb",
-  "glbBytes": 594152
+  "glbBytes": 594156
  },
  {
   "ModelID": "Multimeter",
@@ -2075,7 +2075,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Simple_Voltmeter.glb",
-  "glbBytes": 594136
+  "glbBytes": 594140
  },
  {
   "ModelID": "8bit Input",
@@ -2160,7 +2160,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "8bit_Input.glb",
-  "glbBytes": 3614096
+  "glbBytes": 3614092
  },
  {
   "ModelID": "And Gate",
@@ -2435,7 +2435,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Nor_Gate.glb",
-  "glbBytes": 568860
+  "glbBytes": 568856
  },
  {
   "ModelID": "Or Gate",
@@ -2586,7 +2586,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Yes_Gate.glb",
-  "glbBytes": 566076
+  "glbBytes": 566080
  },
  {
   "ModelID": "Accelerometer",
@@ -2693,7 +2693,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Analog_Joystick.glb",
-  "glbBytes": 1114572
+  "glbBytes": 1114568
  },
  {
   "ModelID": "Attitude Sensor",
@@ -2924,7 +2924,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Photodiode.glb",
-  "glbBytes": 502060
+  "glbBytes": 502064
  },
  {
   "ModelID": "Photoresistor",

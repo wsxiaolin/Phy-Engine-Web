@@ -1,5 +1,6 @@
 // web 端单元件截图：36 个 supported 元件逐件取景 → ../build/webshot/{id}.png
 // 用法: cd web && node shot_pairs.mjs（需先 npm run build 同步 dist 资产）
+// 已存在的 {id}.png 自动跳过（断点续跑），FORCE=1 全量重截
 import { chromium } from "playwright";
 import { createServer } from "node:http";
 import { readFileSync, existsSync, mkdirSync } from "node:fs";
@@ -67,8 +68,11 @@ window.__frame = (bb, dir) => {
 await page.evaluate(pageHelpers);
 
 const DIR = { x: 0.62, y: 0.55, z: 0.9 };   // 与 refshot.html 一致（3/4 视角）
-let ok = 0;
+const FORCE = !!process.env.FORCE;
+let ok = 0, skip = 0;
 for (const id of names) {
+  const out = join(process.cwd(), `../build/webshot/${id.replace(/ /g, "_")}.png`);
+  if (!FORCE && existsSync(out)) { console.log("skip", id); skip++; ok++; continue; }
   try {
     await page.evaluate(async (modelId) => {
       const app = window.__app;
@@ -79,7 +83,7 @@ for (const id of names) {
       window.__frame(window.__worldBox(g), { x: 0.62, y: 0.55, z: 0.9 });
     }, id);
     await page.waitForTimeout(250);
-    await page.screenshot({ path: join(process.cwd(), `../build/webshot/${id.replace(/ /g, "_")}.png`) });
+    await page.screenshot({ path: out });
     ok++;
     console.log("webshot", id);
   } catch (e) {
