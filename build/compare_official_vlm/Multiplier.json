@@ -1,0 +1,5 @@
+{
+ "verdict": "PASS",
+ "issues": [],
+ "notes": "Web端渲染的乘法器（Multiplier）在主体几何结构、部件构成、比例及材质配色上均与Unity官方预览保持一致，引脚柱差异符合预期豁免条件。"
+}

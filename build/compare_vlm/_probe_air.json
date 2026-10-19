@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "基于提供的图像，客观对比结果如下：\n\n1.  **几何/比例差异**：Web实拍的模型本体与官方基准（Unity渲染）相比，**几何结构基本一致**（均为DIN导轨式空气开关），但**比例存在明显压缩**。Web实拍中的模型显得更为扁平、瘦长，高度明显低于基准图中的标准比例。\n2.  **接线柱对应情况**：**存在对应物，但形态和位置严重不符**。官方基准图中，红/黑圆柱接线柱是**固定安装在元件本体两侧**的组件；而在Web实拍中，这两个圆柱变成了**独立悬浮在空中的物体**，且位置偏离了本体，未与模型组装在一起。\n3.  **接触状态**：**正常落桌**。Web实拍中的元件模型底部与木质桌面紧密贴合，没有出现悬空或陷入桌面的现象。",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1792332304,
+  "id": "202610182205002d8210bf3f564586",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "202610182205002d8210bf3f564586",
+  "usage": {
+    "completion_tokens": 190,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1148,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1338
+  }
+}
