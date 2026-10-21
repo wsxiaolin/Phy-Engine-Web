@@ -129,13 +129,31 @@ def compare(glb_path, ref_path):
         walk_glb(doc, bin_, s, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1], out)
     ref = json.load(open(ref_path))
     refout = []
+    # 修 2026-10-22：ref 侧原先直接拿 slots 顶点 min/max，但 slots 顶点是
+    # 「父空间」（未乘本节点 matrix），GLB 侧却是世界 bbox——两侧不同空间，
+    # 带旋转的节点（如底板轴变换）出现 X↔Y 互换伪影。现按 children 树把
+    # 节点 matrix 链乘到世界，再算 bbox，与 GLB 侧同空间对账。
+    all_children = set()
     for nd in ref['nodes']:
+        all_children.update(nd.get('children') or [])
+    roots = [i for i in range(len(ref['nodes'])) if i not in all_children]
+
+    def ref_walk(i, parent_m):
+        nd = ref['nodes'][i]
+        wm = mmul(parent_m, nd.get('matrix') or [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1])
         allpts = []
         for slot in nd.get('slots', []):
             allpts.extend(slot['positions'])
         if allpts:
-            wmin, wmax = bbox_of_points(allpts)
+            wp = [xform(wm, p) for p in zip(allpts[0::3], allpts[1::3], allpts[2::3])]
+            wmin, wmax = (min(p[0] for p in wp), min(p[1] for p in wp), min(p[2] for p in wp)), \
+                         (max(p[0] for p in wp), max(p[1] for p in wp), max(p[2] for p in wp))
             refout.append((nd['name'], len(allpts) // 3, wmin, wmax))
+        for c in nd.get('children') or []:
+            ref_walk(c, wm)
+
+    for r in roots:
+        ref_walk(r, [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1])
 
     print(f'==== {os.path.basename(glb_path)} ====')
     print(f'{"node":<22} {"GLB bbox(min)":<26} {"GLB bbox(max)":<26} {"dims(mm)":<22} {"ref dims(mm)":<22} ratio')
