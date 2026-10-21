@@ -155,6 +155,16 @@ def p70(node, name):
             return p.props[-1][1] if p.props else None
     return None
 
+def p70v3(node, name):
+    """读 P 节点的 vec3 值（props[4:7] 为 x/y/z，'d' 类型三元组）。
+    与 p70 的区别：p70 对 vec3 只返回最后一个分量（历史 bug 行为，保留兼容）。"""
+    p70n = node.find('Properties70')
+    if p70n is None: return None
+    for p in p70n.children:
+        if p.name == 'P' and p.prop(0) == name and len(p.props) >= 7:
+            return [p.props[4][1], p.props[5][1], p.props[6][1]]
+    return None
+
 def mesh_data(geo_node):
     out = {}
     verts = geo_node.find('Vertices')

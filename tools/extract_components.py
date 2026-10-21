@@ -11,7 +11,7 @@ import os, sys, json, math, struct
 sys.path.insert(0, os.path.dirname(__file__))
 from unity_yaml import (UnityAssets, parse_prefab, scene_tree, parse_material,
                         UNITY_ROOT, load_yaml_docs, safe_name, fbx_meta_mesh_names)
-from fbx_binary import parse as fbx_parse, mesh_data, p70
+from fbx_binary import parse as fbx_parse, mesh_data, p70, p70v3
 
 OUT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'build', 'assets'))
 MIRROR_X = True
@@ -22,6 +22,37 @@ MIRROR_X = True
 # nobake 双双 PASS；1482c4d 的 bake 与 .meta 权威映射同批引入，.meta 修复了
 # 19.3m 芯片巨物（保留），bake 则是回归源。需要旧行为时 BAKE_FBX_M=1。
 BAKE_FBX_M = os.environ.get('BAKE_FBX_M', '0') != '0'
+# Pin mesh 保留开关：默认 0 = 跳过 Pin 节点 FBX 网格，前端程序化生成接线柱
+# （旧行为）。1 = 保留 FBX 内 Pin 网格（Unity 真身为大六角螺母香蕉插座，
+# 见 Previews/Circuits/Yes-Gate.png）。矩阵双 bug 修复 + nobake 后，「Pin 烘焙
+# 错位飘到场外」的前提已不成立，本开关供官方预览 A/B 裁决。
+KEEP_PIN_MESHES = os.environ.get('KEEP_PIN_MESHES', '0') != '0'
+
+# Geometric 烘焙（2026-10-21 收敛为默认全量）：
+# 背景——FBX Model 的 GeometricTranslation/Rotation/Scaling 是「几何相对节点」
+# 的变换，Unity 导入时会烘进 Mesh 资产顶点。此前管线漏烘，导致「世界坐标+
+# pivot」型导出的几何带着世界偏移和 Z-up 姿态直接挂到 prefab 节点 TRS 上，
+# 渲染成漂浮/错位/沉地板/部件横躺。
+# 数值实证（Yes-Gate，10-20）：pin raw + GeometricM 后柱体以原点为中心立于
+# y=0，经 prefab TRS 世界 bbox 与官方预览锚点精确吻合（柱心 x=±0.06、柱底
+# y=20mm=底板顶 19.9mm）。
+# 为何默认全量（10-21 推翻 10-20 白名单结论）——权威审计
+# （build/audit_geometric3.txt，.meta fileIDToRecycleName 对齐）发现：
+# - 6 个 FAIL 件的病灶 mesh 全部带非平凡 Geometric：LED屏幕.FBX（T 大偏移+
+#   R=-90，prefab S=3 放大成 1.9m 位移=「显示屏悬空」）、开关.FBX 按钮三个
+#   Model（R=-90=「按钮扁片」）、电容.FBX:Cylinder002（R=(90,-79,0.86)=「蓝
+#   圆筒错位」）、互感器.FBX（T=22.75=IC 偏移）。
+# - 「拷贝模式 raw 即对位」旧理论不成立：拷贝的 TRS=LclTRS 不含 Geometric，
+#   Unity 顶点恒为 raw×GeometricM×节点链，两种模式都必须烘。
+# - 旧「全量烘 LED 横躺」实证实为当时 swap(x,z,y) 实现 bug 的产物（docstring
+#   已记录），不是「不该烘」的证据。
+# - 已 PASS 件不受影响的机理：多数引用 Geometric 平凡；或 prefab S≈0.001 把
+#   偏移缩到亚毫米（集成电路模块.FBX geoT=23.5mm×0.001=0.02mm）。
+# 回退：GEOMETRIC_BAKE_FBXS='基础件.FBX' 恢复白名单；'none' 全关。
+GEOMETRIC_BAKE_FBXS = [s.strip() for s in
+                       os.environ.get('GEOMETRIC_BAKE_FBXS', '*').split(',')
+                       if s.strip() and s.strip().lower() != 'none']
+_GEOMETRIC_BAKE_ALL = '*' in GEOMETRIC_BAKE_FBXS
 
 # CircuitComponent MonoBehaviour fields we need
 def quatch(t):
@@ -381,7 +412,8 @@ class FBXCache:
             if ch.name == 'GlobalSettings':
                 usf = p70(ch, 'UnitScaleFactor')
                 if usf is not None: unit = float(usf)
-        info = {'fbx': f, 'unit': unit * 0.01, 'model_geos': {}, 'geo_by_fileid': {}, 'model_world_M': {}}
+        info = {'fbx': f, 'unit': unit * 0.01, 'model_geos': {}, 'geo_by_fileid': {},
+                'model_world_M': {}, 'geo_M_by_fid': {}}
         name_geo = {}  # FBX 模型名 → (oid, geometry)
         for i, (oid, n) in enumerate(f.by_type('Model')):
             g = f.geometry_of(oid)
@@ -400,8 +432,70 @@ class FBXCache:
                 oid, geo = name_geo[nm]
                 info['geo_by_fileid'][fid] = geo
                 info['model_world_M'][fid] = _fbx_model_world_M(f, oid)
+        # Geometric 烘焙：Unity 把 Model 的 Geometric* 属性烘进 Mesh 资产顶点
+        # （默认全量，回退开关见文件头注释）。
+        base = os.path.basename(path)
+        if _GEOMETRIC_BAKE_ALL or base in GEOMETRIC_BAKE_FBXS or path in GEOMETRIC_BAKE_FBXS:
+            for objname, (oid, geo) in name_geo.items():
+                n = f.objects[oid][1]
+                Tg = p70v3(n, 'GeometricTranslation') or [0, 0, 0]
+                Rg = p70v3(n, 'GeometricRotation') or [0, 0, 0]
+                Sg = p70v3(n, 'GeometricScaling') or [1, 1, 1]
+                trivial = (all(abs(v) < 1e-6 for v in Tg)
+                           and all(abs(v) < 1e-6 for v in Rg)
+                           and all(abs(v - 1) < 1e-6 for v in Sg))
+                if trivial: continue
+                M = _geometric_M(Tg, Rg, Sg)
+                for fid, gg in info['geo_by_fileid'].items():
+                    if gg is geo:
+                        info['geo_M_by_fid'][fid] = M
         self.cache[path] = info
         return info
+
+
+def _geometric_M(T, Rdeg, S):
+    """FBX Geometric 变换矩阵（标准语义，无轴转换）：M = T · R · S，
+    列主序 flat [m00,m10,m20,tx, m01,m11,m21,ty, m02,m12,m22,tz, 0,0,0,1]。
+
+    数值实证（2026-10-21 三轮 bbox 收敛）：
+    - 底板对象016（R=0, T=(0,0,9.56)）：mesh = raw+T 后 z∈[0.03,16.21]mm，
+      节点矩阵（prefab TRS 自带轴变换 1.227·(x→z,y→x,z→y)）把厚度转到
+      世界 y=[0.04,19.9]mm —— 底贴 0，与官方预览一致；旧版无烘焙时
+      世界 y∈[-11.7,8.2]mm 跨 0 悬空（FAIL 的「底座变薄」根因之一）。
+    - pin 对象045/040（R=-90°X）：Rx(-90°)=(x,z,-y) 把柱高（raw z）转
+      y，mesh 柱立于原点（x/z±7.2mm、y∈[0.14,26.61]mm）+T 归位，
+      配 pin 节点 TRS（t=±0.06,0.02,0）→ 世界柱心 x=±0.06、柱底 y=20mm
+      = 底板顶 19.9mm 贴合。
+    教训：节点矩阵已含轴变换，Geometric 只按 FBX 标准语义直接烘——
+    曾引入 swap(x,z,y) 分支（probe 枚举空间不含「无 swap」解的误判），
+    渲染实证底板立起 160mm 后删除。Rdeg 为欧拉 XYZ 度（右手系）。
+
+    欧拉合成序（2026-10-21 14:00 班修正）：R = Rz·Ry·Rx（列向量，Rx 最
+    先作用）——3ds Max 导出器行向量约定下欧拉 XYZ = 列向量的 Rz·Ry·Rx。
+    铁证：电容.FBX Cylinder002（GeoR=(90,-79.14,0.856)复合双轴 +
+    GeoT=(3.97,-265.70,0)）：Rz·Ry·Rx 作用 raw 圆柱中心 (0,0,-265.7)
+    得 (-3.97, 265.7, 0)，+GeoT 精确归零 (0,0,0)——建模 pivot 落在圆筒
+    中心的必然结果；旧序 Rx·Ry·Rz 得 (265,-215,0) 偏移不抵消，圆柱飞至
+    世界 y=-388~-188mm 地底（VLM 判「电容体缺失」根因）。单轴旋转两序
+    等价——底板/pin/Electro05-1 等 R=-90°X 件的既有实证不受影响。"""
+    rx, ry, rz = (math.radians(v) for v in Rdeg)
+    cx, sx, cy, sy, cz, sz = (math.cos(rx), math.sin(rx),
+                               math.cos(ry), math.sin(ry),
+                               math.cos(rz), math.sin(rz))
+    # R = Rz·Ry·Rx（Max 行向量欧拉 XYZ 的列向量等价形，Rx 最贴近顶点）
+    R = [
+        [cz*cy, -sz*cx + cz*sy*sx, sz*sx + cz*sy*cx],
+        [sz*cy, cz*cx + sz*sy*sx, -cz*sx + sz*sy*cx],
+        [-sy, cy*sx, cy*cx],
+    ]
+    # m = R·diag(S)（行主序 3x3）
+    m = [[R[i][j] * S[j] for j in range(3)] for i in range(3)]
+    L, t = m, [T[0], T[1], T[2]]
+    # 列主序 flat
+    return [L[0][0], L[1][0], L[2][0], t[0],
+            L[0][1], L[1][1], L[2][1], t[1],
+            L[0][2], L[1][2], L[2][2], t[2],
+            0.0, 0.0, 0.0, 1.0]
 
 
 def _builtin_quad_md():
@@ -572,9 +666,6 @@ def extract_component(prefab_path, ua, fbx_cache, out_dir):
         mr = comps.get(23)  # MeshRenderer
         is_pin_node = str(node['name'] or '').lower().startswith('pin')
         if mf and mr and node.get('active', 1) and not (skip_pin_meshes and is_pin_node):
-            # Pin 节点的 FBX 网格带内部节点变换（-90°X / 0.1 缩放），烘进
-            # prefab 节点后位置/比例全错（渲染实证：接线柱飘到场外）。
-            # 接线柱由前端按 catalog pin 坐标程序化生成，这里跳过其网格。
             mesh_ref = mf.get('m_Mesh')
             if isinstance(mesh_ref, dict) and mesh_ref.get('guid'):
                 fbx_path = ua.guid_map.get(mesh_ref['guid'])
@@ -588,7 +679,8 @@ def extract_component(prefab_path, ua, fbx_cache, out_dir):
                         md = mesh_data(geo)
                         if md:
                             fbx_M = info.get('model_world_M', {}).get(fid)
-                            mesh_idx = _emit_mesh(glb, node, md, info, mr, ua, fbx_M)
+                            geo_M = info.get('geo_M_by_fid', {}).get(fid)
+                            mesh_idx = _emit_mesh(glb, node, md, info, mr, ua, fbx_M, geo_M)
                             stats['meshes'] += 1
                             stats['verts'] += len(md['positions']) // 3
                 elif mesh_ref.get('guid') == BUILTIN_GUID and mesh_ref.get('fileID') in BUILTIN_PRIMS:
@@ -609,7 +701,7 @@ def extract_component(prefab_path, ua, fbx_cache, out_dir):
     root_children = glb.json['scenes'][0]['nodes']
     # root transform itself is identity for components; start at children of root
     for ch in root['children']:
-        emit_node(ch, root_children, skip_pin_meshes=True)
+        emit_node(ch, root_children, skip_pin_meshes=not KEEP_PIN_MESHES)
 
     # pins
     pins = []
@@ -676,22 +768,46 @@ def _qrot_apply(q, v):
     t = [qw*x + qy*z - qz*y, qw*y + qz*x - qx*z, qw*z + qx*y - qy*x]
     return [x + 2*(qy*t[2]-qz*t[1]), y + 2*(qz*t[0]-qx*t[2]), z + 2*(qx*t[1]-qy*t[0])]
 
-def _emit_mesh(glb, node, md, info, mr, ua, fbx_M=None):
+def _emit_mesh(glb, node, md, info, mr, ua, fbx_M=None, geo_M=None):
     """Emit an FBX mesh as glTF primitives with per-corner vertex expansion.
-    fbx_M: FBX 内部节点链世界矩阵（行主序 4x4，原始单位），烘进顶点/法线，
-    使 prefab 直接引用 mesh 时与 Unity 导入效果一致。"""
+    fbx_M: FBX 内部节点链世界矩阵（列主序 4x4，原始单位），烘进顶点/法线，
+    使 prefab 直接引用 mesh 时与 Unity 导入效果一致（BAKE_FBX_M=1 时生效）。
+    geo_M: Geometric 烘焙矩阵（白名单 FBX，管线空间列主序 4x4，原始单位），
+    Unity 导入语义下 Geometric* 总是烘进顶点——不受 BAKE_FBX_M 开关控制。
+    应用次序：顶点 = fbx_M · (geo_M · v)，先几何级后节点级。"""
     unit = info['unit']
     verts = md['positions']
+    IDENT = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]
+    if geo_M and geo_M != IDENT:
+        nv = len(verts) // 3
+        gb = [0.0] * (nv * 3)
+        # 列主序 flat：平移分量在 [3]/[7]/[11]（第四行是 [12..15]=0,0,0,1）
+        # 旧代码误读 [12]/[13]/[14] —— 平移从未生效（bbox 实证：柱心偏 Tx/Tz）
+        for i in range(nv):
+            x, y, z = verts[i*3], verts[i*3+1], verts[i*3+2]
+            gb[i*3]   = geo_M[0]*x + geo_M[4]*y + geo_M[8]*z + geo_M[3]
+            gb[i*3+1] = geo_M[1]*x + geo_M[5]*y + geo_M[9]*z + geo_M[7]
+            gb[i*3+2] = geo_M[2]*x + geo_M[6]*y + geo_M[10]*z + geo_M[11]
+        verts = gb
+        # 法线 raw 同步烘 Geometric 线性部分（md 每次重新解析，就地改安全）
+        nr_geo = md.get('normals_raw')
+        if nr_geo:
+            for i in range(len(nr_geo) // 3):
+                nx, ny, nz = nr_geo[i*3], nr_geo[i*3+1], nr_geo[i*3+2]
+                nr_geo[i*3]   = geo_M[0]*nx + geo_M[4]*ny + geo_M[8]*nz
+                nr_geo[i*3+1] = geo_M[1]*nx + geo_M[5]*ny + geo_M[9]*nz
+                nr_geo[i*3+2] = geo_M[2]*nx + geo_M[6]*ny + geo_M[10]*nz
     if not BAKE_FBX_M:
         fbx_M = None   # 不烘：顶点保持 Model 局部空间（Unity 导入语义）
     if fbx_M and fbx_M != [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]:
         nv = len(verts) // 3
         baked = [0.0] * (nv * 3)
+        # 同款下标修复：列主序平移在 [3]/[7]/[11]（旧 [12..14] 读的是 0,0,0 行）
         for i in range(nv):
             x, y, z = verts[i*3], verts[i*3+1], verts[i*3+2]
-            baked[i*3]   = fbx_M[0]*x + fbx_M[4]*y + fbx_M[8]*z + fbx_M[12]
-            baked[i*3+1] = fbx_M[1]*x + fbx_M[5]*y + fbx_M[9]*z + fbx_M[13]
-            baked[i*3+2] = fbx_M[2]*x + fbx_M[6]*y + fbx_M[10]*z + fbx_M[14]
+            baked[i*3]   = fbx_M[0]*x + fbx_M[4]*y + fbx_M[8]*z + fbx_M[3]
+            baked[i*3+1] = fbx_M[1]*x + fbx_M[5]*y + fbx_M[9]*z + fbx_M[7]
+            baked[i*3+2] = fbx_M[2]*x + fbx_M[6]*y + fbx_M[10]*z + fbx_M[11]
         verts = baked
         # 法线的线性部分变换在逐角循环里做
     def _bake_normal(nx, ny, nz):

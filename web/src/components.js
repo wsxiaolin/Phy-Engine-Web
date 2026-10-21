@@ -27,9 +27,12 @@ const pinGeo = new THREE.SphereGeometry(PIN_RADIUS, 10, 8);
 const pinMatIdle = new THREE.MeshBasicMaterial({ color: 0x9aa7b8, transparent: true, opacity: 0.55 });
 const pinMatHot = new THREE.MeshBasicMaterial({ color: 0x2f7de1 });
 
-// 接线柱：GLB 里 FBX 内部变换烘焙错误的 pin 网格已剔除（tools/extract_components.py），
-// 由前端按 catalog pin 坐标程序化生成 —— Unity 真身为香蕉插头座（正极红/负极黑，
-// 见 Previews/Circuits/Resistor.png），顶部金属帽。
+// 接线柱来源二选一（2026-10-21 起默认 GLB 网格）：
+// - GLB 内置 FBX pin 网格（提取器 KEEP_PIN_MESHES=1 + 基础件.FBX Geometric
+//   烘焙修复后，柱心/柱底与 prefab TRS 数值锚定，官方预览对照 PASS）——
+//   Unity 真身为香蕉插头座（正极红/负极黑，见 Previews/Circuits/Resistor.png）。
+// - 旧程序化柱（POST_R/POST_H）：GLB 无 pin 网格的元件兜底，视觉规格见
+//   Resistor.png 量取（顶部金属帽）。两者互斥，由 glbHasPinMesh 检测切换。
 const POST_R = 0.0045;
 const POST_H = 0.022;
 const postGeo = new THREE.CylinderGeometry(POST_R, POST_R * 1.25, POST_H, 12);
@@ -37,6 +40,7 @@ const postTipGeo = new THREE.SphereGeometry(POST_R * 0.9, 10, 8);
 const postMatRed = new THREE.MeshStandardMaterial({ color: 0xc23b32, roughness: 0.5, metalness: 0.1 });
 const postMatBlack = new THREE.MeshStandardMaterial({ color: 0x2c2c30, roughness: 0.5, metalness: 0.1 });
 const postTipMat = new THREE.MeshStandardMaterial({ color: 0xb8bec8, roughness: 0.35, metalness: 0.85 });
+const PIN_NAME_RE = /^pin/i; // 与提取器 is_pin_node 判定同源
 
 // Build a placed component: GLB clone + pin anchor pick spheres + selection box.
 export async function createComponent(modelId, { pickable = true } = {}) {
@@ -59,23 +63,31 @@ export async function createComponent(modelId, { pickable = true } = {}) {
   const anchors = new THREE.Group();
   anchors.name = "pins";
   group.add(anchors);
+  // GLB 自带 FBX pin 网格时跳过程序化柱（互斥，避免双重渲染）；
+  // marker 拾取球与 pinLocal（导线端点/交互）不受影响，仍按 catalog 生成。
+  let glbHasPinMesh = false;
+  clone.traverse((o) => {
+    if (o.isMesh && PIN_NAME_RE.test(o.name || "")) glbHasPinMesh = true;
+  });
   for (let i = 0; i < pins.length; i++) {
     const [px, py, pz] = pins[i].position;
-    // 香蕉插头座（常驻可见）：正极红/负极黑，顶金属帽；导线端点落在柱顶
-    const bodyMat = pins[i].isPositive ? postMatRed : postMatBlack;
-    const post = new THREE.Mesh(postGeo, bodyMat);
-    post.position.set(px, py - POST_H / 4, pz);
-    post.castShadow = true;
-    post.userData.pinIndex = i;
-    post.userData.pinName = pins[i].name;
-    post.userData.isPin = true;
-    anchors.add(post);
-    const tip = new THREE.Mesh(postTipGeo, postTipMat);
-    tip.position.set(px, py + POST_H / 4, pz);
-    tip.userData.pinIndex = i;
-    tip.userData.pinName = pins[i].name;
-    tip.userData.isPin = true;
-    anchors.add(tip);
+    if (!glbHasPinMesh) {
+      // 香蕉插头座（常驻可见）：正极红/负极黑，顶金属帽；导线端点落在柱顶
+      const bodyMat = pins[i].isPositive ? postMatRed : postMatBlack;
+      const post = new THREE.Mesh(postGeo, bodyMat);
+      post.position.set(px, py - POST_H / 4, pz);
+      post.castShadow = true;
+      post.userData.pinIndex = i;
+      post.userData.pinName = pins[i].name;
+      post.userData.isPin = true;
+      anchors.add(post);
+      const tip = new THREE.Mesh(postTipGeo, postTipMat);
+      tip.position.set(px, py + POST_H / 4, pz);
+      tip.userData.pinIndex = i;
+      tip.userData.pinName = pins[i].name;
+      tip.userData.isPin = true;
+      anchors.add(tip);
+    }
     // 拾取球（比柱身大，hover/连线命中用）
     const marker = new THREE.Mesh(pinGeo, pinMatIdle.clone());
     marker.position.set(px, py, pz);
