@@ -3,6 +3,19 @@
 > 本文档取代 2026-10-11 版（图灵棒）。M1/M2 前史见 HANDOVER.md，工程契约见 ENGINE_API.md。
 > **本文描述与 main@187bf45 一致。接手前先 `git pull`。**
 
+## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
+
+**2026-10-21 深夜收尾（值班）**：上会话（10-20/21）干到一半未提交即挂——本轮已
+抢救入库 3 commit：①39cc9ab 接线柱默认改 GLB 内置 FBX pin 网格（components.js
+glbHasPinMesh 互斥检测，程序化柱降级兜底）+ 267 件重提取 GLB + dist 重建，
+smoke_test EXIT=0；②d2e7eb8 官方预览对照 36 件终版 **31 PASS / 5 FAIL**；
+③710105a 清理 A/B 试验产物。
+**五件 FAIL 定性（全为提取侧建模缺陷，非渲染回归）**：Mutual_Inductor/Transformer
+几何压扁、Air_Switch 低模错误、Logic_Input/Logic_Output 主体形状错+指示灯缺失。
+**遗留优先级**：P0=修五件 FAIL（对照 unity/ 的 prefab 逐件修 extract_components.py）；
+P1=headless 0fps 排查（web/probe_fps.mjs 已备，疑似 rAF 节流读数假象，待 sin 真机）；
+P2=M8 功能规范补齐（示波器/电表/参数全集，见 PLAN §M8）。CF Pages 搁置勿动。
+
 ## 0. 一句话现状
 
 Unity Physics-Lab 电路模式的 Web 复刻**已可用**：87 元件摆放/旋转/属性、5 色导线
