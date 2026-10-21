@@ -5,16 +5,18 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
-**2026-10-21 深夜收尾（值班）**：上会话（10-20/21）干到一半未提交即挂——本轮已
-抢救入库 3 commit：①39cc9ab 接线柱默认改 GLB 内置 FBX pin 网格（components.js
-glbHasPinMesh 互斥检测，程序化柱降级兜底）+ 267 件重提取 GLB + dist 重建，
-smoke_test EXIT=0；②d2e7eb8 官方预览对照 36 件终版 **31 PASS / 5 FAIL**；
-③710105a 清理 A/B 试验产物。
-**五件 FAIL 定性（全为提取侧建模缺陷，非渲染回归）**：Mutual_Inductor/Transformer
-几何压扁、Air_Switch 低模错误、Logic_Input/Logic_Output 主体形状错+指示灯缺失。
-**遗留优先级**：P0=修五件 FAIL（对照 unity/ 的 prefab 逐件修 extract_components.py）；
-P1=headless 0fps 排查（web/probe_fps.mjs 已备，疑似 rAF 节流读数假象，待 sin 真机）；
-P2=M8 功能规范补齐（示波器/电表/参数全集，见 PLAN §M8）。CF Pages 搁置勿动。
+**2026-10-22 晨（值班）**：上会话挂在 LED 指示灯收尾（代码+dist 已建未提交）——
+本轮验证后入库 2 commit 推送（3ee152b..99d6ef9）：①d251b1a diag5 提取链诊断
++ probe_fail5；②99d6ef9 **LED 指示灯运行时着色**（Logic Input 绿光/Output 红光，
+Unity LEDRenderer.Render 复刻：ON 态 emissive 0.75+LightHalo 点光、底座常亮
+LightColor、按钮开/关互切）。验证：smoke EXIT=0 + 像素差异 21021px + 绿像素
+3.2× + VLM PASS。**官方预览对照 31 PASS / 5 FAIL 维持**（d2e7eb8）。
+**五件 FAIL 定性（提取侧建模缺陷）**：Mutual_Inductor/Transformer 几何压扁、
+Air_Switch 低模错误、Logic_Input/Output 主体形状错——**指示灯缺失项已由
+syncLED 补齐**，主体形状仍待修。
+**遗留优先级**：P0=修 5 FAIL 主体几何（对照 unity/ prefab 修 extract_components.py，
+诊断工具 build/diag5*、probe_fail5 已备）；P1=headless 0fps（probe_fps.mjs，
+疑 rAF 假象待真机）；P2=M8 功能补齐（示波器/电表/参数全集）。CF Pages 搁置勿动。
 
 ## 0. 一句话现状
 
