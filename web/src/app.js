@@ -433,6 +433,7 @@ export class App {
     this.world.scene.add(group);
     this.elementObjects.set(el.id, group);
     this.syncPole(el, group);
+    this.syncLED(el, group);
     return group;
   }
 
@@ -446,6 +447,80 @@ export class App {
     const on = Number(el.properties["开关"] ?? 0) !== 0;
     pole.rotation.x = on ? 0 : 0.79;
     g.userData.pole = pole;
+  }
+
+  // LED 指示灯运行时着色（Unity LEDRenderer.Render 复刻）：
+  // Logic Input: LEDGreen.Render(开关)——开关=1 绿光亮；Logic Output:
+  // LEDRed.Render(状态)——状态 H 红光亮。LightColor 取自 prefab 序列化值
+  // （绿 0.122/0.490/0，红 0.8/0.133/0）。OFF: 主体贴 LightColor 无自发光；
+  // ON: _Illumin≤0.75 自发光 + 光晕点光（intensity=Luminosity*2）。
+  syncLED(el, group) {
+    const g = group || this.elementObjects.get(el.id);
+    if (!g || !/Logic (Input|Output)/.test(el.modelId)) return;
+    const input = /Logic Input/.test(el.modelId);
+    const color = new THREE.Color(
+      ...(input ? [0.12156863, 0.49019608, 0] : [0.8, 0.13333334, 0]),
+    );
+    const on = input
+      ? Number(el.properties["开关"] ?? 0) !== 0
+      : !!((el.statistics || {})["状态"]);
+    const mainNode = g.getObjectByName(input ? "绿光" : "红光");
+    const baseNode = g.getObjectByName("Helix001");
+    const meshes = (node) => {
+      if (!node) return [];
+      const out = node.isMesh ? [node] : [];
+      node.traverse((o) => o.isMesh && out.push(o));
+      return out;
+    };
+    // 材质一次性克隆，避免跨元件实例共享（MaterialPropertyBlock 语义）
+    for (const mesh of meshes(mainNode).concat(meshes(baseNode))) {
+      if (mesh.userData.ledOwned) continue;
+      mesh.material = Array.isArray(mesh.material)
+        ? mesh.material.map((m) => m.clone())
+        : mesh.material.clone();
+      mesh.userData.ledOwned = true;
+    }
+    for (const mesh of meshes(baseNode)) {
+      // BaseRenderer._Color = LightColor（底座常亮着色）
+      for (const m of [].concat(mesh.material)) m.color?.copy(color);
+    }
+    for (const mesh of meshes(mainNode)) {
+      for (const m of [].concat(mesh.material)) {
+        m.color?.copy(color);
+        if (m.emissive) {
+          m.emissive.copy(color);
+          m.emissiveIntensity = on ? 0.75 : 0;
+        }
+      }
+    }
+  // Logic Input 按钮互切（Unity LogicInput.Render: SwitchOn/SwitchOff SetActive）
+    if (input) {
+      const onBtn = g.getObjectByName("按钮-开");
+      const offBtn = g.getObjectByName("按钮-关");
+      if (onBtn) onBtn.visible = on;
+      if (offBtn) offBtn.visible = !on;
+    }
+    // LightHalo 光晕（Luminosity=1 → intensity 2；m_Range=0.05，
+    // 位置=GLB「Point Light」节点世界位，即 Unity LightHalo 局部 (5,0,0)）
+    let halo = g.userData.ledHalo;
+    if (on) {
+      if (!halo) {
+        halo = new THREE.PointLight(color.clone(), 2, 0.05, 2);
+        g.userData.ledHalo = halo;
+        g.add(halo);
+      }
+      const src = g.getObjectByName("Point Light") || mainNode;
+      if (src) {
+        const v = new THREE.Vector3();
+        src.getWorldPosition(v);
+        g.worldToLocal(v);
+        halo.position.copy(v);
+      }
+      halo.color.copy(color);
+      halo.intensity = 2;
+    } else if (halo) {
+      halo.intensity = 0;
+    }
   }
 
   // Programmatic placement (also used by tests).
@@ -516,6 +591,7 @@ export class App {
       const cur = Number(el.properties["开关"] ?? 0);
       el.properties["开关"] = cur ? 0 : 1;
       this.syncPole(el);
+      this.syncLED(el);
       this.ui.toast(`${el.label}：${el.properties["开关"] ? "闭合" : "断开"}`);
       this.scheduleSimulate();
       this.showInspector(el);
@@ -533,7 +609,7 @@ export class App {
         value: v,
         onChange: (val) => {
           el.properties[k] = Number.isNaN(Number(val)) ? val : Number(val);
-          if (k === "开关") this.syncPole(el);
+          if (k === "开关") { this.syncPole(el); this.syncLED(el); }
           this.scheduleSimulate();
         },
       });
@@ -820,6 +896,7 @@ export class App {
     for (const el of this.experiment.elements) {
       const g = this.elementObjects.get(el.id);
       if (!g) continue;
+      this.syncLED(el, g);
       const parts = [];
       const st = el.statistics || {};
       if ("电压" in st) parts.push(fmt(st["电压"], "V"));
