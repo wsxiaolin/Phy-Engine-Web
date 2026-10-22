@@ -5,26 +5,29 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
-**2026-10-22 深夜（值班第 7 轮，KEEP_PIN_MESHES 翻默认 + 全量回归 35/36 PASS）**：
-上轮 2d57bed A/B（5 FAIL 件定向 KEEP_PIN=1 重提取→3 转 PASS）后，本轮把
-extract_components.py 默认翻 1（源码注释含 A/B 裁决依据；程序化 pin 柱仅作无
-pin FBX 兜底，前端 glbHasPinMesh 互斥防双柱）→ 87 件全量重提取 → vite build →
-shot_pairs → compose_official → vlm_review 全链跑完（/tmp/fullchain.log）：
-**36 件 35 PASS/1 FAIL/0 ERROR**（report.json + 逐件 json）。
-上轮 5 FAIL 去向：Basic_Inductor PASS（镜像链真回归闭环）、Logic_Input PASS、
-Logic_Output/Mutual_Inductor PASS（基线存量件同步转好）、Simple_Switch 仍 FAIL。
-- **Simple_Switch 定谳（下轮 P0）**：同图五判 2PASS/3FAIL 多数决 FAIL（A/B 20:08
-  PASS、全量链 21:22 FAIL、复判×3 PASS/FAIL/FAIL，证据在
-  compare_official_vlm/Simple_Switch.json notes）。投诉收敛：官方=细长直银杆+厚基座，
-  web=短杆+粗黑手柄+底座偏小——真实残留缺陷非纯噪声；A/B 与全量两版图 99.6% 像素
-  一致（判读边界件）。修法建议：dump_glb.py 节点树+Pole/杆 mesh AABB vs Unity
-  Simple Switch prefab/FBX（§2.5 拨杆 0.79rad 逻辑同源），修到复判多数 PASS。
-- 提取器非确定性（P2 记录）：同一代码两次提取 GLB 字节差 11.7KB（渲染 99.6% 同），
-  疑 dict 序/浮点序列化顺序；需复现产物时先固定。
-- 环境：git-lfs 3.7.0 已可用（/usr/local/bin），「收尾缺 lfs」旧记录作废；GLB/PNG
-  全走 LFS 指针，push 自动带 LFS 对象。
-验证：smoke_test SMOKE OK（/tmp/smoke_round7.log）；全链 FINAL_EXIT=2 仅因
-Simple_Switch 1 FAIL。
+**2026-10-23 凌晨（值班第 8 轮收尾：pure 镜像语义实验判负，封存回滚）**：
+上会话（10-22b 深夜）干一半挂掉：实现 MIRROR_FIX=pure 提取语义（全深度 T 不镜像
++去 X_MIRROR 包装+逐 mesh winding 翻转）→ 87 GLB 全量重提取 → build → 36 件
+webshot（零页错）→ 挂在 compose/VLM 判读前。本轮补完全链判决：
+**pure = 5 PASS / 31 FAIL**（对照 HEAD s3gen 基线 35/1）。失败签名高度一致
+=「极薄平面片/材质颜色丢失/单调深灰」→ winding 翻反的内翻渲染——**数值 AABB
+锚点验证不能代替渲染判读**（杆尖坐标对了，面全朝里）。裁决：实验整体
+`git stash` 封存（名 round8-pure-experiment，含提取器 35 行 diff + 87 pure GLB），
+树回滚 HEAD：s3gen 默认恢复、SMOKE OK、main==origin/main。本轮零代码交付，
+commit 仅本快照更新。
+- **Simple_Switch 在 pure 下 PASS**——上会话方向诊断被证实：s3gen 语义 Pole 杆尖
+  x=+0.147 越界（Unity 真值杆尖 x=−0.044 向内压向触点、枢轴 +0.05、底板边界
+  ±0.08）。**下轮 P0：在 s3gen 语义内定点修 Simple_Switch 的 Pole 方向**
+  （只翻该件 Pole 的 X，勿再全局翻语义）。源：unity/Assets/Resources/Experiments/
+  Basic Circuits/Simple Switch.prefab + 开关.FBX；对照证据已随回滚恢复为第 7 轮
+  态（compare_official_vlm/Simple_Switch.json，复判多数决 FAIL 2P/3F）。
+- 教训三条：①看 git status 前 3 行全是资产就断言「无源码改动」会翻车——213 项
+  里一直含 tools/extract_components.py，先 `git status --porcelain | grep tools/`；
+  ②后台任务必须双 fork `( cmd & )`，`( ... ) &` 随工具调用结束被整组清理（compose
+  静默死、日志 0 字节即此症）；③单次 bash 内长 sleep 会触发网关 504，轮询拆短
+  （每次 ≤60s）。
+- P2 提取器非确定性记录维持（本轮曾误判 213 diff 为噪声，实为 pure 语义真变化；
+  非确定性本身仍未复现/未排除）。
 P1=headless 0fps；P2=提取器非确定性+M8 功能补齐。CF Pages 搁置勿动。
 
 ## 0. 一句话现状
