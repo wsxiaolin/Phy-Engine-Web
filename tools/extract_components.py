@@ -34,6 +34,43 @@ BAKE_FBX_M = os.environ.get('BAKE_FBX_M', '0') != '0'
 # （复判 2PASS/3FAIL 多数决，见 compare_official_vlm/Simple_Switch.json notes）。
 KEEP_PIN_MESHES = os.environ.get('KEEP_PIN_MESHES', '1') != '0'
 
+# 2026-10-23 P0 终版：Simple Switch 拨杆镜像失配定点修复（36 件最后一件 FAIL）。
+# 根因三层（前两轮 round-8 pure / round-9 Rz180 的教训沉淀）：
+#   ① s3gen 镜像语义 = 顶层 X_MIRROR(det-1) + 仅平移 T_x 镜像、旋转列不镜像
+#     → Switch Pole 世界帧 XM·SP 与 Unity 真值 Msw 相比本地 y 轴被净翻转
+#     （对称件不可见；拨杆不对称 → 杆尖 +0.147 外翻越界，round-7 起已知缺陷）。
+#   ② web/src/app.js syncPole() 每次 instantiate 强设 Pole 节点 rotation.x
+#     =0.79(翘起)/0(压平)——提取器给 Pole 写的任何旋转都会被运行时覆写，
+#     round-9 的 Pole 节点 Rz180 前乘因此机制性无效（覆写后杆穿到桌面下）。
+#   ③ 纯旋转 det+1 永远补不了 X_MIRROR 的 det-1，需要的反射只能放在 app
+#     不覆写的节点上 → Switch Pole（纯 frame 节点、无 mesh、独子=Pole）。
+# 修复 = Switch Pole 本地矩阵后乘 diag(1,-1,1)（列主序 flat 即 col1 取负）：
+#   修复后 XM·SP·Sy ≡ Msw（与 prefab TRS 数值恒等：quat±0.5/scale(1.2,1.4,1.2)
+#   /pos(0.05,0.0315,-0.01)）；Pole 节点保持 Unity 原生 Rx(45°)（HEAD/pure
+#   逐位一致），app 覆写 rotation.x→0.79 后世界矩阵 = Msw·Rx(0.79)，与 round-8
+#   pure 实验 VLM-PASS 姿态精确复现（杆尖 x=-0.041 内压触点、枢轴 +0.05）。
+#   （上会话勘误：L52-54 原 det 推理有误，见下方 NODE_MESH_WINDING_FLIP 注释）
+#   闭合态(rotation.x=0)：杆沿 SP 本地 y 平躺 x∈[-0.08,+0.05] 压住触点 ✓。
+# 验证配方：重提取后 live 探针（playwright evaluate: getObjectByName('Pole')
+#   .matrixWorld，期望 cols ≈ [(0,0,-1.2),(-0.985,+0.852,0),(0.994,+0.845,0)]
+#   +t(0.05,0.8115,-0.01)@桌面0.78）+ shot_pairs/compose_official/
+#   vlm_review_official 三连（Simple Switch 单件）。
+NODE_LOCAL_YFLIP = {('Simple Switch', 'Switch Pole')}
+
+# 2026-10-23 P0b 勘误+修复：YFLIP 上轮 VLM FAIL「拨杆完全消失」的机理。
+# 原推理（已删）「总 det=(-1)·(-2.016)·(+1)=+2.016>0 不翻 frontFace」错把
+# Switch Pole 本地 det 当世界链 det。GLB dump 实测（列主序）：
+#   YFLIP 后 Switch Pole 本地 det=+2.016；世界链 = X_MIRROR(-1)×单刀(+1)×
+#   (+2.016)×Pole(+1) = -2.016 <0 → three.js 翻 frontFace；
+#   HEAD（YFLIP 前）本地 det=-2.016 → 世界 +2.016 >0 → 不翻 frontFace，
+#   Pole mesh 原始 winding 恰好正确（HEAD 下拨杆一直可见、仅方向错）。
+# YFLIP 翻世界 det 符号 → frontFace 行为反转 → 原始 winding 变内翻 →
+# 剔除 → VLM 判「拨杆消失」。修复 = 对该 mesh 同步翻 winding（fan 三角
+# [a,b,c]→[a,c,b]）；法线弃原始值改 _face_normals 从翻后 indices 重算
+# （与剔除方向严格自洽；平滑度损失由 VLM 裁决）。不改 md（fbx_cache 复用
+# 安全），仅在 _emit_mesh 局部 groups 层翻转。
+NODE_MESH_WINDING_FLIP = {('Simple Switch', 'Pole')}
+
 # Geometric 烘焙（2026-10-21 收敛为默认全量）：
 # 背景——FBX Model 的 GeometricTranslation/Rotation/Scaling 是「几何相对节点」
 # 的变换，Unity 导入时会烘进 Mesh 资产顶点。此前管线漏烘，导致「世界坐标+
@@ -701,7 +738,8 @@ def extract_component(prefab_path, ua, fbx_cache, out_dir):
                         if md:
                             fbx_M = info.get('model_world_M', {}).get(fid)
                             geo_M = info.get('geo_M_by_fid', {}).get(fid)
-                            mesh_idx = _emit_mesh(glb, node, md, info, mr, ua, fbx_M, geo_M)
+                            mesh_idx = _emit_mesh(glb, node, md, info, mr, ua, fbx_M, geo_M,
+                                                   flip_winding=(model_id, node['name'] or '') in NODE_MESH_WINDING_FLIP)
                             stats['meshes'] += 1
                             stats['verts'] += len(md['positions']) // 3
                 elif mesh_ref.get('guid') == BUILTIN_GUID and mesh_ref.get('fileID') in BUILTIN_PRIMS:
@@ -711,8 +749,13 @@ def extract_component(prefab_path, ua, fbx_cache, out_dir):
                     mesh_idx = _emit_mesh(glb, node, md, {'unit': 1.0}, mr, ua)
                     stats['meshes'] += 1
                     stats['verts'] += len(md['positions']) // 3
+        mat = trs_matrix(node['transform'], top_level=top_level)
+        # 2026-10-23 P0：NODE_LOCAL_YFLIP —— 后乘 diag(1,-1,1)（本地 y 轴翻转，
+        # 列主序 flat 下 = col1 三元素取负）。机理与验证见文件头注释块。
+        if (model_id, node['name'] or '') in NODE_LOCAL_YFLIP and not top_level:
+            mat[4] = -mat[4]; mat[5] = -mat[5]; mat[6] = -mat[6]
         node_idx = glb.add_node(node['name'] or 'node', mesh=mesh_idx,
-                                 matrix=trs_matrix(node['transform'], top_level=top_level))
+                                 matrix=mat)
         parent_children.append(node_idx)
         child_root = glb.json['nodes'][node_idx].setdefault('children', [])
         for ch in node['children']:
@@ -798,7 +841,7 @@ def _qrot_apply(q, v):
     t = [qw*x + qy*z - qz*y, qw*y + qz*x - qx*z, qw*z + qx*y - qy*x]
     return [x + 2*(qy*t[2]-qz*t[1]), y + 2*(qz*t[0]-qx*t[2]), z + 2*(qx*t[1]-qy*t[0])]
 
-def _emit_mesh(glb, node, md, info, mr, ua, fbx_M=None, geo_M=None):
+def _emit_mesh(glb, node, md, info, mr, ua, fbx_M=None, geo_M=None, flip_winding=False):
     """Emit an FBX mesh as glTF primitives with per-corner vertex expansion.
     fbx_M: FBX 内部节点链世界矩阵（列主序 4x4，原始单位），烘进顶点/法线，
     使 prefab 直接引用 mesh 时与 Unity 导入效果一致（BAKE_FBX_M=1 时生效）。
@@ -932,14 +975,19 @@ def _emit_mesh(glb, node, md, info, mr, ua, fbx_M=None, geo_M=None):
         base = g['vc']
         for (cx, bi, ui) in metas:
             g['positions'].extend(conv_pos(verts[cx*3:cx*3+3], unit, mirror_x=False))
-            if nr and bi is not None:
+            # NODE_MESH_WINDING_FLIP：弃原始法线，兜底 _face_normals 从翻后
+            # indices 重算（与剔除方向自洽）；原始 ByPolygonVertex 值与新 winding 矛盾。
+            if nr and bi is not None and not flip_winding:
                 bn = _bake_normal(nr[bi], nr[bi+1], nr[bi+2])
                 g['normals'].extend(conv_normal(bn, mirror_x=False))
             if ur and ui is not None:
                 g['uvs'].extend([ur[ui], 1.0 - ur[ui+1]])
             g['vc'] += 1
         for k in range(1, np_ - 1):
-            g['indices'].extend([base, base + k, base + k + 1])
+            if flip_winding:
+                g['indices'].extend([base, base + k + 1, base + k])
+            else:
+                g['indices'].extend([base, base + k, base + k + 1])
 
     # 无多边形的兜底（理论上不会走到）
     if not groups:
