@@ -90,7 +90,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Basic_Inductor.glb",
-  "glbBytes": 742520
+  "glbBytes": 784564
  },
  {
   "ModelID": "Current Source",
@@ -225,7 +225,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Mutual_Inductor.glb",
-  "glbBytes": 540516
+  "glbBytes": 624604
  },
  {
   "ModelID": "N-MOSFET",
@@ -897,7 +897,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Simple_Switch.glb",
-  "glbBytes": 398732
+  "glbBytes": 440776
  },
  {
   "ModelID": "Slide Rheostat",
@@ -2262,7 +2262,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Logic_Input.glb",
-  "glbBytes": 1927036
+  "glbBytes": 1948056
  },
  {
   "ModelID": "Logic Output",
@@ -2284,7 +2284,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Logic_Output.glb",
-  "glbBytes": 1891920
+  "glbBytes": 1912940
  },
  {
   "ModelID": "Nand Gate",
