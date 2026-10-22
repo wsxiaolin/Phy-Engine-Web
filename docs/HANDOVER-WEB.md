@@ -1,34 +1,38 @@
 # 交接文档 — Web 前端（2026-10-13 定稿）
 
 > 本文档取代 2026-10-11 版（图灵棒）。M1/M2 前史见 HANDOVER.md，工程契约见 ENGINE_API.md。
-> **本文描述与 main@187bf45 一致。接手前先 `git pull`。**
+> **本文描述与 main@a00e4dd 一致。接手前先 `git pull`。**
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
-**2026-10-23 凌晨（值班第 8 轮收尾：pure 镜像语义实验判负，封存回滚）**：
-上会话（10-22b 深夜）干一半挂掉：实现 MIRROR_FIX=pure 提取语义（全深度 T 不镜像
-+去 X_MIRROR 包装+逐 mesh winding 翻转）→ 87 GLB 全量重提取 → build → 36 件
-webshot（零页错）→ 挂在 compose/VLM 判读前。本轮补完全链判决：
-**pure = 5 PASS / 31 FAIL**（对照 HEAD s3gen 基线 35/1）。失败签名高度一致
-=「极薄平面片/材质颜色丢失/单调深灰」→ winding 翻反的内翻渲染——**数值 AABB
-锚点验证不能代替渲染判读**（杆尖坐标对了，面全朝里）。裁决：实验整体
-`git stash` 封存（名 round8-pure-experiment，含提取器 35 行 diff + 87 pure GLB），
-树回滚 HEAD：s3gen 默认恢复、SMOKE OK、main==origin/main。本轮零代码交付，
-commit 仅本快照更新。
-- **Simple_Switch 在 pure 下 PASS**——上会话方向诊断被证实：s3gen 语义 Pole 杆尖
-  x=+0.147 越界（Unity 真值杆尖 x=−0.044 向内压向触点、枢轴 +0.05、底板边界
-  ±0.08）。**下轮 P0：在 s3gen 语义内定点修 Simple_Switch 的 Pole 方向**
-  （只翻该件 Pole 的 X，勿再全局翻语义）。源：unity/Assets/Resources/Experiments/
-  Basic Circuits/Simple Switch.prefab + 开关.FBX；对照证据已随回滚恢复为第 7 轮
-  态（compare_official_vlm/Simple_Switch.json，复判多数决 FAIL 2P/3F）。
-- 教训三条：①看 git status 前 3 行全是资产就断言「无源码改动」会翻车——213 项
-  里一直含 tools/extract_components.py，先 `git status --porcelain | grep tools/`；
-  ②后台任务必须双 fork `( cmd & )`，`( ... ) &` 随工具调用结束被整组清理（compose
-  静默死、日志 0 字节即此症）；③单次 bash 内长 sleep 会触发网关 504，轮询拆短
-  （每次 ≤60s）。
-- P2 提取器非确定性记录维持（本轮曾误判 213 diff 为噪声，实为 pure 语义真变化；
-  非确定性本身仍未复现/未排除）。
-P1=headless 0fps；P2=提取器非确定性+M8 功能补齐。CF Pages 搁置勿动。
+**2026-10-23 04:00（值班第 9 轮收尾：🎯 官方对照 36/36 全 PASS，a00e4dd 已推 main）**：
+上会话（10-23 凌晨）挂在 Simple_Switch 定点修复链中途（YFLIP 提取器 diff + 重提取
+产物未提交）。本轮接手先发现其 VLM FAIL「拨杆完全消失」→ 勘误根因（原推理把
+Switch Pole 本地 det 当世界链 det）→ 补 winding 共轭修复 → 全链验证闭环：
+- **修复**：NODE_LOCAL_YFLIP（Switch Pole 后乘 diag(1,-1,1)，上会话已做）+
+  新增 NODE_MESH_WINDING_FLIP=('Simple Switch','Pole')：YFLIP 翻世界 det 符号
+  → three.js frontFace 行为反转 → 对该 mesh 同步翻 winding（fan [a,b,c]→[a,c,b]）
+  + 法线弃原始值改 _face_normals 重算（自洽实测 152 tri 全 ok）。机理详见
+  tools/extract_components.py 文件头注释块（P0b 段）。
+- **数值验证**：杆尖 x=-0.0467≈真值 -0.044，全杆 x∈[-0.0467,+0.0558] 在底板
+  ±0.08 内；世界 det=+2.016 与翻转 winding 配对成立。
+- **渲染验证**：shot_pairs 36/36 零页错 → compose → VLM 单件 Simple_Switch
+  PASS（底座/拨杆/支架/接线柱一致）→ report 合并 HEAD 全量 = **36 PASS / 0 FAIL**
+  （对照管线 23P/13F → 35/36 → 36/36 全绿）。
+- **P2 非确定性新证据（重要，仍未定位）**：跨会话两次提取同一 prefab，FBX 层读出
+  的 SwPole/Pole 旋转列符号相反（本会话内 3 连跑 md5 一致=提取器自身确定；
+  quat→矩阵对双覆盖免疫，差异在 FBX 欧拉读数层更深处）。上会话产物因此把 YFLIP
+  修反了（杆尖外翻 +0.147）。**防御已上线**：tools/check_switch_pole.py 固化三
+  不变量（杆尖内压/不越板/世界 det>0），提取后跑它，符号再翻即非零退出报警。
+  建议后续把它挂进全量提取/收尾链。
+- 教训新增：④VLM 单件跑会覆写 report.json 为 total:1，收尾前从 HEAD 合并回
+  全量态；⑤vlm_review_official 传参 id 用下划线格式（Simple_Switch），空格
+  格式会静默匹配 0 件。
+- 上会话教训维持：①看 git status 先 grep tools/；②后台任务双 fork `( cmd & )`；
+  ③长 sleep 拆 ≤60s。
+下一步优先级：P1=headless 0fps（真机验证）；P2=提取器非确定性根因（建议从
+fbx_binary.py 欧拉/Property 读取层+跨会话 FBX 内容哈希入手）+ M8 功能补齐。
+CF Pages 搁置勿动。
 
 ## 0. 一句话现状
 
