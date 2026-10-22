@@ -69,15 +69,19 @@ def main():
         rot = p70(n, 'Lcl Rotation') or [0, 0, 0]
         sc = p70(n, 'Lcl Scaling') or [1, 1, 1]
         q = euler_to_quat(*rot)
+        # 2026-10-22 统一镜像语义：房间为平面结构，节点走纯转换（不镜像），
+        # x 镜像统一烘进 Room 根矩阵（Room_M·S），房间渲染与旧管线逐位一致。
         m = trs_matrix({'position': list(map(float, tr)), 'rotation': q,
-                        'scale': list(map(float, sc))})
+                        'scale': list(map(float, sc))}, mirror_x=False)
         node_indices.append(glb.add_node(name, mesh=mesh_idx, matrix=m))
 
     # 房间.FBX geometry is authored Z-up (UpAxis=1 declared but data is Z-up);
     # components are Y-up. Bake a -90deg X rotation under a single root so the
     # room matches the component/three.js Y-up convention.
+    # Room_M·S：右乘 diag(-1,1,1)（列主序 flat，只取反 col0/x 列），
+    # 承担旧管线「每层共轭+顶点镜像」的净 x 镜像（顶层一次 S 语义）。
     root = glb.add_node('Room', children=node_indices,
-                        matrix=[1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1])
+                        matrix=[-1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 1])
     _ = root
 
     os.makedirs(OUT, exist_ok=True)

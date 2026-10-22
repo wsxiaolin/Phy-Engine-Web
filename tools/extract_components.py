@@ -292,18 +292,30 @@ def euler_to_quat(rx, ry, rz):
         cx*cy*cz - sx*sy*sz,
     ]
 
-def trs_matrix(t, mirror_x=MIRROR_X, unit=1.0):
-    """Node local matrix, with Unity->three.js conversion baked in.
-    three.js = M * Unity where M mirrors X. So: p' = (-x, y, z); q' = mirror; s unaffected."""
+# 2026-10-22 镜像语义统一修复（Air_Switch 拨杆倒挂定谳，diag_airswitch2.py 可复跑）：
+#   旧管线 = 每层 S·M·S 共轭 + 顶点 S —— 数学自洽，但子层平移被镜像进旋转父帧，
+#   Air_Switch 拨杆 y[-86,-73] 倒挂桌面下（官方预览三特征全部矛盾）。
+#   新语义 = R 不共轭（q 原样）+ 顶点不镜像 + 顶层一次 S（场景根 X_MIRROR 包装节点）。
+#   平移镜像按变体（两者与 S3 锚点数值恒等，Air_Switch p_in=0）：
+#     s3gen（默认）= 深度≥2 节点 T_x 镜像；深度1（top_level）不镜像
+#       —— 单层布局（房间/芯片叶节点）与旧管线渲染完全一致，回归面最小。
+#     unified = 每层 T_x 镜像（快照公式原样；t1≠0 的 ~26 个非 pin root-child 有差）。
+#   pins（catalog _world_pos）不动：prefab 内作者摆放位置 = Unity 渲染真值，旧公式已正确。
+#   winding 翻转保留：净手性 = 一次 S（旧=顶点镜像；新=包装节点），面朝向不变。
+#   数值锚点：Air_Switch 拨杆(Off/On 圆柱) 修复后 z[+14.6,+21.2]mm y[+73,+86]mm=顶面。
+MIRROR_FIX = os.environ.get('MIRROR_FIX', 's3gen')  # s3gen | unified
+
+def trs_matrix(t, mirror_x=MIRROR_X, unit=1.0, top_level=False):
+    """Node local matrix (2026-10-22 统一镜像语义，见上方块注释)。"""
     q = t['rotation']; p = t['position']; s = t['scale']
-    # Mirror applied to quaternion: R' = S R S, S = diag(-1,1,1)
-    # For q=(x,y,z,w): q' = (x, -y, -z, w)  [conjugate of q by S]
-    if mirror_x:
-        qx, qy, qz, qw = q
-        q2 = [qx, -qy, -qz, qw]
+    q2 = q  # R 不共轭：镜像统一交给顶层 X_MIRROR 包装节点
+    if mirror_x and MIRROR_FIX == 's3gen' and top_level:
+        mirror_t = False   # s3gen：深度1 平移不镜像（单层布局与旧管线一致）
+    else:
+        mirror_t = bool(mirror_x)
+    if mirror_t:
         p = [-p[0]*unit, p[1]*unit, p[2]*unit]
     else:
-        q2 = q
         p = [p[0]*unit, p[1]*unit, p[2]*unit]
     # quaternion to matrix：flat 布局 = 列主序（glTF matrix 字段 / three.js elements 同序）。
     # 上面 m 的四元数部分恰好按「数学矩阵的列」分组写入（m[0..2]=R 第0列…），
@@ -329,6 +341,7 @@ def trs_matrix(t, mirror_x=MIRROR_X, unit=1.0):
 
 
 def conv_pos(v, unit, mirror_x=MIRROR_X):
+    # 2026-10-22：网格路径传 mirror_x=False（顶点不镜像）；pin 路径保留默认镜像（真值）。
     p = [v[0]*unit, v[1]*unit, v[2]*unit]
     if mirror_x: p[0] = -p[0]
     return p
@@ -659,7 +672,7 @@ def extract_component(prefab_path, ua, fbx_cache, out_dir):
     fbx_cache_ = fbx_cache
     stats = {'meshes': 0, 'verts': 0}
 
-    def emit_node(node, parent_children, skip_pin_meshes=False):
+    def emit_node(node, parent_children, skip_pin_meshes=False, top_level=False):
         comps = {c['class']: c['data'] for c in node['components']}
         mesh_idx = None
         mf = comps.get(33)  # MeshFilter
@@ -691,7 +704,7 @@ def extract_component(prefab_path, ua, fbx_cache, out_dir):
                     stats['meshes'] += 1
                     stats['verts'] += len(md['positions']) // 3
         node_idx = glb.add_node(node['name'] or 'node', mesh=mesh_idx,
-                                 matrix=trs_matrix(node['transform']))
+                                 matrix=trs_matrix(node['transform'], top_level=top_level))
         parent_children.append(node_idx)
         child_root = glb.json['nodes'][node_idx].setdefault('children', [])
         for ch in node['children']:
@@ -701,7 +714,16 @@ def extract_component(prefab_path, ua, fbx_cache, out_dir):
     root_children = glb.json['scenes'][0]['nodes']
     # root transform itself is identity for components; start at children of root
     for ch in root['children']:
-        emit_node(ch, root_children, skip_pin_meshes=not KEEP_PIN_MESHES)
+        emit_node(ch, root_children, skip_pin_meshes=not KEEP_PIN_MESHES, top_level=True)
+    # 顶层一次 S：X_MIRROR 包装节点（diag(-1,1,1)）承载整个组件的 x 镜像，
+    # 取代旧管线的「每层 R 共轭 + 顶点 S」。write() 以未被引用节点为场景根，
+    # 包装后场景根自动只剩 X_MIRROR。
+    # 注意：scenes[0]['nodes'] 初始含默认 [0]（与首个真实节点同索引），去重防双挂。
+    real = [i for i in dict.fromkeys(root_children) if i < len(glb.json['nodes'])]
+    if MIRROR_X and real:
+        wrap = glb.add_node('X_MIRROR', matrix=[-1, 0, 0, 0, 0, 1, 0, 0,
+                                                0, 0, 1, 0, 0, 0, 0, 1])
+        glb.json['nodes'][wrap]['children'] = real
 
     # pins
     pins = []
@@ -901,10 +923,10 @@ def _emit_mesh(glb, node, md, info, mr, ua, fbx_M=None, geo_M=None):
         np_ = len(metas)
         base = g['vc']
         for (cx, bi, ui) in metas:
-            g['positions'].extend(conv_pos(verts[cx*3:cx*3+3], unit))
+            g['positions'].extend(conv_pos(verts[cx*3:cx*3+3], unit, mirror_x=False))
             if nr and bi is not None:
                 bn = _bake_normal(nr[bi], nr[bi+1], nr[bi+2])
-                g['normals'].extend(conv_normal(bn))
+                g['normals'].extend(conv_normal(bn, mirror_x=False))
             if ur and ui is not None:
                 g['uvs'].extend([ur[ui], 1.0 - ur[ui+1]])
             g['vc'] += 1
