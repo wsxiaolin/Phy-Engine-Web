@@ -5,21 +5,24 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
-**2026-10-22 上午（值班第 2 轮）**：①收尾——上会话遗留 27 个未提交改动（probe_fail5
-bbox 修正后重合成的 compare_official/webshot 对照图）验证 smoke EXIT=0 后入库推送
-（3aa246e），清 ab_lcl 试验变体 GLB（md5 与正式产物不同，结论已固化）。②P0 诊断
-推进——diag5 全文跑出入库（build/diag5_out.txt，213 行），**两项关键排除/发现**：
-（a）5 FAIL 的 mesh 解析路**全部=权威**（.meta 权威映射正确，无绑错 mesh）；
-（b）各 FBX UnitScaleFactor 五花八门（变压器/空气开关/开关=100，互感器=2.54，
-基础件/二极管/LED屏幕=0.1），但 extract_components.py L410-415 已正确处理
-`unit=usf×0.01`——**单位换算嫌疑排除**。嫌疑收窄到：prefab TRS 链×geo_M 烘焙×
-Geometric 应用环（互感器两层非均匀 scale 0.414/0.251/0.239×0.354/0.215/0.232
-如实应用后 X:Y≈4:1 呈扁长条——需对账 Unity 实际渲染 vs GLB）；变压器本体
-Box009 rawBBox 仅 0.04m（×s1.2=4.8cm）挂 16cm 底板上，疑 prefab 本身如此或
-丢层。**下轮第一步：跑 `python3 tools/probe_fail5.py` 出「Unity 语义期望 bbox
-vs GLB 实际 bbox」数值对账表**，定位差异具体环节后再动 extract_components.py。
-**遗留优先级不变**：P0=修 5 FAIL 主体几何；P1=headless 0fps（probe_fps.mjs，
-疑 rAF 假象待真机）；P2=M8 功能补齐（示波器/电表/参数全集）。CF Pages 搁置勿动。
+**2026-10-22 中午（值班第 3 轮）**：①收尾中断复审——上会话 VLM 复审跑批挂在
+第 3 项（report.json 被覆写成 3 项半成品）；补跑 Logic_Input/Logic_Output 后合并
+回 36 项全量：**33 PASS / 3 FAIL**（Transformer、Logic_Input 修正 ref bbox+LED
+着色后转 PASS——旧 FAIL 部分是 ref 裁剪方法学伪影；report.json 已合并入库）。
+②probe_fail5 对账表跑出入库（build/probe_fail5_out.txt，788 行），**读法有坑**：
+（a）「底板/Base Renderer」行 ref 尺寸在**所有**元件上呈同一组常数比 0.82/0.20/
+3.29——probe 自身 ref 链系统 bug，PASS 元件同样如此，**不能当产品缺陷读**；
+（b）红光/绿光/Helix001 ref≈0（Unity 运行时件）、Pin 节点 ref 无同名——同属
+表噪声。**真缺陷（与 VLM 交叉印证）**：①Air_Switch——主体 Box003 1.00 匹配，
+但 Off/On 拨杆+Pin1/2 全部偏移到 z<0 悬浮在主体（z 1.8~61）前方 y 50~88 处，
+「拨杆缺失+漂浮小圆柱」= 同一根因（子节点位移/transform 烘焙错）；②Mutual_
+Inductor——互感器主体统一 1.20× 超大（疑似 scale 烘焙差一层）+基座错贴线圈
+纹理（材质错绑）；③Logic_Output——底板长宽比与官方不符+缺旋钮（Logic_Input
+同底板却 PASS，疑官方 Logic_Output 底板本就不同/缺件）。**下轮第一步**：读
+extract_components.py 的 TRS 烘焙+材质分组逻辑，对 Air_Switch 子节点位移先修
+（证据最硬）；probe ref 链底板 bug 顺手修（常数比 0.82/0.20/3.29 的来源）。
+**遗留优先级**：P0=修 3 FAIL 主体几何；P1=headless 0fps（probe_fps.mjs，疑
+rAF 假象待真机）；P2=M8 功能补齐（示波器/电表/参数全集）。CF Pages 搁置勿动。
 
 ## 0. 一句话现状
 
