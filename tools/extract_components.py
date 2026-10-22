@@ -22,11 +22,17 @@ MIRROR_X = True
 # nobake 双双 PASS；1482c4d 的 bake 与 .meta 权威映射同批引入，.meta 修复了
 # 19.3m 芯片巨物（保留），bake 则是回归源。需要旧行为时 BAKE_FBX_M=1。
 BAKE_FBX_M = os.environ.get('BAKE_FBX_M', '0') != '0'
-# Pin mesh 保留开关：默认 0 = 跳过 Pin 节点 FBX 网格，前端程序化生成接线柱
-# （旧行为）。1 = 保留 FBX 内 Pin 网格（Unity 真身为大六角螺母香蕉插座，
-# 见 Previews/Circuits/Yes-Gate.png）。矩阵双 bug 修复 + nobake 后，「Pin 烘焙
-# 错位飘到场外」的前提已不成立，本开关供官方预览 A/B 裁决。
-KEEP_PIN_MESHES = os.environ.get('KEEP_PIN_MESHES', '0') != '0'
+# Pin mesh 保留开关：默认 1 = 保留 FBX 内 Pin 网格（Unity 真身为大六角螺母
+# 香蕉插座，见 Previews/Circuits/Yes-Gate.png）。矩阵双 bug 修复 + nobake 后
+# 「Pin 烘焙错位飘到场外」的前提已不成立。
+# 2026-10-22 晚 A/B 裁决（5 FAIL 件定向 KEEP_PIN=1 重提取→官方预览 VLM）：
+# Basic_Inductor/Simple_Switch（镜像链真回归）+ Logic_Output（基线存量 FAIL）
+# 三件全部转 PASS，0 件转坏；前端 components.js glbHasPinMesh 检测（/^pin/i，
+# 与 is_pin_node 同源）保证 GLB 带 pin 网格时自动跳过程序化柱，无双柱渲染。
+# 结论：真身 pin 网格优于程序化柱，默认翻 1；程序化柱仅作无 pin FBX 兜底。
+# 全量回归终态（36 件官方对照）：35 PASS/1 FAIL，唯一 FAIL=Simple_Switch
+# （复判 2PASS/3FAIL 多数决，见 compare_official_vlm/Simple_Switch.json notes）。
+KEEP_PIN_MESHES = os.environ.get('KEEP_PIN_MESHES', '1') != '0'
 
 # Geometric 烘焙（2026-10-21 收敛为默认全量）：
 # 背景——FBX Model 的 GeometricTranslation/Rotation/Scaling 是「几何相对节点」

@@ -28,7 +28,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Basic_Capacitor.glb",
-  "glbBytes": 489388
+  "glbBytes": 531432
  },
  {
   "ModelID": "Basic Diode",
@@ -59,7 +59,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Basic_Diode.glb",
-  "glbBytes": 484656
+  "glbBytes": 526700
  },
  {
   "ModelID": "Basic Inductor",
@@ -145,7 +145,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Ground_Component.glb",
-  "glbBytes": 369152
+  "glbBytes": 390172
  },
  {
   "ModelID": "Light-Emitting Diode",
@@ -176,7 +176,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Light-Emitting_Diode.glb",
-  "glbBytes": 872152
+  "glbBytes": 914196
  },
  {
   "ModelID": "Mutual Inductor",
@@ -265,7 +265,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "N-MOSFET.glb",
-  "glbBytes": 845016
+  "glbBytes": 908080
  },
  {
   "ModelID": "Operational Amplifier",
@@ -305,7 +305,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Operational_Amplifier.glb",
-  "glbBytes": 845016
+  "glbBytes": 908080
  },
  {
   "ModelID": "P-MOSFET",
@@ -345,7 +345,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "P-MOSFET.glb",
-  "glbBytes": 845024
+  "glbBytes": 908088
  },
  {
   "ModelID": "Rectifier",
@@ -395,7 +395,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Rectifier.glb",
-  "glbBytes": 640920
+  "glbBytes": 725008
  },
  {
   "ModelID": "Relay Component",
@@ -454,7 +454,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Relay_Component.glb",
-  "glbBytes": 595396
+  "glbBytes": 700508
  },
  {
   "ModelID": "Tapped Transformer",
@@ -513,7 +513,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Tapped_Transformer.glb",
-  "glbBytes": 477672
+  "glbBytes": 582780
  },
  {
   "ModelID": "Transformer",
@@ -563,7 +563,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Transformer.glb",
-  "glbBytes": 477396
+  "glbBytes": 561484
  },
  {
   "ModelID": "Transistor",
@@ -603,7 +603,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Transistor.glb",
-  "glbBytes": 875840
+  "glbBytes": 938904
  },
  {
   "ModelID": "Battery Source",
@@ -634,7 +634,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Battery_Source.glb",
-  "glbBytes": 774496
+  "glbBytes": 816540
  },
  {
   "ModelID": "Buzzer",
@@ -666,7 +666,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Buzzer.glb",
-  "glbBytes": 623808
+  "glbBytes": 665852
  },
  {
   "ModelID": "DPDT Switch",
@@ -733,7 +733,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "DPDT_Switch.glb",
-  "glbBytes": 479476
+  "glbBytes": 605616
  },
  {
   "ModelID": "Incandescent Lamp",
@@ -764,7 +764,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Incandescent_Lamp.glb",
-  "glbBytes": 1001680
+  "glbBytes": 1043728
  },
  {
   "ModelID": "Push Switch",
@@ -795,7 +795,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Push_Switch.glb",
-  "glbBytes": 401728
+  "glbBytes": 443772
  },
  {
   "ModelID": "Resistor",
@@ -826,7 +826,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Resistor.glb",
-  "glbBytes": 524104
+  "glbBytes": 566148
  },
  {
   "ModelID": "SPDT Switch",
@@ -866,7 +866,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "SPDT_Switch.glb",
-  "glbBytes": 408732
+  "glbBytes": 471800
  },
  {
   "ModelID": "Simple Switch",
@@ -946,7 +946,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Slide_Rheostat.glb",
-  "glbBytes": 1225124
+  "glbBytes": 1257812
  },
  {
   "ModelID": "Student Source",
@@ -995,7 +995,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Student_Source.glb",
-  "glbBytes": 175812
+  "glbBytes": 197008
  },
  {
   "ModelID": "Comparator",
@@ -1008,7 +1008,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Comparator.glb",
-  "glbBytes": 3611792
+  "glbBytes": 3632824
  },
  {
   "ModelID": "Full Adder",
@@ -1020,7 +1020,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Full_Adder.glb",
-  "glbBytes": 3611792
+  "glbBytes": 3632824
  },
  {
   "ModelID": "Full Subtractor",
@@ -1032,7 +1032,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Full_Subtractor.glb",
-  "glbBytes": 3611792
+  "glbBytes": 3632824
  },
  {
   "ModelID": "Half Adder",
@@ -1044,7 +1044,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Half_Adder.glb",
-  "glbBytes": 3611792
+  "glbBytes": 3632824
  },
  {
   "ModelID": "Half Subtractor",
@@ -1056,7 +1056,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Half_Subtractor.glb",
-  "glbBytes": 3611792
+  "glbBytes": 3632824
  },
  {
   "ModelID": "Multiplier",
@@ -1068,7 +1068,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Multiplier.glb",
-  "glbBytes": 3611792
+  "glbBytes": 3632824
  },
  {
   "ModelID": "Pulse Source",
@@ -1162,7 +1162,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Schmitt_Trigger.glb",
-  "glbBytes": 3612088
+  "glbBytes": 3654136
  },
  {
   "ModelID": "Sinewave Source",
@@ -1341,7 +1341,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "8bit_Display.glb",
-  "glbBytes": 1404716
+  "glbBytes": 1572920
  },
  {
   "ModelID": "Color Light-Emitting Diode",
@@ -1390,7 +1390,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Color_Light-Emitting_Diode.glb",
-  "glbBytes": 872648
+  "glbBytes": 956736
  },
  {
   "ModelID": "Dual Light-Emitting Diode",
@@ -1421,7 +1421,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Dual_Light-Emitting_Diode.glb",
-  "glbBytes": 1175544
+  "glbBytes": 1217588
  },
  {
   "ModelID": "Electric Bell",
@@ -1452,7 +1452,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Electric_Bell.glb",
-  "glbBytes": 819744
+  "glbBytes": 861788
  },
  {
   "ModelID": "Electric Fan",
@@ -1514,7 +1514,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Musical_Box.glb",
-  "glbBytes": 2539140
+  "glbBytes": 2581192
  },
  {
   "ModelID": "Resistance Law",
@@ -1599,7 +1599,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Resistance_Law.glb",
-  "glbBytes": 382388
+  "glbBytes": 550608
  },
  {
   "ModelID": "Simple Instrument",
@@ -1630,7 +1630,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Simple_Instrument.glb",
-  "glbBytes": 1309348
+  "glbBytes": 1351392
  },
  {
   "ModelID": "Solenoid",
@@ -1679,7 +1679,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Solenoid.glb",
-  "glbBytes": 953904
+  "glbBytes": 1392568
  },
  {
   "ModelID": "Spark Gap",
@@ -1710,7 +1710,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Spark_Gap.glb",
-  "glbBytes": 600860
+  "glbBytes": 642904
  },
  {
   "ModelID": "Tesla Coil",
@@ -1741,7 +1741,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Tesla_Coil.glb",
-  "glbBytes": 1532324
+  "glbBytes": 1574368
  },
  {
   "ModelID": "Air Switch",
@@ -1772,7 +1772,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Air_Switch.glb",
-  "glbBytes": 193456
+  "glbBytes": 576176
  },
  {
   "ModelID": "Fuse Component",
@@ -1803,7 +1803,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Fuse_Component.glb",
-  "glbBytes": 401060
+  "glbBytes": 443104
  },
  {
   "ModelID": "Simple Ammeter",
@@ -1843,7 +1843,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Simple_Ammeter.glb",
-  "glbBytes": 594280
+  "glbBytes": 998020
  },
  {
   "ModelID": "Electricity Meter",
@@ -1893,7 +1893,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Electricity_Meter.glb",
-  "glbBytes": 703516
+  "glbBytes": 1128284
  },
  {
   "ModelID": "Galvanometer",
@@ -1933,7 +1933,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Galvanometer.glb",
-  "glbBytes": 594224
+  "glbBytes": 997964
  },
  {
   "ModelID": "Microammeter",
@@ -1973,7 +1973,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Microammeter.glb",
-  "glbBytes": 594232
+  "glbBytes": 997976
  },
  {
   "ModelID": "Multimeter",
@@ -2004,7 +2004,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Multimeter.glb",
-  "glbBytes": 1067672
+  "glbBytes": 1115840
  },
  {
   "ModelID": "Resistance Box",
@@ -2035,7 +2035,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Resistance_Box.glb",
-  "glbBytes": 918240
+  "glbBytes": 967312
  },
  {
   "ModelID": "Simple Voltmeter",
@@ -2075,7 +2075,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Simple_Voltmeter.glb",
-  "glbBytes": 594216
+  "glbBytes": 997960
  },
  {
   "ModelID": "8bit Input",
@@ -2160,7 +2160,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "8bit_Input.glb",
-  "glbBytes": 3614152
+  "glbBytes": 3782324
  },
  {
   "ModelID": "And Gate",
@@ -2200,7 +2200,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "And_Gate.glb",
-  "glbBytes": 565784
+  "glbBytes": 628848
  },
  {
   "ModelID": "Imp Gate",
@@ -2240,7 +2240,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Imp_Gate.glb",
-  "glbBytes": 569604
+  "glbBytes": 632672
  },
  {
   "ModelID": "Logic Input",
@@ -2324,7 +2324,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Nand_Gate.glb",
-  "glbBytes": 566484
+  "glbBytes": 629548
  },
  {
   "ModelID": "Nimp Gate",
@@ -2364,7 +2364,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Nimp_Gate.glb",
-  "glbBytes": 567152
+  "glbBytes": 630220
  },
  {
   "ModelID": "No Gate",
@@ -2395,7 +2395,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "No_Gate.glb",
-  "glbBytes": 565924
+  "glbBytes": 607968
  },
  {
   "ModelID": "Nor Gate",
@@ -2435,7 +2435,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Nor_Gate.glb",
-  "glbBytes": 568936
+  "glbBytes": 632004
  },
  {
   "ModelID": "Or Gate",
@@ -2475,7 +2475,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Or_Gate.glb",
-  "glbBytes": 569108
+  "glbBytes": 632176
  },
  {
   "ModelID": "Xnor Gate",
@@ -2515,7 +2515,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Xnor_Gate.glb",
-  "glbBytes": 570840
+  "glbBytes": 633904
  },
  {
   "ModelID": "Xor Gate",
@@ -2555,7 +2555,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Xor_Gate.glb",
-  "glbBytes": 570100
+  "glbBytes": 633168
  },
  {
   "ModelID": "Yes Gate",
@@ -2586,7 +2586,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Yes_Gate.glb",
-  "glbBytes": 566160
+  "glbBytes": 608204
  },
  {
   "ModelID": "Accelerometer",
@@ -2626,7 +2626,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Accelerometer.glb",
-  "glbBytes": 3612192
+  "glbBytes": 3675256
  },
  {
   "ModelID": "Analog Joystick",
@@ -2693,7 +2693,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Analog_Joystick.glb",
-  "glbBytes": 1114656
+  "glbBytes": 1240824
  },
  {
   "ModelID": "Attitude Sensor",
@@ -2733,7 +2733,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Attitude_Sensor.glb",
-  "glbBytes": 3612192
+  "glbBytes": 3675256
  },
  {
   "ModelID": "Gravity Sensor",
@@ -2773,7 +2773,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Gravity_Sensor.glb",
-  "glbBytes": 3612192
+  "glbBytes": 3675256
  },
  {
   "ModelID": "Gyroscope",
@@ -2813,7 +2813,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Gyroscope.glb",
-  "glbBytes": 3612192
+  "glbBytes": 3675256
  },
  {
   "ModelID": "Linear Accelerometer",
@@ -2853,7 +2853,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Linear_Accelerometer.glb",
-  "glbBytes": 3612192
+  "glbBytes": 3675256
  },
  {
   "ModelID": "Magnetic Field Sensor",
@@ -2893,7 +2893,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Magnetic_Field_Sensor.glb",
-  "glbBytes": 3612192
+  "glbBytes": 3675256
  },
  {
   "ModelID": "Photodiode",
@@ -2924,7 +2924,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Photodiode.glb",
-  "glbBytes": 502136
+  "glbBytes": 544180
  },
  {
   "ModelID": "Photoresistor",
@@ -2955,7 +2955,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Photoresistor.glb",
-  "glbBytes": 367176
+  "glbBytes": 409208
  },
  {
   "ModelID": "Proximity Sensor",
@@ -2977,7 +2977,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Proximity_Sensor.glb",
-  "glbBytes": 1891780
+  "glbBytes": 1912800
  },
  {
   "ModelID": "555 Timer",
@@ -2989,7 +2989,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "555_Timer.glb",
-  "glbBytes": 3611792
+  "glbBytes": 3632824
  },
  {
   "ModelID": "Counter",
@@ -3001,7 +3001,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Counter.glb",
-  "glbBytes": 3611792
+  "glbBytes": 3632824
  },
  {
   "ModelID": "D Flipflop",
@@ -3013,7 +3013,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "D_Flipflop.glb",
-  "glbBytes": 3611792
+  "glbBytes": 3632824
  },
  {
   "ModelID": "JK Flipflop",
@@ -3025,7 +3025,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "JK_Flipflop.glb",
-  "glbBytes": 3611792
+  "glbBytes": 3632824
  },
  {
   "ModelID": "Random Generator",
@@ -3037,7 +3037,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Random_Generator.glb",
-  "glbBytes": 3611792
+  "glbBytes": 3632824
  },
  {
   "ModelID": "Real-T Flipflop",
@@ -3049,7 +3049,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Real-T_Flipflop.glb",
-  "glbBytes": 3611792
+  "glbBytes": 3632824
  },
  {
   "ModelID": "T Flipflop",
@@ -3061,6 +3061,6 @@
   "limitSize": null,
   "schematic": false,
   "glb": "T_Flipflop.glb",
-  "glbBytes": 3611792
+  "glbBytes": 3632824
  }
 ]

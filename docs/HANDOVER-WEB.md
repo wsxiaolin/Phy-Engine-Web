@@ -5,31 +5,27 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
-**2026-10-22 晚（值班第 6 轮，镜像修复全量 VLM 回归终态：31 PASS/5 FAIL/0 ERROR）**：
-425f008（镜像语义统一修复）+021ec58（winding 双翻修复）后的全量重提取→batch_shot→
-compose_official→vlm_review_official 回归链已跑完 36 件（以
-build/compare_official_vlm/report.json 与逐件 json 为准；上轮 18:21 被网关 429 打断
-于 Simple_Switch，本轮已补判后 6 件并重汇总）。
-✅ **镜像修复达标**：基线（db17f89，33 PASS/3 FAIL）3 个 FAIL——Air_Switch、
-Resistor、Basic_Capacitor 全部转 PASS；Air_Switch 拨杆 z[+14.6,+21.2]/y[+73,+86]
-数值锚点在终态截图上成立。
-❌ **终态 5 FAIL**：
-- 真·回归 3 件（基线 PASS→FAIL，镜像修复链引入，下轮 P0）：
-  · Basic_Inductor——修复#1 后症状=线圈环形失真；winding 修复后症状变为
-    「缺黑红大型接线柱+扁平电路板」→**失败形态随 winding 修复改变=强交互证据**；
-  · Logic_Input——红色大按钮凹陷成空腔/绿色按钮缺失/整体厚块化；
-  · Simple_Switch——底座/杆/端子比例失调（两轮均 FAIL，GLB 在二次重提取中变更）。
-- 存量 2 件（基线已 FAIL，非本次回归，暂不阻塞）：Logic_Output（官方 3:1 长条
-  vs web 近方形+缺绿指示灯+多红圆柱）、Mutual_Inductor（官方黑色厚基座 vs web
-  白线圈图案电路板）。
-证据链：/tmp/vlm_official.log（17:11 修复#1 后）、/tmp/regress_vlm.log（18:10-18:21
-修复#2 后 30/36）、/tmp/rejudge6.log（本轮补判）。
-已顺手修：vlm_review_official.py 429 五连后 call_vlm 隐式返回 None→line74 崩溃的 bug（attempt<4 才 continue，末次落 raise→ERROR 兜底）。
-**下轮 P0**：三件回归逐件 A/B 定位——dump GLB 节点树+AABB vs Unity 期望
-（diag5.py 模式），核对 ①X_MIRROR 包装是否该套到这三件的子层 ②「winding 不翻」
-对多 slot mesh 组的适用性 ③Basic_Inductor 两次提取失败形态改变点（winding 分支
-只该影响面朝向，若几何本体也变了说明错在别处）。修复→单件 PASS→全量回归
-全 PASS 才算闭环。P1=headless 0fps；P2=M8 功能补齐。CF Pages 搁置勿动。
+**2026-10-22 深夜（值班第 7 轮，KEEP_PIN_MESHES 翻默认 + 全量回归 35/36 PASS）**：
+上轮 2d57bed A/B（5 FAIL 件定向 KEEP_PIN=1 重提取→3 转 PASS）后，本轮把
+extract_components.py 默认翻 1（源码注释含 A/B 裁决依据；程序化 pin 柱仅作无
+pin FBX 兜底，前端 glbHasPinMesh 互斥防双柱）→ 87 件全量重提取 → vite build →
+shot_pairs → compose_official → vlm_review 全链跑完（/tmp/fullchain.log）：
+**36 件 35 PASS/1 FAIL/0 ERROR**（report.json + 逐件 json）。
+上轮 5 FAIL 去向：Basic_Inductor PASS（镜像链真回归闭环）、Logic_Input PASS、
+Logic_Output/Mutual_Inductor PASS（基线存量件同步转好）、Simple_Switch 仍 FAIL。
+- **Simple_Switch 定谳（下轮 P0）**：同图五判 2PASS/3FAIL 多数决 FAIL（A/B 20:08
+  PASS、全量链 21:22 FAIL、复判×3 PASS/FAIL/FAIL，证据在
+  compare_official_vlm/Simple_Switch.json notes）。投诉收敛：官方=细长直银杆+厚基座，
+  web=短杆+粗黑手柄+底座偏小——真实残留缺陷非纯噪声；A/B 与全量两版图 99.6% 像素
+  一致（判读边界件）。修法建议：dump_glb.py 节点树+Pole/杆 mesh AABB vs Unity
+  Simple Switch prefab/FBX（§2.5 拨杆 0.79rad 逻辑同源），修到复判多数 PASS。
+- 提取器非确定性（P2 记录）：同一代码两次提取 GLB 字节差 11.7KB（渲染 99.6% 同），
+  疑 dict 序/浮点序列化顺序；需复现产物时先固定。
+- 环境：git-lfs 3.7.0 已可用（/usr/local/bin），「收尾缺 lfs」旧记录作废；GLB/PNG
+  全走 LFS 指针，push 自动带 LFS 对象。
+验证：smoke_test SMOKE OK（/tmp/smoke_round7.log）；全链 FINAL_EXIT=2 仅因
+Simple_Switch 1 FAIL。
+P1=headless 0fps；P2=提取器非确定性+M8 功能补齐。CF Pages 搁置勿动。
 
 ## 0. 一句话现状
 
