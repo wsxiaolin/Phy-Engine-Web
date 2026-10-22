@@ -5,26 +5,25 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
-**2026-10-22 下午（值班第 4 轮，Air_Switch 诊断定谳一半）**：承接上轮「子节点
-位移先修」。**诊断链全闭环（数值复算）**：①USF=100，顶点数值即米；②管线数学与
-「prefab 引用语义」**完全自洽**——Box003/Off/On/pin 的 GLB 世界 bbox 与「Geometric
-烘+prefab TRS 链+root Y+90°」的 Unity 左手系理论值逐项吻合（Off/On z[-.0214,-.0148]
-四位小数一致）→ **不是 trs_matrix/镜像/Q 解析的实现 bug**；③prefab「空气开关」
-root Q=(0,0.7071,0,0.7071)=Y+90° 为 YAML 真数据；④但 VLM 读官方预览图（真值）：
-拨杆在**顶面偏右**（红弧形摇杆）、端子在**两侧凸起基座**（黑/红十字螺丝）——不悬浮。
-probe 实测：主体 z[+1.8,+61] 全正、Off/On/Pin 世界 z 全负 → **z 轴分离 ~60mm**。
-⑤**高嫌疑已量化**：pin 世界 z=1.1×(childM·v).x，childM·v 的 x=顶点x×S+T_x；
-若 pin 节点 T_x **不镜像**（+0.0142 而非 -0.0142）→ 世界 z=+15.6mm 恰落入主体
-z 范围（贴位），世界 x 不变。Δz≈30mm 与 T_x 符号精确对应 → 病灶锁定在
-**「全局 x 镜像 × root 轴交换」的耦合环节**（每层 S·TRS·S⁻¹ 相似变换在 root
-带轴交换时对子节点平移的语义是否等价于 Unity 真机，待变体实验定谳）。
-诊断脚本固化 tools/diag_airswitch.py（可复跑全链）。**下轮路线（性价比排序）**：
-A. 扫全部 prefab root Q——若存在「root Q 非平凡且 PASS」的元件其 pin 也 z 轴
-分离却 PASS，则 VLM FAIL 真因另寻；B. 生成「子节点 T_x 不镜像」变体 GLB →
-webshot → VLM 对官方图定谳；C. 查官方预览生成管线（编辑器工具/装配代码）。
-probe ref 链底板 bug 未动（上轮遗留）。上轮 3 FAIL 其余两件未动。
-**遗留优先级**：P0=Air_Switch 镜像耦合定谳（B 实验一步到位）+其余 2 FAIL；
-P1=headless 0fps；P2=M8 功能补齐。CF Pages 搁置勿动。
+**2026-10-22 下午（值班第 5 轮，Air_Switch 镜像语义数值定谳 ✅）**：上轮的 B
+变体截图实验**不必再跑**——数值实验已一步定谳（tools/diag_airswitch2.py 可复跑）：
+①管线 S1（每层 S·M·S 共轭+顶点 S）数学自洽，但拨杆 z[-21.4,-14.8] 负域悬浮、
+**y[-86,-73] 负=倒挂桌面下方**（比上轮「悬浮」更实锤）；②S3=子层 T_x 不镜像：
+拨杆 z[+14.6,+21.2] 落入主体 z 域、y 转正[+73,+86]=顶面——**与官方预览三特征
+（拨杆顶面偏右/端子两侧凸起/不悬浮）全部吻合**；③S2 整体转置假说被排除
+（z 完全不变）。**统一修复公式已推导（与 S3 数值恒等）**：每层节点
+**R 不共轭（q 原样）+ T_x 镜像 + 顶点不镜像（conv_pos 去 x 翻转）+ 顶层一次 S**；
+改动点=extract_components.py 的 trs_matrix（q2=q）+ conv_pos（顶点分支）+ pins
+的 _world_pos 同步核验。⚠️ **影响面大**：路线 A 扫描显示 33 PASS 基线里 Q 非平凡
+元件一大把（Ground/Inductor/MOSFET/运放/互感器…底板 Q=[-.5,.5,.5,.5] 之类），
+统一公式对他们的影响未知。**下轮执行清单**：改两处 → 全量重提取
+（extract_components.py，~分钟级）→ catalog 拷 web/dist/assets → batch_shot
+全量 → compose_official + vlm_review_official 全量回归（33 PASS 防回归 +
+Air_Switch/Basic_Capacitor 等应转 PASS，FAIL 全集以
+build/compare_official_vlm/report.json 为准）→ 全绿才准推（铁律：视觉改动
+VLM 全 PASS）。probe ref 链底板 bug 未动。
+**遗留优先级**：P0=镜像语义统一修复+全量 VLM 回归；P1=headless 0fps；
+P2=M8 功能补齐。CF Pages 搁置勿动。
 
 ## 0. 一句话现状
 
