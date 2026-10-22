@@ -5,17 +5,20 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
-**2026-10-22 晨（值班）**：上会话挂在 LED 指示灯收尾（代码+dist 已建未提交）——
-本轮验证后入库 2 commit 推送（3ee152b..99d6ef9）：①d251b1a diag5 提取链诊断
-+ probe_fail5；②99d6ef9 **LED 指示灯运行时着色**（Logic Input 绿光/Output 红光，
-Unity LEDRenderer.Render 复刻：ON 态 emissive 0.75+LightHalo 点光、底座常亮
-LightColor、按钮开/关互切）。验证：smoke EXIT=0 + 像素差异 21021px + 绿像素
-3.2× + VLM PASS。**官方预览对照 31 PASS / 5 FAIL 维持**（d2e7eb8）。
-**五件 FAIL 定性（提取侧建模缺陷）**：Mutual_Inductor/Transformer 几何压扁、
-Air_Switch 低模错误、Logic_Input/Output 主体形状错——**指示灯缺失项已由
-syncLED 补齐**，主体形状仍待修。
-**遗留优先级**：P0=修 5 FAIL 主体几何（对照 unity/ prefab 修 extract_components.py，
-诊断工具 build/diag5*、probe_fail5 已备）；P1=headless 0fps（probe_fps.mjs，
+**2026-10-22 上午（值班第 2 轮）**：①收尾——上会话遗留 27 个未提交改动（probe_fail5
+bbox 修正后重合成的 compare_official/webshot 对照图）验证 smoke EXIT=0 后入库推送
+（3aa246e），清 ab_lcl 试验变体 GLB（md5 与正式产物不同，结论已固化）。②P0 诊断
+推进——diag5 全文跑出入库（build/diag5_out.txt，213 行），**两项关键排除/发现**：
+（a）5 FAIL 的 mesh 解析路**全部=权威**（.meta 权威映射正确，无绑错 mesh）；
+（b）各 FBX UnitScaleFactor 五花八门（变压器/空气开关/开关=100，互感器=2.54，
+基础件/二极管/LED屏幕=0.1），但 extract_components.py L410-415 已正确处理
+`unit=usf×0.01`——**单位换算嫌疑排除**。嫌疑收窄到：prefab TRS 链×geo_M 烘焙×
+Geometric 应用环（互感器两层非均匀 scale 0.414/0.251/0.239×0.354/0.215/0.232
+如实应用后 X:Y≈4:1 呈扁长条——需对账 Unity 实际渲染 vs GLB）；变压器本体
+Box009 rawBBox 仅 0.04m（×s1.2=4.8cm）挂 16cm 底板上，疑 prefab 本身如此或
+丢层。**下轮第一步：跑 `python3 tools/probe_fail5.py` 出「Unity 语义期望 bbox
+vs GLB 实际 bbox」数值对账表**，定位差异具体环节后再动 extract_components.py。
+**遗留优先级不变**：P0=修 5 FAIL 主体几何；P1=headless 0fps（probe_fps.mjs，
 疑 rAF 假象待真机）；P2=M8 功能补齐（示波器/电表/参数全集）。CF Pages 搁置勿动。
 
 ## 0. 一句话现状
