@@ -1,37 +1,34 @@
 # 交接文档 — Web 前端（2026-10-13 定稿）
 
 > 本文档取代 2026-10-11 版（图灵棒）。M1/M2 前史见 HANDOVER.md，工程契约见 ENGINE_API.md。
-> **本文描述与 main@a00e4dd 一致。接手前先 `git pull`。**
+> **本文描述与 main@4c61bc2（含文档 commit 后以最终 hash 为准）。接手前先 `git pull`。**
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
-**2026-10-23 04:00（值班第 9 轮收尾：🎯 官方对照 36/36 全 PASS，a00e4dd 已推 main）**：
-上会话（10-23 凌晨）挂在 Simple_Switch 定点修复链中途（YFLIP 提取器 diff + 重提取
-产物未提交）。本轮接手先发现其 VLM FAIL「拨杆完全消失」→ 勘误根因（原推理把
-Switch Pole 本地 det 当世界链 det）→ 补 winding 共轭修复 → 全链验证闭环：
-- **修复**：NODE_LOCAL_YFLIP（Switch Pole 后乘 diag(1,-1,1)，上会话已做）+
-  新增 NODE_MESH_WINDING_FLIP=('Simple Switch','Pole')：YFLIP 翻世界 det 符号
-  → three.js frontFace 行为反转 → 对该 mesh 同步翻 winding（fan [a,b,c]→[a,c,b]）
-  + 法线弃原始值改 _face_normals 重算（自洽实测 152 tri 全 ok）。机理详见
-  tools/extract_components.py 文件头注释块（P0b 段）。
-- **数值验证**：杆尖 x=-0.0467≈真值 -0.044，全杆 x∈[-0.0467,+0.0558] 在底板
-  ±0.08 内；世界 det=+2.016 与翻转 winding 配对成立。
-- **渲染验证**：shot_pairs 36/36 零页错 → compose → VLM 单件 Simple_Switch
-  PASS（底座/拨杆/支架/接线柱一致）→ report 合并 HEAD 全量 = **36 PASS / 0 FAIL**
-  （对照管线 23P/13F → 35/36 → 36/36 全绿）。
-- **P2 非确定性新证据（重要，仍未定位）**：跨会话两次提取同一 prefab，FBX 层读出
-  的 SwPole/Pole 旋转列符号相反（本会话内 3 连跑 md5 一致=提取器自身确定；
-  quat→矩阵对双覆盖免疫，差异在 FBX 欧拉读数层更深处）。上会话产物因此把 YFLIP
-  修反了（杆尖外翻 +0.147）。**防御已上线**：tools/check_switch_pole.py 固化三
-  不变量（杆尖内压/不越板/世界 det>0），提取后跑它，符号再翻即非零退出报警。
-  建议后续把它挂进全量提取/收尾链。
-- 教训新增：④VLM 单件跑会覆写 report.json 为 total:1，收尾前从 HEAD 合并回
-  全量态；⑤vlm_review_official 传参 id 用下划线格式（Simple_Switch），空格
-  格式会静默匹配 0 件。
+**2026-10-23 05:20（值班第 10 轮收尾：✅ P2 非确定性悬案结案 + LFS 实体补推，4c61bc2 已推 main）**：
+- **P2 结案（本轮主战果）**：静态审计全链（字节流顺序解析→dict 保序→set 仅防环
+  →纯浮点矩阵）无任何 hash/随机来源；**tools/probe_determinism.py 决定性实验**：
+  6 个 PYTHONHASHSEED + MIRROR_FIX=unified + BAKE_FBX_M=1 共 8 组合，Simple Switch
+  prefab 的 SwPole/Pole quat+矩阵指纹 **8/8 全一致**，铡刀/基础件.FBX md5 稳定。
+  **真相：历史「跨会话旋转列符号相反」= 上会话中间态代码（未提交 YFLIP diff）的
+  输出被误读为运行非确定性——变量是代码版本，不是随机性。** 观测的其实是 prefab
+  层 Pole 节点（铡刀.FBX 内 Model 名为 zha/对象047，无 Pole）。
+- **防御落地**：①catalog.meta.json 配置烙印（gitHead+4 环境开关+YFLIP/WINDING 表），
+  产物配置漂移一眼可辨；②check_switch_pole.py 不变量自动挂进全量提取链尾
+  （违反 exit 1，上轮建议兑现）。
+- **潜伏雷排除**：远端仓库 GLB 历史上全是 LFS pointer 无实体（新 clone 会拉空）；
+  本环境 git-lfs 3.7.0 可用 → `git lfs push --all` 全量实体补推 + 本轮 commit
+  随行上传，已验证 0 错误。「收尾环境缺 git-lfs」旧信息作废。
+- **验证**：全量重提取 87 件 EXIT=0 + 不变量 OK（x[-0.0467,0.0558] det+2.016）
+  + smoke_test SMOKE OK + push 干净。
+- 教训新增：⑥git status 单 GLB 显示 M ≠ 产物漂移——先想 LFS pointer vs 实体
+  （cmp 前 `git show HEAD:file | wc -c`，131B=pointer）；⑦工具网关 504 时子壳
+  后台任务往往已存活，先查进程/日志再重跑，勿盲目重启。
 - 上会话教训维持：①看 git status 先 grep tools/；②后台任务双 fork `( cmd & )`；
-  ③长 sleep 拆 ≤60s。
-下一步优先级：P1=headless 0fps（真机验证）；P2=提取器非确定性根因（建议从
-fbx_binary.py 欧拉/Property 读取层+跨会话 FBX 内容哈希入手）+ M8 功能补齐。
+  ③长 sleep 拆 ≤60s；④VLM 单件跑会覆写 report.json；⑤vlm_review_official 传参
+  用下划线格式。
+下一步优先级：P1=headless 0fps（真机验证，等 sin）；P2'≈M8 功能规范补齐
+（PLAN §118，0% 未动，含示波器/电表类/参数调节/存档兼容等，见规范 §2-§7）。
 CF Pages 搁置勿动。
 
 ## 0. 一句话现状
