@@ -5,24 +5,26 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
-**2026-10-22 中午（值班第 3 轮）**：①收尾中断复审——上会话 VLM 复审跑批挂在
-第 3 项（report.json 被覆写成 3 项半成品）；补跑 Logic_Input/Logic_Output 后合并
-回 36 项全量：**33 PASS / 3 FAIL**（Transformer、Logic_Input 修正 ref bbox+LED
-着色后转 PASS——旧 FAIL 部分是 ref 裁剪方法学伪影；report.json 已合并入库）。
-②probe_fail5 对账表跑出入库（build/probe_fail5_out.txt，788 行），**读法有坑**：
-（a）「底板/Base Renderer」行 ref 尺寸在**所有**元件上呈同一组常数比 0.82/0.20/
-3.29——probe 自身 ref 链系统 bug，PASS 元件同样如此，**不能当产品缺陷读**；
-（b）红光/绿光/Helix001 ref≈0（Unity 运行时件）、Pin 节点 ref 无同名——同属
-表噪声。**真缺陷（与 VLM 交叉印证）**：①Air_Switch——主体 Box003 1.00 匹配，
-但 Off/On 拨杆+Pin1/2 全部偏移到 z<0 悬浮在主体（z 1.8~61）前方 y 50~88 处，
-「拨杆缺失+漂浮小圆柱」= 同一根因（子节点位移/transform 烘焙错）；②Mutual_
-Inductor——互感器主体统一 1.20× 超大（疑似 scale 烘焙差一层）+基座错贴线圈
-纹理（材质错绑）；③Logic_Output——底板长宽比与官方不符+缺旋钮（Logic_Input
-同底板却 PASS，疑官方 Logic_Output 底板本就不同/缺件）。**下轮第一步**：读
-extract_components.py 的 TRS 烘焙+材质分组逻辑，对 Air_Switch 子节点位移先修
-（证据最硬）；probe ref 链底板 bug 顺手修（常数比 0.82/0.20/3.29 的来源）。
-**遗留优先级**：P0=修 3 FAIL 主体几何；P1=headless 0fps（probe_fps.mjs，疑
-rAF 假象待真机）；P2=M8 功能补齐（示波器/电表/参数全集）。CF Pages 搁置勿动。
+**2026-10-22 下午（值班第 4 轮，Air_Switch 诊断定谳一半）**：承接上轮「子节点
+位移先修」。**诊断链全闭环（数值复算）**：①USF=100，顶点数值即米；②管线数学与
+「prefab 引用语义」**完全自洽**——Box003/Off/On/pin 的 GLB 世界 bbox 与「Geometric
+烘+prefab TRS 链+root Y+90°」的 Unity 左手系理论值逐项吻合（Off/On z[-.0214,-.0148]
+四位小数一致）→ **不是 trs_matrix/镜像/Q 解析的实现 bug**；③prefab「空气开关」
+root Q=(0,0.7071,0,0.7071)=Y+90° 为 YAML 真数据；④但 VLM 读官方预览图（真值）：
+拨杆在**顶面偏右**（红弧形摇杆）、端子在**两侧凸起基座**（黑/红十字螺丝）——不悬浮。
+probe 实测：主体 z[+1.8,+61] 全正、Off/On/Pin 世界 z 全负 → **z 轴分离 ~60mm**。
+⑤**高嫌疑已量化**：pin 世界 z=1.1×(childM·v).x，childM·v 的 x=顶点x×S+T_x；
+若 pin 节点 T_x **不镜像**（+0.0142 而非 -0.0142）→ 世界 z=+15.6mm 恰落入主体
+z 范围（贴位），世界 x 不变。Δz≈30mm 与 T_x 符号精确对应 → 病灶锁定在
+**「全局 x 镜像 × root 轴交换」的耦合环节**（每层 S·TRS·S⁻¹ 相似变换在 root
+带轴交换时对子节点平移的语义是否等价于 Unity 真机，待变体实验定谳）。
+诊断脚本固化 tools/diag_airswitch.py（可复跑全链）。**下轮路线（性价比排序）**：
+A. 扫全部 prefab root Q——若存在「root Q 非平凡且 PASS」的元件其 pin 也 z 轴
+分离却 PASS，则 VLM FAIL 真因另寻；B. 生成「子节点 T_x 不镜像」变体 GLB →
+webshot → VLM 对官方图定谳；C. 查官方预览生成管线（编辑器工具/装配代码）。
+probe ref 链底板 bug 未动（上轮遗留）。上轮 3 FAIL 其余两件未动。
+**遗留优先级**：P0=Air_Switch 镜像耦合定谳（B 实验一步到位）+其余 2 FAIL；
+P1=headless 0fps；P2=M8 功能补齐。CF Pages 搁置勿动。
 
 ## 0. 一句话现状
 
