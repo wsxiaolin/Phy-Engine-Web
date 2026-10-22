@@ -1,0 +1,22 @@
+{
+ "gitHead": "aaeb318d0e6e",
+ "generatedAt": "2026-10-23T05:05:21",
+ "extractConfig": {
+  "MIRROR_FIX": "s3gen",
+  "BAKE_FBX_M": "0",
+  "KEEP_PIN_MESHES": "1",
+  "GEOMETRIC_BAKE_FBXS": "*",
+  "NODE_LOCAL_YFLIP": [
+   [
+    "Simple Switch",
+    "Switch Pole"
+   ]
+  ],
+  "NODE_MESH_WINDING_FLIP": [
+   [
+    "Simple Switch",
+    "Pole"
+   ]
+  ]
+ }
+}

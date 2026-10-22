@@ -1051,6 +1051,38 @@ def main():
             print(f'ERR {os.path.basename(p)}: {e}')
     with open(os.path.join(OUT_ROOT, 'catalog.json'), 'w', encoding='utf-8') as f:
         json.dump(catalog, f, ensure_ascii=False, indent=1)
+    # 配置烙印（2026-10-23 P2 根因结案后上线）：任何产物可追溯生成配置。
+    # 动机——「跨会话旋转列符号相反」悬案实证（tools/probe_determinism.py，
+    # 8 组合×8 一致）：提取链纯确定，历史差异实为中间态代码/实验环境变量
+    # 漂移。烙印后配置漂移一眼可辨，不再依赖推理。
+    import subprocess as _sp
+    try:
+        head = _sp.check_output(['git', 'rev-parse', 'HEAD'],
+                                cwd=os.path.dirname(OUT_ROOT), text=True).strip()[:12]
+    except Exception:
+        head = 'unknown'
+    meta = {
+        'gitHead': head,
+        'generatedAt': __import__('time').strftime('%Y-%m-%dT%H:%M:%S'),
+        'extractConfig': {
+            'MIRROR_FIX': os.environ.get('MIRROR_FIX', 's3gen'),
+            'BAKE_FBX_M': os.environ.get('BAKE_FBX_M', '0'),
+            'KEEP_PIN_MESHES': os.environ.get('KEEP_PIN_MESHES', '1'),
+            'GEOMETRIC_BAKE_FBXS': os.environ.get('GEOMETRIC_BAKE_FBXS', '*'),
+            'NODE_LOCAL_YFLIP': sorted(NODE_LOCAL_YFLIP) if 'NODE_LOCAL_YFLIP' in globals() else None,
+            'NODE_MESH_WINDING_FLIP': sorted(NODE_MESH_WINDING_FLIP),
+        },
+    }
+    with open(os.path.join(OUT_ROOT, 'catalog.meta.json'), 'w', encoding='utf-8') as f:
+        json.dump(meta, f, ensure_ascii=False, indent=1)
+    # 拨杆不变量自动检查（非确定性防御，tools/check_switch_pole.py 固化）
+    sw = os.path.join(exp_dir, 'Simple Switch.glb')
+    if os.path.exists(sw):
+        r = _sp.run([sys.executable, os.path.join(os.path.dirname(__file__),
+                                                  'check_switch_pole.py'), sw])
+        if r.returncode != 0:
+            print('CHECK-FAIL: check_switch_pole.py 不变量被违反，提取产物可疑，中止')
+            sys.exit(1)
     print(f'\nTotal {len(catalog)} components -> {exp_dir}')
 
 if __name__ == '__main__':
