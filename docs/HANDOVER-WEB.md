@@ -5,25 +5,31 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
-**2026-10-22 下午（值班第 5 轮，Air_Switch 镜像语义数值定谳 ✅）**：上轮的 B
-变体截图实验**不必再跑**——数值实验已一步定谳（tools/diag_airswitch2.py 可复跑）：
-①管线 S1（每层 S·M·S 共轭+顶点 S）数学自洽，但拨杆 z[-21.4,-14.8] 负域悬浮、
-**y[-86,-73] 负=倒挂桌面下方**（比上轮「悬浮」更实锤）；②S3=子层 T_x 不镜像：
-拨杆 z[+14.6,+21.2] 落入主体 z 域、y 转正[+73,+86]=顶面——**与官方预览三特征
-（拨杆顶面偏右/端子两侧凸起/不悬浮）全部吻合**；③S2 整体转置假说被排除
-（z 完全不变）。**统一修复公式已推导（与 S3 数值恒等）**：每层节点
-**R 不共轭（q 原样）+ T_x 镜像 + 顶点不镜像（conv_pos 去 x 翻转）+ 顶层一次 S**；
-改动点=extract_components.py 的 trs_matrix（q2=q）+ conv_pos（顶点分支）+ pins
-的 _world_pos 同步核验。⚠️ **影响面大**：路线 A 扫描显示 33 PASS 基线里 Q 非平凡
-元件一大把（Ground/Inductor/MOSFET/运放/互感器…底板 Q=[-.5,.5,.5,.5] 之类），
-统一公式对他们的影响未知。**下轮执行清单**：改两处 → 全量重提取
-（extract_components.py，~分钟级）→ catalog 拷 web/dist/assets → batch_shot
-全量 → compose_official + vlm_review_official 全量回归（33 PASS 防回归 +
-Air_Switch/Basic_Capacitor 等应转 PASS，FAIL 全集以
-build/compare_official_vlm/report.json 为准）→ 全绿才准推（铁律：视觉改动
-VLM 全 PASS）。probe ref 链底板 bug 未动。
-**遗留优先级**：P0=镜像语义统一修复+全量 VLM 回归；P1=headless 0fps；
-P2=M8 功能补齐。CF Pages 搁置勿动。
+**2026-10-22 晚（值班第 6 轮，镜像修复全量 VLM 回归终态：31 PASS/5 FAIL/0 ERROR）**：
+425f008（镜像语义统一修复）+021ec58（winding 双翻修复）后的全量重提取→batch_shot→
+compose_official→vlm_review_official 回归链已跑完 36 件（以
+build/compare_official_vlm/report.json 与逐件 json 为准；上轮 18:21 被网关 429 打断
+于 Simple_Switch，本轮已补判后 6 件并重汇总）。
+✅ **镜像修复达标**：基线（db17f89，33 PASS/3 FAIL）3 个 FAIL——Air_Switch、
+Resistor、Basic_Capacitor 全部转 PASS；Air_Switch 拨杆 z[+14.6,+21.2]/y[+73,+86]
+数值锚点在终态截图上成立。
+❌ **终态 5 FAIL**：
+- 真·回归 3 件（基线 PASS→FAIL，镜像修复链引入，下轮 P0）：
+  · Basic_Inductor——修复#1 后症状=线圈环形失真；winding 修复后症状变为
+    「缺黑红大型接线柱+扁平电路板」→**失败形态随 winding 修复改变=强交互证据**；
+  · Logic_Input——红色大按钮凹陷成空腔/绿色按钮缺失/整体厚块化；
+  · Simple_Switch——底座/杆/端子比例失调（两轮均 FAIL，GLB 在二次重提取中变更）。
+- 存量 2 件（基线已 FAIL，非本次回归，暂不阻塞）：Logic_Output（官方 3:1 长条
+  vs web 近方形+缺绿指示灯+多红圆柱）、Mutual_Inductor（官方黑色厚基座 vs web
+  白线圈图案电路板）。
+证据链：/tmp/vlm_official.log（17:11 修复#1 后）、/tmp/regress_vlm.log（18:10-18:21
+修复#2 后 30/36）、/tmp/rejudge6.log（本轮补判）。
+已顺手修：vlm_review_official.py 429 五连后 call_vlm 隐式返回 None→line74 崩溃的 bug（attempt<4 才 continue，末次落 raise→ERROR 兜底）。
+**下轮 P0**：三件回归逐件 A/B 定位——dump GLB 节点树+AABB vs Unity 期望
+（diag5.py 模式），核对 ①X_MIRROR 包装是否该套到这三件的子层 ②「winding 不翻」
+对多 slot mesh 组的适用性 ③Basic_Inductor 两次提取失败形态改变点（winding 分支
+只该影响面朝向，若几何本体也变了说明错在别处）。修复→单件 PASS→全量回归
+全 PASS 才算闭环。P1=headless 0fps；P2=M8 功能补齐。CF Pages 搁置勿动。
 
 ## 0. 一句话现状
 

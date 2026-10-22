@@ -35,7 +35,7 @@ def call_vlm(img):
                                capture_output=True, text=True, timeout=180)
             if r.returncode != 0:
                 err = (r.stderr or '')[-300:]
-                if '429' in err or 'Too many requests' in err:
+                if ('429' in err or 'Too many requests' in err) and attempt < 4:
                     wait = 30 * (attempt + 1)
                     print(f'  429 rate-limited, backing off {wait}s ...')
                     time.sleep(wait)
