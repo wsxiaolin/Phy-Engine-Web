@@ -301,7 +301,9 @@ def euler_to_quat(rx, ry, rz):
 #       —— 单层布局（房间/芯片叶节点）与旧管线渲染完全一致，回归面最小。
 #     unified = 每层 T_x 镜像（快照公式原样；t1≠0 的 ~26 个非 pin root-child 有差）。
 #   pins（catalog _world_pos）不动：prefab 内作者摆放位置 = Unity 渲染真值，旧公式已正确。
-#   winding 翻转保留：净手性 = 一次 S（旧=顶点镜像；新=包装节点），面朝向不变。
+#   winding 不再翻转：three.js r169 对 matrixWorld.det<0 自动反转剔除方向
+#   （frontFaceCW），X_MIRROR 包装节点已承担这一次翻转；旧管线的翻转
+#   配平对象是「顶点镜像+det+1 节点」，新语义下保留即双重翻转=内翻。
 #   数值锚点：Air_Switch 拨杆(Off/On 圆柱) 修复后 z[+14.6,+21.2]mm y[+73,+86]mm=顶面。
 MIRROR_FIX = os.environ.get('MIRROR_FIX', 's3gen')  # s3gen | unified
 
@@ -939,8 +941,8 @@ def _emit_mesh(glb, node, md, info, mr, ua, fbx_M=None, geo_M=None):
 
     if len(groups) == 1:
         slot, g = next(iter(groups.items()))
-        if MIRROR_X:
-            g['indices'] = flip_winding(g['indices'])
+        # 2026-10-22b 修复内翻：X_MIRROR(det=-1) 下 three.js frontFaceCW 已反转
+        # 剔除方向，顶点不镜像时索引必须保持原 winding（多翻一次=实心变空托盘）
         if not g['normals']:
             g['normals'] = _face_normals(g['positions'], g['indices'])
         matidx = _matidx_for_slot(slot)
@@ -950,8 +952,8 @@ def _emit_mesh(glb, node, md, info, mr, ua, fbx_M=None, geo_M=None):
     prims = []
     for slot in sorted(groups):
         g = groups[slot]
-        if MIRROR_X:
-            g['indices'] = flip_winding(g['indices'])
+        # 2026-10-22b 修复内翻：X_MIRROR(det=-1) 下 three.js frontFaceCW 已反转
+        # 剔除方向，顶点不镜像时索引必须保持原 winding（多翻一次=实心变空托盘）
         if not g['normals']:
             g['normals'] = _face_normals(g['positions'], g['indices'])
         prims.append({'positions': g['positions'], 'normals': g['normals'],
