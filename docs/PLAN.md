@@ -120,9 +120,9 @@ wasm 版本，顺便做好前端，参考组织下已有物实 physicslab 的 un
 存档读写的基础能力，本里程碑对齐规范补缺口）：
 - [ ] 示波器（规范 §3.2 社区实验搭法 / §3.4 Web 实现建议为基线）
 - [ ] 逐元件参数调节补全（规范 §2 八类全集对照现有属性卡逐一补齐）
-- [ ] 电表类（规范 §4：电流表/电压表/灵敏电流计/微安表/多用电表/电能表）
+- [x] 电表类（规范 §4：电流表/电压表/灵敏电流计/微安表/多用电表/电能表）——M8 六件全齐（PR 序列 b14117d/e6fb162）
 - [ ] 导线连接与电路求解规格核对（规范 §5）
-- [ ] 存档 .plsave 双向兼容验证（规范 §7：CircuitExperimentStatus JSON / Interactions.Serialize）
+- [x] 存档 .plsave 双向兼容验证（规范 §7）——toPlsave 输出引擎原生嵌套信封（default_plsav_template 一比一，37/36/17 键逐键），fromPlsave 兼容新旧两格式，WASM 装载+物理回读实测（tools/verify_plsave.mjs 17 断言 ALL PASS）
 
 ## 四、明确不做（sin 圈定）
 

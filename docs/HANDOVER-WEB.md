@@ -5,34 +5,28 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
-**2026-10-23 12:12（值班第 12 轮收尾：✅ Multimeter 多用电表全链路落地 + e2e/VLM/smoke 三绿，已推送）**：
-- **主战果（承接第 11 轮挂掉的未提交 meters.js 半成品，核对 Unity 后接线完成）**：
-  规范 §4 最后一件电表——Multimeter（万用表）18 档全链路：meters.js
-  multimeterNet/multimeterDisplay + expandMeters 展开接线 + app.js 屏显
-  浮动标签/档位下拉 + SUPPORTED/DEFAULT_PROPS 补录。
-- **实现要点（对照 unity Meters/Multimeter.cs，禁记忆）**：BuildElements =
-  R(Pins[0]→内) + VDC(内→Pins[1]，MaximumVoltage=-15/0)；SyncProperties
-  三段——档 0-2,13-17 R=1e9 V=0（伏特计形）、3-7 R=1e-9 V=0（安培计形）、
-  8-12 R=1 V=-15（欧姆计形）；GetDigitalText 一比一（|v|≥max→"OL"、
-  ≤min→"0.00"、长度≥7 截断）；电阻档实测 R=15/I-1；18 档角度表抄
-  Render()（GLB 无 SwitchKnob 节点，旋钮不可驱动——档位走检查器下拉）。
-  上轮半成品 bug 一处：档位标签「交流 250V」实为 200V（250 是屏显量程
-  上限），已按 GetStatusData 修正。
-- **引擎接线两难点的实证解**：①电流档 R1=1e-9Ω 压降 ~3e-11V 引擎序列化
-  截断归零 → 回读改集 {电压,电流} 对，压降为零时兜底读内置 V 源支路电流
-  （MNA write_back 原生回填，串联同值，符号 e2e 实证为正）；②-15V 源在
-  pe_sim Battery「电压」直传，KVL 实证引擎约定 V=V(pin0)-V(pin1)，i=+0.1485
-  → R 屏显恰为 100，与 Unity -15 设计意图吻合，无需翻转。
-- **验证**：tools/verify_multimeter.mjs（新 e2e，数据驱动三幕）9/9 PASS——
-  电流档 0.03A 屏显"0.03"、电压档 3V 屏显"3"、电阻档 15/101A 屏显
-  "100"（纯函数 Node 直跑源码 + 页面 statistics + DOM 标签三重断言）；
-  VLM 截图 PASS（meter_visible/wiring_ok/display_100 全 true 零缺陷，
-  build/verify_multimeter_ohm.png）；smoke_test SMOKE OK；vite build 干净。
-- **遗留文件坑**：web/src/meters.js 为 root 属主（上轮 root 会话残留），
-  bash 不可写但 Edit 工具可写——后续会话改它用 Edit，勿用 bash 重定向。
+**2026-10-23 15:06（值班第 13 轮收尾：✅ .plsave 原生信封一比一（规范 §7 收官）+ verify_plsave 17 断言全绿，已推送）**：
+- **主战果（承接第 12 轮挂掉的未提交 state.js 半成品，引擎源码裁决后收尾完成）**：
+  toPlsave() 从旧扁平 {Type,StatusSave,CameraSave} 重写为引擎原生嵌套信封
+  （root 17 键 + Experiment 11 键 + Summary 36 键 + 元件 12 键，逐键对照
+  physicslab.h:320 default_plsav_template[circuit] + to_plsav_json_ec 抄录）；
+  fromPlsave() 兼容新旧两格式（root.Experiment||root）。
+- **三处实修（上轮半成品的真实差距）**：①addElement 新增 broken 参数——
+  旧签名丢弃导入的烧毁位，.plsave 往返 IsBroken 丢失（真产品 bug）；②导线
+  ColorName 归一——引擎 wire::to_json 恒写 5 键（内部 color 缺省 blue），web 端
+  undefined 色现归一「蓝色导线」同形；③fromPlsave 缺省色「黑色导线」→「蓝色
+  导线」（引擎 parse_wire_color_name 同判，physicslab.h:981）。
+- **验证**：tools/verify_plsave.mjs 17 断言 ALL PASS——A1-A9 信封逐键比对+
+  往返（含烧毁位/弧度/角度制/五色）+ B1-B7 WASM 引擎实测装载新信封（build→
+  analyze→write_back→dump，I=0.03/U=3 物理正确、信封字段透传）+ C1 旧扁平
+  格式向后兼容；smoke_test SMOKE OK；vite build 干净。PLAN.md §M8 电表类
+  与 §7 存档两项已勾。
+- **裁决纪律实证**：A3 Summary 键集之争以引擎源码为准——Version 在 Summary
+  级（physicslab.h:356）、Verification 只在 User 级（:381），state.js 原写法
+  正确，是验证脚本断言抄错了键。
 下一步优先级：P1=headless 0fps（真机验证，等 sin）；P2=示波器（规范
-§3.2/§3.4）、逐元件参数调节（规范 §2 八类全集）、存档 .plsave 双向
-兼容（规范 §7）；M8 电表类自此六件全齐。CF Pages 搁置勿动。
+§3.2/§3.4）、逐元件参数调节（规范 §2 八类全集）、导线连接与电路求解规格
+核对（规范 §5）；36 元件批量 VLM 对照（管线就绪未跑）。CF Pages 搁置勿动。
 
 ## 0. 一句话现状
 

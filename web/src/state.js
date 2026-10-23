@@ -39,7 +39,7 @@ export class Experiment {
     this.wires = [];
   }
 
-  addElement({ modelId, label, position, rotY = 0, properties = {}, statistics = {}, identifier = null }) {
+  addElement({ modelId, label, position, rotY = 0, properties = {}, statistics = {}, identifier = null, broken = false }) {
     const el = {
       id: identifier || newId(modelId),
       modelId,
@@ -48,7 +48,7 @@ export class Experiment {
       rotY,
       properties,
       statistics: { ...statistics },
-      broken: false,
+      broken,
     };
     this.elements.push(el);
     return el;
@@ -78,12 +78,19 @@ export class Experiment {
     this.wires = this.wires.filter((x) => x !== w);
   }
 
-  // Serialise to the Unity .plsave envelope the engine consumes.
+  // Serialise to the native .plsave envelope. Field-for-field mirror of the
+  // engine's own writer (repo physicslab.h: default_plsav_template[circuit] +
+  // to_plsav_json_ec), so the exported file is byte-schema identical to what
+  // Unity 2.0 / the engine produce: root { Type, ID, Experiment{...Version 2404,
+  // Paused, ...}, Summary{...}, CreationDate, Speed*, CameraSnapshot, Plots... }.
   // 注意：.plsave 的 Rotation 是【角度】（Unity 约定，引擎默认值 "0,180,0"），
   // 前端内部 rotY 用弧度，此处转换。
-  toPlsave(camera = { VisionCenter: "0,0,0", TargetRotation: "0,0,0" }) {
+  // 引擎 experiment::create(circuit) 相机默认（physicslab.h:778-782）：
+  // Mode 0 / Distance 2.7 / VisionCenter {0,-0.45,1.08} / TargetRotation {50,0,0}。
+  toPlsave(camera = { Mode: 0, Distance: 2.7, VisionCenter: "0,-0.45,1.08", TargetRotation: "50,0,0" }) {
     const deg = (rad) => +((rad * 180) / Math.PI).toFixed(4);
     const StatusSave = {
+      SimulationSpeed: 1,
       Elements: this.elements.map((e) => ({
         ModelID: e.modelId,
         Identifier: e.id,
@@ -93,19 +100,100 @@ export class Experiment {
         Properties: e.properties,
         Statistics: e.statistics,
         IsBroken: e.broken,
+        // 引擎 element 构造器同款字段（physicslab.h element::create 数据模板），
+        // Unity 端缺省可读，写全保证与引擎 dump 形状一致。
+        IsLocked: false,
+        DiagramCached: false,
+        DiagramPosition: { X: 0, Y: 0, Magnitude: 0 },
+        DiagramRotation: 0,
       })),
+      // 引擎 wire::to_json 恒写 5 键（wire 内部 color 缺省 blue），undefined 归一默认色
       Wires: this.wires.map((w) => ({
         Source: w.source,
         SourcePin: w.sourcePin,
         Target: w.target,
         TargetPin: w.targetPin,
-        ColorName: w.colorName,
+        ColorName: w.colorName ?? "蓝色导线",
       })),
     };
+    // 引擎 to_plsav_json_ec 同款：Experiment.CreationDate 与 Summary.CreationDate 均写毫秒
+    const creationDate = Date.now();
     return {
       Type: 0,
-      CameraSave: JSON.stringify(camera),
-      StatusSave: JSON.stringify(StatusSave),
+      Experiment: {
+        ID: null,
+        Type: 0,
+        Components: this.elements.length,
+        Subject: null,
+        StatusSave: JSON.stringify(StatusSave),
+        CameraSave: JSON.stringify(camera),
+        Version: 2404,
+        CreationDate: creationDate,
+        Paused: false,
+        Summary: null,
+        Plots: null,
+      },
+      ID: null,
+      // 社区元数据模板（引擎 default_plsav_template Summary 分支逐字段抄录）
+      Summary: {
+        Type: 0,
+        ParentID: null,
+        ParentName: null,
+        ParentCategory: null,
+        ContentID: null,
+        Editor: null,
+        Coauthors: [],
+        Description: null,
+        LocalizedDescription: null,
+        Tags: ["Type-0"],
+        ModelID: null,
+        ModelName: null,
+        ModelTags: [],
+        Version: 0,
+        Language: "Chinese",
+        Visits: 0,
+        Stars: 0,
+        Supports: 0,
+        Remixes: 0,
+        Comments: 0,
+        Price: 0,
+        Popularity: 0,
+        CreationDate: creationDate,
+        UpdateDate: 0,
+        SortingDate: 0,
+        ID: null,
+        Category: null,
+        Subject: "",
+        LocalizedSubject: null,
+        Image: 0,
+        ImageRegion: 0,
+        User: {
+          ID: null,
+          Nickname: null,
+          Signature: null,
+          Avatar: 0,
+          AvatarRegion: 0,
+          Decoration: 0,
+          Verification: null,
+        },
+        Visibility: 0,
+        Settings: {},
+        Anonymous: false,
+        Multilingual: false,
+      },
+      CreationDate: 0,
+      Speed: 1,
+      SpeedMinimum: 0.0002,
+      SpeedMaximum: 2,
+      SpeedReal: 0,
+      Paused: false,
+      Version: 0,
+      CameraSnapshot: null,
+      Plots: [],
+      Widgets: [],
+      WidgetGroups: [],
+      Bookmarks: {},
+      Interfaces: { "Play-Expanded": false, "Chart-Expanded": false },
     };
   }
 
@@ -130,6 +218,7 @@ export class Experiment {
         properties: e.Properties || {},
         statistics: e.Statistics || {},
         identifier: e.Identifier,
+        broken: !!e.IsBroken,
       });
     }
     for (const w of status.Wires || []) {
@@ -138,7 +227,8 @@ export class Experiment {
         sourcePin: w.SourcePin,
         target: w.Target,
         targetPin: w.TargetPin,
-        colorName: w.ColorName || "黑色导线",
+        // 引擎 parse_wire_color_name：缺省/无法识别 → 蓝色导线，保持同判
+        colorName: w.ColorName || "蓝色导线",
       });
     }
     return exp;
