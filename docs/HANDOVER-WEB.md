@@ -5,34 +5,31 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
-**2026-10-24 02:20（值班第 19 轮收尾：✅ 上会话 8 张重拍 webshot 官方对照复验闭环——6 PASS/2 FAIL，Mutual_Inductor 新回归疑云，已推送 79eda31）**：
-- 本轮做的：①收尾上会话遗留的 8 张未提交 webshot（01:10 重拍，第 18 轮
-  87 件全量重提取后产物）——compose_official 拼图+vlm_review_official
-  双批复验：**6 PASS**（Basic_Capacitor/Battery_Source/Rectifier/Resistor/
-  Simple_Switch/Transformer，新旧拼图双 PASS 的 3 件更实）+ **2 FAIL**
-  （Relay_Component 已知根因未修 + ⚠️Mutual_Inductor 新疑云）；②修
-  compose_official.py ALIAS 补 `'Relay Component': 'Relay'`——**此前 Relay
-  官方对照拼图一直没更新过**（官方图名 Relay.png，MISS 后静默用旧拼图），
-  本轮 Relay 新图重拼重审仍 FAIL，画像不变（扁平薄板，官方厚底座+浅蓝
-  立方体+阶梯散热结构全丢）；③smoke_test EXIT=0。
-- **⚠️ Mutual_Inductor 新回归疑云（下轮首位）**：旧 webshot VLM PASS
-  （「几何形状、材质颜色、放置位置均一致」，证据 compare_vlm/Mutual_
-  Inductor.json）vs 新 webshot FAIL（「官方=带厚度圆角实心黑色长方体基座+
-  中心 IC 芯片；web=极薄 PCB 形态+原版不存在的白色走线/线圈」）——
-  第 18 轮全量重提取可能引入回归。像素对比未做成（git show 取旧图失败
-  =LFS 指针）；下轮实锤路径：①新旧 webshot 像素 diff（LFS checkout 或
-  重截）②重提取前后 GLB 几何 diff（tools/geo_diff.py/bbox_glb.py）③
-  对照 refdump Unity 权威 bbox。
-- 工具坑（本轮踩过）：compose_official.py 传**空格显示名**（'Relay
-  Component'），vlm_review_official.py 传**下划线 id**（Relay_Component）
-  ——两脚本风格不一致，传错则 MISS/审旧图；dump_glb.py 需真实 GLB 路径
-  （非 id，build/assets 下 grep Relay 未命中，GLB 实际位置下轮 ls 实查，
-  可能在 web/dist/assets/）。compare_official_vlm/_tmp.json 意外入库
-  （29 files 里），下轮顺手删。
-- **下轮直接干（优先级）**：①Mutual_Inductor 回归实锤（上线索）②Relay
-  根因（GLB dump 逐节点 bbox 对照 Unity 语义 z=[-0.0983,0.0982]，geo_M
-  头号嫌疑）③Quad 图标面片材质层级④移动端触控。P1=0fps 真机验证（等
-  sin）。CF Pages 搁置勿动。
+**2026-10-24 04:00（值班第 20 轮收尾：✅ Mutual_Inductor 回归疑云取证销案（非回归=VLM 判定漂移，真差距=Icon 面片位置）+ Relay 根因数据包落盘 + _tmp.json 根治，已推送（见 git log））**：
+- **Mutual_Inductor 销案（非回归）**：①GLB 自 2349208 字节未变（build=dist
+  同 sha，18 轮重提取未动它）②catalog 条目 diff 为空③旧 PASS 图（LFS
+  fetch+smudge 取回）与新图 PIL diff 仅右上角 HUD 23×13px（0.02%）——
+  round-17 PASS 与 round-19 FAIL 看的是同一画面，**判定漂移实锤**。④单图
+  实述（官方+webshot 各一次）证明 web 版实为「圆角**厚**底座+中心平放
+  IC」，FAIL 里「极薄 PCB」为幻觉；但「白色符号画在底座（官方只在 IC
+  表面）+IC 细节」两轮复审稳定复现=**真差距**，属 PLAN #111 图标面片类。
+  ⑤复审再跑 1 次 FAIL 同向。全部证据链在
+  `build/compare_official_vlm/Mutual_Inductor_forensics.md`。
+- **Relay 根因收窄（数据包 `Relay_Component_forensics.md`）**：底板
+  NODE_SKIP 判断正确（footprint 0.16×0.08×0.02 与官方薄底座吻合，销
+  「底板 Z」案）；真病灶=**竖直结构压扁**：继电器 body raw
+  [0.095,0.040,0.073] 疑 Z-up 手稿（最长轴 raw Z 应立成世界 Y），prefab
+  TRS 与 fbx_M 均不含 Z→Y 旋转；Pin2/5 y=0.05 是官方「蓝立方体顶上黑
+  圆柱」。下轮第一问：Unity 把它立起来的变换在哪（FBX 根 Lcl/importer
+  烘焙）。
+- 工程修复：vlm_review_official.py 的 VLM 临时文件从 OUT 目录改到
+  /tmp（_tmp.json 误入库的根因），`git rm _tmp.json`；smoke EXIT=0。
+- refdump 旁证：MI/Relay 的 refdump exp 自相矛盾（MI 底板 0.78m 高的
+  「底板」），这两件不能用 refdump 当权威，以官方预览图+prefab 源码为准。
+- **下轮直接干（优先级）**：①继电器.FBX Z-up 导入旋转补齐（Relay 竖直
+  结构，开工路径在 forensics 数据包里）②MI Icon/4×Quad 贴到 IC 表面
+  （与 Relay「Icon Z」同族可并修）③Quad 材质层级④移动端触控。P1=0fps
+  真机验证（等 sin）。CF Pages 搁置勿动。
 
 **2026-10-24 00:20（值班第 18 轮收尾：✅ Photoresistor 主体修复闭环——.asset 解码器落地+官方预览 VLM PASS，38 件对照 38 PASS/1 FAIL，已推送 83cb730）**：
 - 本轮做的：①新增 `tools/unity_mesh_asset.py`（Unity YAML Mesh

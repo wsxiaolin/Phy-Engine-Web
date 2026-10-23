@@ -28,7 +28,8 @@ b. 右图中的白色小字标签（电压/电流读数等）是正常 UI。
 判定口径：只要右侧主体几何结构与官方预览一致、无部件缺失或错误替换、比例不失调，即判 PASS；引脚柱差异按豁免处理。只输出严格 JSON，不要输出任何其他文字：{"verdict":"PASS 或 FAIL","issues":["发现的问题，无则空数组"],"notes":"一句话对比结论"}"""
 
 def call_vlm(img):
-    tmp = os.path.join(OUT, '_tmp.json')
+    # 临时文件放 /tmp：曾因写在 OUT 目录被误 commit（compare_official_vlm/_tmp.json）
+    tmp = '/tmp/_vlm_review_official_tmp.json'
     for attempt in range(5):
         try:
             r = subprocess.run(['z-ai', 'vision', '-p', PROMPT, '-i', img, '-o', tmp],
