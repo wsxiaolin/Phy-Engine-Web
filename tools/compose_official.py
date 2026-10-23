@@ -39,6 +39,8 @@ def uni_path(mid):
         'Ground Component': 'Ground',
         'Basic Capacitor': 'Capacitor',
         'Basic Inductor': 'Inductor',
+        # Photoresistor 官方预览是驼峰拆分连字符（Photo-Resistor.png）
+        'Photoresistor': 'Photo-Resistor',
         # 芯片家族（Schmitt/Comparator/各 Flipflop/Adder/Subtractor/Counter/
         # Random Generator/Multiplier）在 Unity 共享同一 Chip prefab + 运行时
         # 丝印，官方预览只有一张 Chip.png——全家族以 Chip.png 为对照代理

@@ -1,6 +1,6 @@
 {
- "gitHead": "aaeb318d0e6e",
- "generatedAt": "2026-10-23T05:05:21",
+ "gitHead": "e0fc026f7fe8",
+ "generatedAt": "2026-10-24T00:05:40",
  "extractConfig": {
   "MIRROR_FIX": "s3gen",
   "BAKE_FBX_M": "0",

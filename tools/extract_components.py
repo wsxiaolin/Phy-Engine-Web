@@ -12,6 +12,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from unity_yaml import (UnityAssets, parse_prefab, scene_tree, parse_material,
                         UNITY_ROOT, load_yaml_docs, safe_name, fbx_meta_mesh_names)
 from fbx_binary import parse as fbx_parse, mesh_data, p70, p70v3
+import unity_mesh_asset
 
 OUT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'build', 'assets'))
 MIRROR_X = True
@@ -751,6 +752,18 @@ def extract_component(prefab_path, ua, fbx_cache, out_dir):
                                                    flip_winding=(model_id, node['name'] or '') in NODE_MESH_WINDING_FLIP)
                             stats['meshes'] += 1
                             stats['verts'] += len(md['positions']) // 3
+                elif fbx_path and fbx_path.lower().endswith('.asset'):
+                    # 2026-10-24：Unity YAML Mesh .asset（serializedVersion>=9 的
+                    # m_VertexData streams 新格式）——此前 FBX-only 分支静默跳过，
+                    # Photoresistor 主体「光敏电阻 1.asset」因此丢失。顶点为
+                    # Unity 本地空间米制（无 FBX cm 缩放），走 Quad 基元同款
+                    # unit=1.0 发射路径；节点 TRS/材质/镜像与 FBX 路径同权。
+                    md = unity_mesh_asset.parse_mesh_asset(
+                        os.path.join(UNITY_ROOT, fbx_path))
+                    if md:
+                        mesh_idx = _emit_mesh(glb, node, md, {'unit': 1.0}, mr, ua)
+                        stats['meshes'] += 1
+                        stats['verts'] += len(md['positions']) // 3
                 elif mesh_ref.get('guid') == BUILTIN_GUID and mesh_ref.get('fileID') in BUILTIN_PRIMS:
                     # Unity 内置基元（Quad 承载符号图标/白板，Plane 为接地/Icon 面片），
                     # 顶点为 Unity 本地空间数据，走与 FBX 同一条 conv 发射管线
