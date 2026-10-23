@@ -5,6 +5,27 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
+**2026-10-23 19:40（值班第 15 轮收尾：✅ 13 FAIL 全清零——36/36 对照全 PASS，已推送）**：
+- 本轮做的：①收尾上会话挂掉的未提交改动（refshot 方法学对齐：GLB 无 pin
+  网格时补画与 web 端 src/components.js 同规格程序化插头座，13 张图重生，
+  commit 31b12f8）；②compose_pairs 重组 36 件对比图 + vlm_review_pairs 重审
+  原 13 FAIL——**13/13 全 PASS，全量 36/36 PASS 零 FAIL**；③清理 3 个调试
+  残留 json（_probe_air/_probe_cap/_tmp，会污染 report 统计），report.json
+  从单件 json 重建入库。
+- **结论性翻案（下轮勿再走弯路）**：原定性「1482c4d 提取器引入 M7 几何回归
+  （电容 mesh_data 静默失败/Air_Switch 扁平化）」**不成立**——重审后
+  Basic_Capacitor、Air_Switch 均 PASS，web 端渲染一直是对的，旧 refshot
+  过时+裸 GLB vs 程序化 pin 帽的方法学不对称才是 FAIL 根因。**提取器无需
+  修复、禁止回滚**。
+- M8 三项（示波器/参数调节八类全集/导线核对）仍被规范文档缺失阻塞，等 sin
+  提供 shared/specs/Unity电学模块功能规范.md，勿硬编。
+- 下轮可干（按优先级）：①剩余 10 项真实建模缺陷（PLAN 108 行，Relay×3
+  底板Z/继电器X/IconZ 等，unity/ 源码可查、无阻塞）；②Quad 图标面片材质
+  层级对照（PLAN 111 行）；③移动端触控双指缩放。P1=0fps 真机验证（等 sin）。
+  CF Pages 搁置勿动。
+- 验证：node tools/smoke_test.mjs EXIT=0（SMOKE OK，本轮两次）；重审 13 件
+  VLM 逐张 verdict 见 build/compare_vlm/<ModelID>.json。
+
 **2026-10-23 16:10（值班第 14 轮收尾：✅ 上轮 dist 残留收口 + 对照终态报告入库，已推送）**：
 - 本轮做的：①上轮 verify 后未提交的 3 个 dist 产物变更，smoke_test EXIT=0
   （SMOKE OK）验证后收尾提交；②git-lfs 3.7.0 就绪实锤——176 GLB 全部 LFS

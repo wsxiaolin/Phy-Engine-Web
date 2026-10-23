@@ -110,9 +110,11 @@ wasm 版本，顺便做好前端，参考组织下已有物实 physicslab 的 un
       Mesh6 mesh missing）
 - [ ] Unity 内置 Quad 图标面片的材质/贴图层级对照（重提取后图标面片可见，
       白色长条形态待与 Unity 渲染层对照修正）
-- [x] Unity vs web 成对对比 36 件已跑完：23 PASS / 13 FAIL（FAIL 四类定性：M7
-      提取回归 / Resistor 缺本体 / pin 帽方法学误报 / 旧版巨物是修复不能回滚）；
-      真基准=unity 官方预览 Previews/Circuits，报告 build/compare_vlm/report.json
+- [x] Unity vs web 成对对比 36 件**全绿收官（10-23 第 15 轮）**：36/36 PASS 零
+      FAIL——原 13 FAIL 经 refshot 方法对齐（补画与 web 端同规格程序化 pin 帽）
+      重审后全部翻绿；M7「提取回归」定性不成立（web 渲染一直正确，refshot 过时
+      +裸 GLB 方法不对称才是根因），提取器禁止回滚；真基准=unity 官方预览
+      Previews/Circuits，报告 build/compare_vlm/report.json
 - [x] **重提取产物补推已完成**（10-23 实锤）：git-lfs 3.7.0 就绪，176 GLB 全部
       LFS 追踪且已在 origin/main，本项为过时描述
 
