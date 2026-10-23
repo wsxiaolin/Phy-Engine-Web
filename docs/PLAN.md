@@ -105,11 +105,13 @@ wasm 版本，顺便做好前端，参考组织下已有物实 physicslab 的 un
       web/refshot.mjs + web/refshot.html（Unity 源参照截图）→ web/shot_pairs.mjs
       （web 端截图）→ tools/compose_pairs.py（成对拼图+网格总览）
 - [x] batch_shot 慢沙盒兼容修复（600ms→5s 等待：0.3fps 下 600ms < 1 帧会截到灰屏）
-- [ ] 剩余 10 项真实建模缺陷：Relay_Component×3（底板 Z / 继电器 X / Icon Z）、
-      Resistance_Law×5（对象001-004 X 轴 / 底板 X）、Photoresistor×2（光敏电阻、
-      Mesh6 mesh missing）
-- [ ] Unity 内置 Quad 图标面片的材质/贴图层级对照（重提取后图标面片可见，
-      白色长条形态待与 Unity 渲染层对照修正）
+- [x] 「剩余 10 项真实建模缺陷」（2026-10-24 全数销案为判定漂移/已修复：
+      Relay 三项=取景致 VLM 判定漂移+公平对照 PASS；Resistance_Law 五项、
+      Photoresistor 两项=第 18/19 轮重提取已修复+官方对照复验 PASS）
+- [x] Unity 内置 Quad 图标面片（2026-10-24 销案：官方原图细审证实基座表面
+      本就印白色线圈符号、IC 顶面另有丝印；web Icon 面片 0.057×0.062m 贴
+      底板顶面+0.0004 与 prefab TRS 逐位吻合，公平对照 mi_fair.png VLM PASS。
+      材质层级视为已达标）
 - [x] Unity vs web 成对对比 36 件**全绿收官（10-23 第 15 轮）**：36/36 PASS 零
       FAIL——原 13 FAIL 经 refshot 方法对齐（补画与 web 端同规格程序化 pin 帽）
       重审后全部翻绿；M7「提取回归」定性不成立（web 渲染一直正确，refshot 过时
