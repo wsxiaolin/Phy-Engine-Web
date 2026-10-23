@@ -56,11 +56,36 @@ function frame(obj) {
   return { size: [s.x, s.y, s.z], center: [c.x, c.y, c.z] };
 }
 
-window.loadGlb = async (url) => {
+window.loadGlb = async (url, pins) => {
   if (current) { scene.remove(current); current = null; }
   const gltf = await loader.loadAsync(url);
   current = gltf.scene;
   scene.add(current);
+  // 方法学对齐（2026-10-23）：web 端 src/components.js 对 GLB 无 pin 网格的元件
+  // 会补程序化香蕉插头座（POST_R/POST_H/材质/位置公式同源），refshot 此前裸 GLB
+  // 导致 VLM 把「多出接线柱」误报为 FAIL。此处按完全相同规格补画，两侧公平。
+  const PIN_NAME_RE = /^pin/i; // 与提取器 is_pin_node 判定同源
+  let glbHasPinMesh = false;
+  current.traverse((o) => {
+    if (o.isMesh && PIN_NAME_RE.test(o.name || "")) glbHasPinMesh = true;
+  });
+  if (!glbHasPinMesh && Array.isArray(pins) && pins.length) {
+    const POST_R = 0.0045, POST_H = 0.022;
+    const postGeo = new THREE.CylinderGeometry(POST_R, POST_R * 1.25, POST_H, 12);
+    const postTipGeo = new THREE.SphereGeometry(POST_R * 0.9, 10, 8);
+    const postMatRed = new THREE.MeshStandardMaterial({ color: 0xc23b32, roughness: 0.5, metalness: 0.1 });
+    const postMatBlack = new THREE.MeshStandardMaterial({ color: 0x2c2c30, roughness: 0.5, metalness: 0.1 });
+    const postTipMat = new THREE.MeshStandardMaterial({ color: 0xb8bec8, roughness: 0.35, metalness: 0.85 });
+    for (const p of pins) {
+      const [px, py, pz] = p.position;
+      const post = new THREE.Mesh(postGeo, p.isPositive ? postMatRed : postMatBlack);
+      post.position.set(px, py - POST_H / 4, pz);
+      current.add(post);
+      const tip = new THREE.Mesh(postTipGeo, postTipMat);
+      tip.position.set(px, py + POST_H / 4, pz);
+      current.add(tip);
+    }
+  }
   const info = frame(current);
   renderer.render(scene, camera);
   return info;
