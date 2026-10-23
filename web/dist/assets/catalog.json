@@ -2955,7 +2955,7 @@
   "limitSize": null,
   "schematic": false,
   "glb": "Photoresistor.glb",
-  "glbBytes": 409208
+  "glbBytes": 806300
  },
  {
   "ModelID": "Proximity Sensor",
