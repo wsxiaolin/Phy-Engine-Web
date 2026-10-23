@@ -110,10 +110,11 @@ wasm 版本，顺便做好前端，参考组织下已有物实 physicslab 的 un
       Mesh6 mesh missing）
 - [ ] Unity 内置 Quad 图标面片的材质/贴图层级对照（重提取后图标面片可见，
       白色长条形态待与 Unity 渲染层对照修正）
-- [ ] Unity vs web 成对对比图 0/36（管线就绪未跑批）+ VLM 逐张审；
-      参照截图 3/87（And Gate/Battery Source/Resistor）
-- [ ] **重提取产物补推**：87 GLB + catalog×2 已本地验证（EXIT=0），收尾环境缺 git-lfs
-      无法推送；恢复后需先 `git lfs install` 再提交（.glb/.png/.wasm 走 LFS，勿裸提交）
+- [x] Unity vs web 成对对比 36 件已跑完：23 PASS / 13 FAIL（FAIL 四类定性：M7
+      提取回归 / Resistor 缺本体 / pin 帽方法学误报 / 旧版巨物是修复不能回滚）；
+      真基准=unity 官方预览 Previews/Circuits，报告 build/compare_vlm/report.json
+- [x] **重提取产物补推已完成**（10-23 实锤）：git-lfs 3.7.0 就绪，176 GLB 全部
+      LFS 追踪且已在 origin/main，本项为过时描述
 
 ### M8 功能规范补齐（⬜ 未开始，2026-10-16 sin 新增范围）
 依据 shared/specs/Unity电学模块功能规范.md（M4/M5 已覆盖导线连接、电路求解、
