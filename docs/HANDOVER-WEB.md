@@ -5,6 +5,37 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
+**2026-10-23 23:55（值班第 17 轮收尾：✅ 上会话半成品收尾+Relay/Photoresistor 根因大进展，37 PASS/2 FAIL，已推送 80743dc）**：
+- 本轮做的：①收尾上会话挂掉的 21 项未提交（三件截图+VLM 证据：**Resistance_Law
+  PASS**（X 偏移已清）/ Relay FAIL / Photoresistor FAIL）；②diag_transform 实锤
+  Relay 底板 fbx_M 含 S=1.2268+轴交换=与 prefab TRS S=1.2268 重复（双重变换
+  画像成立但见下方翻案）；③加 NODE_SKIP_FBX_M={('Relay Component','底板')}
+  特例（回归防线）；④清残留（_tmp.json/variant_v0/v1）+ report.json 从 39 单件
+  重建；⑤smoke_test EXIT=0。
+- **⚠️ 关键翻案（下轮勿走弯路）**：BAKE_FBX_M 默认 0=不烘（extract_components.py
+  :883 无条件 fbx_M=None，:23 注释「bake 则是回归源」）——第 16 轮画像的
+  「fbx_M 双重变换致底板大板」**在默认提取路径不成立**（diag_transform 的
+  「烘 fbx_M」列是假想计算）。NODE_SKIP_FBX_M 特例在 BAKE=1 回归路径才有实效，
+  默认路径冗余无害。**Relay FAIL 真根因未定位**：默认路径底板=Unity 语义小板
+  z±0.098，但 webshot 呈扁平薄板——下轮先 dump GLB 节点树逐节点 bbox，对照
+  diag Unity 语义值（z=[-0.0983,0.0982]）找错位层；geo_M（:853「不受 BAKE 控制
+  总是烘」）是头号嫌疑。**Relay GLB 本轮已重提取但未跑 VLM 重验**（batch_shot
+  链两次后台跑日志空——nohup 引号嵌套/需服务，下轮前台重跑），几何等价风险低。
+- **Photoresistor 根因实锤（下轮直接干）**：主体「光敏电阻」引用
+  `unity/Assets/Physics-Lab/Circuits/光敏电阻 1.asset`——Unity YAML Mesh
+  serializedVersion 10 **m_VertexData 新格式**（顶点打包在 streams channel，
+  非 m_Vertices 旧 packed 数组），被 emit_node 的 NO-FBX 分支静默跳过→主体丢失；
+  解码器是百行级工程（channel descriptors+stream alignment），今晚时间不够未做。
+  「Mesh6」fid=-45537441166385993 引外部库无本地源，放弃。localAABB 中心
+  z=12（顶点离原点远，解码时注意节点变换带回归位）。修法落点：emit_node 的
+  .asset 分支（:730 fbx endswith 检查处）+ 新增 tools/unity_mesh_asset.py。
+- **fid 猜号错位实锤**：Relay prefab Pin2/5 与「继电器」同 fid=4300000（不可能
+  共用 mesh）——4300000+2*i 猜号在该 FBX 错位；Pin 走程序化豁免无影响，但
+  若其他件出现错绑几何，优先查此。
+- M8 三项仍等 sin 规范文档。下轮优先级：①Relay 根因（geo_M 嫌疑+GLB dump）；
+  ②Photoresistor .asset 解码器；③Quad 图标面片；④移动端触控。P1=0fps 真机
+  验证（等 sin）。CF Pages 搁置勿动。
+
 **2026-10-23 21:00（值班第 16 轮收尾：✅ 10 项建模缺陷根因画像已诊断入库，未开工——预算不足防挂，已推送）**：
 - 本轮：唤醒时状态干净（ahead=0/未提交 0，上轮 36/36 全绿终态）；对 PLAN 108 行
   10 项缺陷完成结构画像诊断（audit_report_v2.json 三条目实值+嫌疑代码定位），
