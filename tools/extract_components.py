@@ -57,6 +57,13 @@ KEEP_PIN_MESHES = os.environ.get('KEEP_PIN_MESHES', '1') != '0'
 #   vlm_review_official 三连（Simple Switch 单件）。
 NODE_LOCAL_YFLIP = {('Simple Switch', 'Switch Pole')}
 
+# 2026-10-23 P0：NODE_SKIP_FBX_M —— 跳过 fbx_M 烘焙（双重变换）。
+# Relay Component/底板：diag_transform 实锤其 Model 的 world_M 含 S=1.2268+轴交换，
+# 与 prefab 节点 TRS 的 S=1.2268 完全一致（Unity 导入 FBX 时 Model 变换已体现在
+# prefab 层级），提取器再烘 fbx_M = scale 应用两次+多转一次，底板变 ±0.12m 大薄板
+# 盖掉台阶底座（VLM FAIL 根因）。Unity 语义 = world_M × vertex × unit，不烘。
+NODE_SKIP_FBX_M = {('Relay Component', '底板')}
+
 # 2026-10-23 P0b 勘误+修复：YFLIP 上轮 VLM FAIL「拨杆完全消失」的机理。
 # 原推理（已删）「总 det=(-1)·(-2.016)·(+1)=+2.016>0 不翻 frontFace」错把
 # Switch Pole 本地 det 当世界链 det。GLB dump 实测（列主序）：
@@ -737,6 +744,8 @@ def extract_component(prefab_path, ua, fbx_cache, out_dir):
                         md = mesh_data(geo)
                         if md:
                             fbx_M = info.get('model_world_M', {}).get(fid)
+                            if (model_id, node['name'] or '') in NODE_SKIP_FBX_M:
+                                fbx_M = None  # 双重变换豁免（NODE_SKIP_FBX_M，见定义处注释）
                             geo_M = info.get('geo_M_by_fid', {}).get(fid)
                             mesh_idx = _emit_mesh(glb, node, md, info, mr, ua, fbx_M, geo_M,
                                                    flip_winding=(model_id, node['name'] or '') in NODE_MESH_WINDING_FLIP)
