@@ -5,6 +5,28 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
+**2026-10-23 21:00（值班第 16 轮收尾：✅ 10 项建模缺陷根因画像已诊断入库，未开工——预算不足防挂，已推送）**：
+- 本轮：唤醒时状态干净（ahead=0/未提交 0，上轮 36/36 全绿终态）；对 PLAN 108 行
+  10 项缺陷完成结构画像诊断（audit_report_v2.json 三条目实值+嫌疑代码定位），
+  修复闭环预算不够未开工，线索全留此段。
+- **下轮直接用（省考古）**：
+  ①Relay_Component：nodes_pf=12 vs glb=11（差 1 节点）；底板 pf z=[-1.2368,
+  -1.2125] vs glb z=[-0.010,0.014]——差 1.2m，像底板节点（或其父）变换未应用/
+  错绑；继电器 BBOX-X 同偏。②Resistance_Law：对象001-004 X 轴统一偏 ~+0.03
+  （glb X=[-0.0861,0.1105] vs pf=[-0.0983,0.0982]），父节点 X 平移未应用嫌疑。
+  ③Photoresistor：「光敏电阻」「Mesh6」两 renderer 在 GLB 无对应节点
+  （MESH-MISSING×2，aabb 反而一致=这俩 mesh 在包围盒内部，视觉上是本体缺失）。
+  **嫌疑代码**：extract_components.py 的几何解析链（refdump walk 同款逻辑：
+  `geo_by_fileid.get(fid)` 失败回退 `model_geos.get(node['name'])` 按名匹配 +
+  `model_world_M` 的 fbx_M 烘焙）——按名回退可能错绑几何或丢 fbx_M 致顶点错位。
+  **工具就绪**：build/refdump/{ModelID}.json 三个件已存在（36 件对照时生成，
+  内含 Unity 权威 nodes[].matrix+slots），下轮直接 diff refdump vs GLB 节点树
+  定断点，无需重跑 dump。修复后重提取 3 GLB（tools/extract_one.py，
+  分钟级）→ batch_shot/VLM → smoke_test 三件套收尾。
+- 本轮零代码改动（纯诊断+文档），无需 smoke；M8 三项仍等 sin 规范文档。
+- 下轮优先级不变：①10 项缺陷修复（上线索）；②Quad 图标面片；③移动端触控。
+  P1=0fps 真机验证（等 sin）。CF Pages 搁置勿动。
+
 **2026-10-23 19:40（值班第 15 轮收尾：✅ 13 FAIL 全清零——36/36 对照全 PASS，已推送）**：
 - 本轮做的：①收尾上会话挂掉的未提交改动（refshot 方法学对齐：GLB 无 pin
   网格时补画与 web 端 src/components.js 同规格程序化插头座，13 张图重生，
