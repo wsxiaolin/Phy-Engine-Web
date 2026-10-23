@@ -5,6 +5,13 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
+**2026-10-24 06:20（值班第 21 轮收尾：✅ Relay_Component 销案——非提取缺陷，拼图 FAIL=webshot 取景太远致 VLM 判定漂移；官方对照基线实质 38/38 全 PASS，已推送（见 git log））**：
+- **Relay 销案证据链**（全部落盘 `build/compare_official_vlm/Relay_Component_forensics.md` 结案段）：①FBX 源码实锤——继电器.FBX 唯一根 Model Sphere001 带 `Lcl +90°X`+`GeoRotation -90°X` 单轴互抵，prefab 跨层级直引 mesh（fileID 4300000）→ Unity 语义=只烘 GeoM(-90°X) 立起、跳过 Lcl，**提取器行为与 Unity 逐位一致**，上轮「漏了导入旋转」推断作废；②GLB 数据全对（body Y=0.031/Pin2 顶 0.0766/footprint 0.16 → H/W=0.48 与官方实述精确吻合）；③web 近景实述结构正确（蓝立方体+其上黑金顶圆柱+薄底座+3红1黑接线柱+丝印）；④拼图复跑仍 FAIL 但判词与前轮互斥（「线框结构」幻觉）⑤**公平对照终裁 PASS**（官方预览 vs 近景等高并排 `relay_fair.png` + `relay_fair_vlm.json`）。
+- **Y=0.423 压扁疑虑撤销**：0.423 是 prefab 源码里 Unity 真实 scale，一比一复刻即正确。
+- **遗留改进（非缺陷）**：compose_official 拼图右半 webshot 取景太远（元件太小）是两起判定漂移（MI+Relay）的共同诱因——shot_pairs 取景怼近元件可根治此类误判，评估后决定是否全量重截重审（成本：38 件重跑）。
+- **下轮直接干（优先级）**：①webshot 取景管线改进（根除判定漂移源，见上）②MI/Relay 同族 **Icon 面片贴到部件表面**（MI 白符号应画在 IC 表面而非底座——真差距唯一幸存项）③Quad 材质层级④移动端触控。P1=0fps 真机验证（等 sin）。CF Pages 搁置勿动。
+- 工程清理：build/probes/ 临时探针目录已删除，销案证据图收编 compare_official_vlm/。
+
 **2026-10-24 04:00（值班第 20 轮收尾：✅ Mutual_Inductor 回归疑云取证销案（非回归=VLM 判定漂移，真差距=Icon 面片位置）+ Relay 根因数据包落盘 + _tmp.json 根治，已推送（见 git log））**：
 - **Mutual_Inductor 销案（非回归）**：①GLB 自 2349208 字节未变（build=dist
   同 sha，18 轮重提取未动它）②catalog 条目 diff 为空③旧 PASS 图（LFS

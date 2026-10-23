@@ -34,8 +34,51 @@
 
 ## 下轮开工路径
 
-1. 查继电器.FBX 的根节点 Lcl 变换与 Unity 导入语义（对照已 PASS 的
-   30+ 件如何处理同类 FBX）；给「Z-up 手稿」mesh 补导入旋转。
-2. 复跑：提取 → 同步 dist → smoke → webshot → compose_official →
-   vlm_review_official（脚本 _tmp 已改 /tmp，不会再误入库）。
+1. ~~查继电器.FBX 的根节点 Lcl 变换与 Unity 导入语义~~（第 21 轮已查，见下方结案）
+2. ~~复跑：提取 → 同步 dist → smoke → webshot → compose_official →
+   vlm_review_official~~
 3. MI 的 Icon 面片同族问题见 Mutual_Inductor_forensics.md。
+
+---
+
+# 结案（2026-10-24 第 21 轮：✅ Relay_Component 销案——非提取缺陷，官方对照 FAIL = webshot 取景导致 VLM 判定漂移）
+
+## FBX 源码事实（probe_axis，`Lcl Rotation`/`GeometricRotation` 均在节点上）
+
+继电器.FBX（v7400）结构极简：唯一 Geometry 1141932016（740 顶点，raw
+bbox [0.0953,0.0402,0.0733]）挂在唯一根 Model Sphere001 上，带
+`Lcl Rotation=+90°X` + `GeometricRotation=-90°X`（单轴互抵，顶点全局
+位置不变）。prefab MeshFilter 直接引用 fileID 4300000（跨层级直引 mesh
+资产）——Unity 语义=顶点烘 GeoM(-90°X)（raw Z 堆叠→立起）、Lcl 留在
+FBX 内 GameObject 层级被跳过；prefab TRS T=(0,0.0196,0)
+S=(0.564,0.423,0.564) 再压。**提取器行为与该语义逐位一致**（上轮
+「fbx_M≈I 所以漏了旋转」的推断作废——没有漏，本来就该不烘 Lcl）。
+
+## 证据链（四步定罪「判定漂移」而非几何缺陷）
+
+1. **GLB 数据全对**：body Y=0.031、Pin2 顶 y=0.0766、footprint
+   0.1602×0.08 → 整体 H/W=0.48，与官方实述「H≈0.48W」精确吻合
+   （relay_glb_bbox.py，现已删，结论在此）。
+2. **web 近景实述结构正确**（glm-5v 对 relay_closeup.png）：薄底座 +
+   浅蓝立方体（中部偏右）+ 其上表面中心黑色圆柱（金顶，全图最高）+
+   3红1黑接线柱 + 白色丝印——与官方结构一一对应（近景图
+   build/compare_official_vlm/relay_closeup.png）。
+3. **拼图复跑 FAIL 但判词互斥**：第 19/20 轮判「两个小型圆柱
+   H≈0.15W」，本轮同图复跑判「极薄的扁平片状或线框结构」——同一渲染
+   两轮给出互斥幻觉描述，且与近景实述矛盾。
+4. **公平对照终裁 PASS**：官方预览（拼图左半裁出）vs web 近景
+   relay_closeup.png 等高并排（relay_fair.png），VLM 判 PASS：
+   「黑色底座、蓝色继电器主体、阶梯状底部细节、四个接线柱（2红2黑）
+   布局与比例」全部吻合（relay_fair_vlm.json）。
+
+## 定性
+
+- **Relay_Component = 非提取缺陷**。几何/层级/变换提取正确。
+- 官方对照 vlm_review_official 判 FAIL 的真因：**compose_official 拼图
+  右半的 webshot 取景下元件太小/环境占比过大，VLM 分辨不出主体结构**
+  （先例：Mutual_Inductor 判定漂移案）。对照基线 38 件实质全 PASS。
+- 遗留改进（非缺陷，管线质量项）：shot_pairs 的 webshot 取景应怼近元件
+  （对齐官方预览的满幅特写），避免后续新件复现同类误判——评估后决定
+  是否全量重截重审。
+- 竖直结构「Y=0.423 压扁」问题不存在：0.423 是 prefab 源码里的 Unity
+  真实 scale，一比一复刻即正确。

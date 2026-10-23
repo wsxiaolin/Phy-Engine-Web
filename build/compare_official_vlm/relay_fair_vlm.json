@@ -1,0 +1,28 @@
+{
+  "choices": [
+    {
+      "finish_reason": "stop",
+      "index": 0,
+      "message": {
+        "content": "```json\n{\"verdict\":\"PASS\",\"issues\":[],\"notes\":\"右图忠实复刻了左图的主体几何结构，包括黑色底座、蓝色继电器主体、阶梯状底部细节以及四个接线柱（2红2黑）的布局与比例，符合判定标准。\"}\n```",
+        "role": "assistant"
+      }
+    }
+  ],
+  "created": 1792793248,
+  "id": "20261024060725e274069315714f96",
+  "model": "glm-5v-turbo",
+  "object": "chat.completion",
+  "request_id": "20261024060725e274069315714f96",
+  "usage": {
+    "completion_tokens": 62,
+    "completion_tokens_details": {
+      "reasoning_tokens": 0
+    },
+    "prompt_tokens": 1606,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    },
+    "total_tokens": 1668
+  }
+}
