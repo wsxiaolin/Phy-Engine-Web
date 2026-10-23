@@ -5,31 +5,37 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
-**2026-10-23 05:20（值班第 10 轮收尾：✅ P2 非确定性悬案结案 + LFS 实体补推，4c61bc2 已推 main）**：
-- **P2 结案（本轮主战果）**：静态审计全链（字节流顺序解析→dict 保序→set 仅防环
-  →纯浮点矩阵）无任何 hash/随机来源；**tools/probe_determinism.py 决定性实验**：
-  6 个 PYTHONHASHSEED + MIRROR_FIX=unified + BAKE_FBX_M=1 共 8 组合，Simple Switch
-  prefab 的 SwPole/Pole quat+矩阵指纹 **8/8 全一致**，铡刀/基础件.FBX md5 稳定。
-  **真相：历史「跨会话旋转列符号相反」= 上会话中间态代码（未提交 YFLIP diff）的
-  输出被误读为运行非确定性——变量是代码版本，不是随机性。** 观测的其实是 prefab
-  层 Pole 节点（铡刀.FBX 内 Model 名为 zha/对象047，无 Pole）。
-- **防御落地**：①catalog.meta.json 配置烙印（gitHead+4 环境开关+YFLIP/WINDING 表），
-  产物配置漂移一眼可辨；②check_switch_pole.py 不变量自动挂进全量提取链尾
-  （违反 exit 1，上轮建议兑现）。
-- **潜伏雷排除**：远端仓库 GLB 历史上全是 LFS pointer 无实体（新 clone 会拉空）；
-  本环境 git-lfs 3.7.0 可用 → `git lfs push --all` 全量实体补推 + 本轮 commit
-  随行上传，已验证 0 错误。「收尾环境缺 git-lfs」旧信息作废。
-- **验证**：全量重提取 87 件 EXIT=0 + 不变量 OK（x[-0.0467,0.0558] det+2.016）
-  + smoke_test SMOKE OK + push 干净。
-- 教训新增：⑥git status 单 GLB 显示 M ≠ 产物漂移——先想 LFS pointer vs 实体
-  （cmp 前 `git show HEAD:file | wc -c`，131B=pointer）；⑦工具网关 504 时子壳
-  后台任务往往已存活，先查进程/日志再重跑，勿盲目重启。
-- 上会话教训维持：①看 git status 先 grep tools/；②后台任务双 fork `( cmd & )`；
-  ③长 sleep 拆 ≤60s；④VLM 单件跑会覆写 report.json；⑤vlm_review_official 传参
-  用下划线格式。
-下一步优先级：P1=headless 0fps（真机验证，等 sin）；P2'≈M8 功能规范补齐
-（PLAN §118，0% 未动，含示波器/电表类/参数调节/存档兼容等，见规范 §2-§7）。
+**2026-10-23 11:30（值班第 11 轮收尾：✅ M8 电表类五件落地 + e2e/VLM 全绿，commit 待推）**：
+- **主战果（承接上轮挂掉的会话，验证收尾后完成）**：规范 §4 电表类——
+  简单安培计/简单伏特计/灵敏电流计/微安表/电能表，前端全链路：
+  web/src/meters.js（新 309 行）+ app.js 挂接（展开/回读/指针/标签）。
+- **实现要点（全部对照 unity/ Meters/*.cs，禁记忆）**：引擎无电表原生模型
+  → 照 Unity BuildElements 展开为 Resistor 子网络（ideal/real 两档、
+  pinMap 端点改写）；SyncStatistics 公式（电流/刻度/名义量程/烧毁阈值
+  ±1.05、安培计 R=1/72 满偏 7.5mV、伏特计 R=3000 量程 3/15V、检流计
+  R=100 量程 3e-6、微安表 500Ω 量程 0.1V、电能表 RV/RC 示数累积 Wh）；
+  RenderPointer eulerY=lerp(46°,-46°,invLerp(min,max,刻度))（SimpleAmmeter
+  -1/3..1、Galvanometer -1..1、Microammeter 0..1 源码逐一核对一致）；
+  电能表无指针走示数行（Unity Text 滚轮的 web 等价）；标签 Unity
+  RenderLabel 一比一（安培/伏特计显名义量程，其余无世界标签）。
+- **验证**：①tools/verify_meter.mjs（新 e2e）三重断言 PASS——电池3V/1MΩ
+  串检流计：读数 3µA、刻度 0.9999 满偏不烧、指针 -46° 驱动链全通
+  （DOM 级 rotation.y 断言，比截图更硬）；②VLM 双图 PASS（verify_meter
+  _deflect.png 指针右偏+读数标签可见；上轮遗留 meter_e2e_deflected.png
+  指针左偏）；③smoke_test SMOKE OK；④vite build 干净（2.2s，hash
+  index-CMdpqpwO.js）。抽查 unity 源码数值 4/4 吻合。
+- **顺手修复**：verify_scene.mjs（root 属主不可写，未动）存量布线缺陷——
+  检流计两端同节点自短接+断言符号错——已由 verify_meter.mjs 以正确
+  串联回路替代覆盖；引擎电流符号约定（bat/res 同号）记录在 e2e 注释。
+- 教训：⑧wakeup.sh 的 git status 输出会截断 untracked 列表（显示 11 个
+  只有 8 行，meters.js 被吞）——收尾前补 `git status --short` 亲自核对；
+  ⑨ root 属主文件（跨会话残留）sudo 无密码改不了 → 新建同功能工具绕过，
+  勿硬刚。
+下一步优先级：P1=headless 0fps（真机验证，等 sin）；P2=M8 剩余——
+示波器（规范 §3.2/§3.4）、逐元件参数调节（规范 §2 八类全集）、
+存档 .plsave 双向兼容（规范 §7）；Multimeter（多用电表）未在 SUPPORTED。
 CF Pages 搁置勿动。
+
 
 ## 0. 一句话现状
 

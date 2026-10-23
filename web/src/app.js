@@ -6,6 +6,7 @@ import { UI } from "./ui.js";
 import { Experiment, defaultProps } from "./state.js";
 import { initEngine, Engine } from "./engine.js";
 import { byId, isSupported, WIRE_COLORS } from "./catalog.js";
+import { METER_MODELS, expandMeters, meterStatistics, pinWiredOf, pointerAngle } from "./meters.js";
 
 const SNAP = 0; // Unity has no grid snapping; free continuous placement.
 const TABLE_HALF_X = 0.74;
@@ -449,6 +450,47 @@ export class App {
     g.userData.pole = pole;
   }
 
+  // M8 电表渲染循环（Unity Render/RenderPointer 一比一）：
+  // 指针节点 = prefab MeterPointer 序列化目标 = 内层「指针」（挂 mesh、无 children；
+  // 外层同名节点是建模姿态父层，动它会连 21.72 缩放一起歪）。Unity RenderPointer
+  // 用 localEulerAngles=(0,Ratio,0) 整覆盖本地旋转——GLB 提取语义 q 原样不共轭
+  // （镜像统一交给顶层 X_MIRROR），故 three 侧同分量直设 rotation=(0,Ratio,0)。
+  // 语义三分支照抄 Unity Render()：未连接→0 值归零；已连接未烧毁→刻度；
+  // 烧毁→不调用（指针冻结在末位，pointerAngle 返回 null 表达）。
+  // 电能表无指针：Unity SyncStatistics 每帧 Properties["示数"] += 功率×DeltaTime/3600，
+  // 此处以渲染步长 dt 等价累积（Unity sim tick 与帧同步）。
+  updateMeters(dt) {
+    for (const el of this.experiment.elements) {
+      if (!METER_MODELS.has(el.modelId)) continue;
+      const g = this.elementObjects.get(el.id);
+      if (!g) continue;
+      if (el.modelId === "Electricity Meter") {
+        const p = Number((el.statistics || {})["功率"]) || 0;
+        if (this.running && !el.broken && p !== 0) {
+          const prev = Number(el.properties?.["示数"]) || 0;
+          el.properties["示数"] = +(prev + (p * dt) / 3600).toFixed(6);
+          el.statistics = { ...(el.statistics || {}), 示数: el.properties["示数"] };
+        }
+        continue;
+      }
+      let needle = g.userData.meterNeedle;
+      if (needle === undefined) {
+        needle = null;
+        // 节点名「指针」：GLB 内外层同名（外层姿态组 + 内层 mesh），GLTFLoader
+        // 加载去重会把内层改名「指针_1」（空格/重名 sanitize），正则兼容两种。
+        g.traverse((o) => {
+          if (needle || !/^指针(_\d+)?$/.test(o.name || "")) return;
+          if (o.isMesh && (o.children || []).length === 0) needle = o;
+        });
+        g.userData.meterNeedle = needle;
+      }
+      if (needle) {
+        const a = pointerAngle(el.modelId, el.statistics, el.broken);
+        if (a !== null) needle.rotation.set(0, a, 0);
+      }
+    }
+  }
+
   // LED 指示灯运行时着色（Unity LEDRenderer.Render 复刻）：
   // Logic Input: LEDGreen.Render(开关)——开关=1 绿光亮；Logic Output:
   // LEDRed.Render(状态)——状态 H 红光亮。LightColor 取自 prefab 序列化值
@@ -786,12 +828,17 @@ export class App {
     const connectedEls = supportedEls.filter((e) => connected.has(e.id));
     const sub = new Experiment();
     sub.elements = connectedEls.map((e) => ({ ...e }));
-    sub.wires = subWires;
+    sub.wires = subWires.map((w) => ({ ...w })); // 展开会改写端点，必须副本
     if (!sub.elements.length) {
       this.engine.destroy();
       if (verbose) this.ui.toast("没有可仿真的元件");
       return;
     }
+    // M8 电表展开：引擎无电表原生模型，照 Unity BuildElements 换成 Resistor
+    // 子网络（外部导线端点同步改写到子电阻 pin）。电表本体不进引擎 payload。
+    const meterInfo = expandMeters(sub.elements, sub.wires);
+    sub.elements = meterInfo.elements;
+    sub.wires = meterInfo.wires;
     // 引擎 build_netlist_from_wires 不做自动接地：无参考地的环路 MNA 奇异，
     // analyze 必失败（Unity 自己的求解器无此限制）。在发给引擎的 payload 里
     // 注入一个幽灵 Ground Component（只影响仿真，不进用户文档/存档）：
@@ -827,6 +874,17 @@ export class App {
       const status = JSON.parse((root.Experiment || root).StatusSave);
       const byIdMap = new Map(this.experiment.elements.map((e) => [e.id, e]));
       for (const e of this.experiment.elements) e.statistics = {};
+      // 电表子电阻压降收集（id 形如 owner::R1）
+      const subU = new Map();
+      for (const e of status.Elements) {
+        const id = e.Identifier;
+        if (typeof id === "string" && id.includes("::")) {
+          const idx = id.lastIndexOf("::");
+          const owner = id.slice(0, idx);
+          if (!subU.has(owner)) subU.set(owner, {});
+          subU.get(owner)[id.slice(idx + 2)] = Number((e.Statistics || {}).电压) || 0;
+        }
+      }
       for (const e of status.Elements) {
         const el = byIdMap.get(e.Identifier);
         if (el) {
@@ -841,6 +899,19 @@ export class App {
               el.statistics.功率 = +((u * u) / r).toFixed(6);
             }
           }
+        }
+      }
+      // 电表读数：Unity SyncStatistics 一比一（刻度/名义量程/烧毁）
+      for (const el of this.experiment.elements) {
+        if (!METER_MODELS.has(el.modelId)) continue;
+        const U = subU.get(el.id) || {};
+        const pinWired = pinWiredOf(this.experiment.wires, el.id);
+        const r = meterStatistics(el, U, pinWired, 0);
+        if (!r) continue;
+        el.statistics = r.statistics;
+        if (r.broken && !el.broken) {
+          el.broken = true;
+          this.ui.toast(`${el.label} 超量程烧毁（Unity 同判定）`);
         }
       }
       this.ui.setPerf(`首屏 ${this.firstFrameMs?.toFixed(0) || "-"} ms · analyze ${dt.toFixed(1)} ms`);
@@ -899,6 +970,21 @@ export class App {
       this.syncLED(el, g);
       const parts = [];
       const st = el.statistics || {};
+      if (METER_MODELS.has(el.modelId)) {
+        // Unity RenderLabel 一比一：安培计/伏特计显示名义量程（如 0.6A / 3V），
+        // 灵敏电流计/微安表/电能表无世界标签（base 虚方法返回 ""）。
+        if (el.modelId === "Simple Ammeter" || el.modelId === "Simple Voltmeter") {
+          const nominal = st["名义量程"] ?? el.properties?.["名义量程"] ?? 0;
+          parts.push(fmt(nominal, el.modelId === "Simple Ammeter" ? "A" : "V"));
+        }
+        const text0 = parts.filter(Boolean).join(", ");
+        if (text0) {
+          const p0 = new THREE.Vector3(0, (g.userData.size?.y || 0.05) + 0.06, 0);
+          g.localToWorld(p0);
+          entries.push({ id: el.id, world: p0, text: text0 });
+        }
+        continue;
+      }
       if ("电压" in st) parts.push(fmt(st["电压"], "V"));
       if ("电流" in st) parts.push(fmt(st["电流"], "A"));
       if ("功率" in st && !("电压" in st)) parts.push(fmt(st["功率"], "W"));
@@ -939,6 +1025,7 @@ export class App {
         if (g) this._selectBox.setFromObject(g);
       }
       this.world.renderer.render(this.world.scene, this.world.camera);
+      this.updateMeters(dt);
       this.updateLabels();
 
       this.frames = (this.frames || 0) + 1;

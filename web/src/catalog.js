@@ -38,6 +38,8 @@ export function itemsIn(category) {
 }
 
 // ModelIDs the engine backend can currently simulate (docs/ENGINE_API.md §4).
+// 电表类例外：pe_model_id.h 无原生模型，仿真走 meters.js 的 Resistor 子网络
+// 展开（Unity Meters/BuildElements 同构），故同样视为可仿真。
 const SUPPORTED = new Set([
   "Ground Component", "Resistor", "Basic Capacitor", "Basic Inductor",
   "Battery Source", "Simple Switch", "Push Switch", "Air Switch",
@@ -48,6 +50,8 @@ const SUPPORTED = new Set([
   "Comparator", "JK Flipflop", "T Flipflop", "Real-T Flipflop", "Multiplier",
   "D Flipflop", "Half Adder", "Full Adder", "Half Subtractor", "Full Subtractor",
   "Counter", "Random Generator",
+  "Simple Ammeter", "Simple Voltmeter", "Galvanometer", "Microammeter",
+  "Electricity Meter",
 ]);
 
 export function isSupported(modelId) {
