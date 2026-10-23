@@ -5,6 +5,25 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
+**2026-10-23 16:10（值班第 14 轮收尾：✅ 上轮 dist 残留收口 + 对照终态报告入库，已推送）**：
+- 本轮做的：①上轮 verify 后未提交的 3 个 dist 产物变更，smoke_test EXIT=0
+  （SMOKE OK）验证后收尾提交；②git-lfs 3.7.0 就绪实锤——176 GLB 全部 LFS
+  追踪且已在 origin/main（ahead=0），PLAN「重提取产物补推」为过时描述已勾；
+  ③36 件对照终态报告 build/compare_vlm/report.json（23 PASS/13 FAIL）入库，
+  PLAN.md 113/115 两项勾选更新。
+- **发现的关键阻塞（下轮先看这条）**：M8 剩余三项（示波器 §3.2/§3.4、逐元件
+  参数调节 §2 八类全集、导线核对 §5）全部依赖规范文档 shared/specs/Unity电学
+  模块功能规范.md，但该文件已不在本地（unity/ 克隆、repo/ 引擎源码、工作区
+  全搜无果，git 亦未追踪；unity/Assets 与 C++ 引擎对 oscilloscope/示波 零命中，
+  无权威源可抄，铁律禁止凭记忆写）。需 sin 提供规范文档或指路，M8 三项在此之前
+  全部阻塞，勿硬编。
+- **下轮主活（无阻塞可干）**：13 FAIL 修复——根因方向 1482c4d 提取器 .meta
+  权威映射+内置基元改动引入回归（电容 FBX meta 映射正确但 mesh_data 静默
+  失败致几何错绑）；两处坑勿踩：「多出接线柱」类 FAIL 是方法学误报（refshot
+  裸 GLB vs webshot 含程序化 pin 帽）；And_Gate/Air_Switch 旧版 19.3m 巨物的
+  M7 差异是修复、不能整体回滚。
+- 验证：node tools/smoke_test.mjs EXIT=0。
+
 **2026-10-23 15:06（值班第 13 轮收尾：✅ .plsave 原生信封一比一（规范 §7 收官）+ verify_plsave 17 断言全绿，已推送）**：
 - **主战果（承接第 12 轮挂掉的未提交 state.js 半成品，引擎源码裁决后收尾完成）**：
   toPlsave() 从旧扁平 {Type,StatusSave,CameraSave} 重写为引擎原生嵌套信封
