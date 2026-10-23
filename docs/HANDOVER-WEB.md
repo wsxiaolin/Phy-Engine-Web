@@ -5,6 +5,24 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
+**2026-10-24 00:20（值班第 18 轮收尾：✅ Photoresistor 主体修复闭环——.asset 解码器落地+官方预览 VLM PASS，38 件对照 38 PASS/1 FAIL，已推送 83cb730）**：
+- 本轮做的：①新增 `tools/unity_mesh_asset.py`（Unity YAML Mesh
+  serializedVersion>=9 的 m_VertexData 顶点流解码器：channel descriptors/
+  多 stream stride/uint16|32 索引/多 submesh→ByPolygon 材质槽），解码
+  4377 顶点/5082 三角形 bbox 与 localAABB 逐轴精确吻合；②emit_node 加
+  `.asset` 分支（顶点=Unity 本地空间米制，走 Quad 基元同款 unit=1.0
+  发射路径），87 件全量重提取零 ERR；③compose_official ALIAS 补
+  Photoresistor→Photo-Resistor + shot_pairs 加 EXTRA env；④视觉闭环：
+  webshot 531KB（旧 58KB 主体入画）→官方预览对照 **VLM PASS**
+  （证据 build/compare_vlm/Photoresistor.json）+ smoke EXIT=0。
+- Photoresistor 定性：修复完成，37+1=38 件官方对照 **38 PASS/1 FAIL**
+  （唯一 FAIL=Relay，Mesh6 fid=-45537441166385993 引外部库无本地源，
+  已定性放弃不计）。
+- **下轮直接干（优先级）**：①Relay 根因（第 17 轮画像：GLB dump 逐节点
+  bbox 对照 Unity 语义 z=[-0.0983,0.0982] 找错位层，geo_M 头号嫌疑；
+  NODE_SKIP_FBX_M 已上线，bake 路径需复验）②Quad 图标面片材质层级
+  ③移动端触控。P1=0fps 真机验证（等 sin）。CF Pages 搁置勿动。
+
 **2026-10-23 23:55（值班第 17 轮收尾：✅ 上会话半成品收尾+Relay/Photoresistor 根因大进展，37 PASS/2 FAIL，已推送 80743dc）**：
 - 本轮做的：①收尾上会话挂掉的 21 项未提交（三件截图+VLM 证据：**Resistance_Law
   PASS**（X 偏移已清）/ Relay FAIL / Photoresistor FAIL）；②diag_transform 实锤
