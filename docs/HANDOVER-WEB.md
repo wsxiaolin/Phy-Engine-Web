@@ -5,6 +5,12 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
+**2026-10-24 07:30（值班第 22 轮收尾：✅ MI Icon 面片销案——非差距，判定漂移链终结；官方对照基线终态 38/38 零真实建模差距，已推送 41207e3）**：
+- **MI 销案证据链**（`build/compare_official_vlm/Mutual_Inductor_forensics.md` 结案段）：①渲染实测逐节点 bbox——Icon 面片 0.062×0.057m 平铺底板顶面+0.0004、四角 pin Quad 同平面，与 prefab TRS 手算 Unity 真值逐位吻合（提取器 R@diag(S) 语义经数值锚定正确，魔方旋转+非均匀缩放链忠实）；②z-ai vision 直审官方 210×139 原图——**基座表面 IC 周围本就印白色线圈符号**、IC 顶面另有丝印，推翻 round-20「白符号只在 IC 表面」误读（上轮「真差距唯一幸存项」撤销）；③公平对照 `mi_fair.png` 官方×web 近景等高并排 VLM 判 PASS 五项结构一一对应。round-21 快照「下轮直接干②Icon 面片贴部件表面」作废——官方就是印底座的。
+- **PLAN 两遗留条目勾销**：「剩余 10 项真实建模缺陷」（Relay×3 判定漂移 / Resistance×5+Photoresistor×2 前轮已修复）与「Quad 图标面片材质层级」。
+- **下轮直接干（优先级重排）**：①webshot 取景管线改进（MI+Relay 两起漂移共同诱因=取景太远元件太小；两案已用公平对照分别销案，38 件全量重截边际收益低——建议只做管线改进给未来新件用，或降级搁置）②移动端触控③示波器（规范 §3.2/§3.4）④逐元件参数补全（规范 §2 八类）。P1=0fps 真机验证（等 sin）。CF Pages 搁置勿动。
+- **取证纪律**：VLM 对 <300px 官方小图的「位置级」描述不可直接当差距证据，必须先直审原图+渲染实测 bbox 交叉验证（MI 案 0.0124m「差距」实为误读）。
+
 **2026-10-24 06:20（值班第 21 轮收尾：✅ Relay_Component 销案——非提取缺陷，拼图 FAIL=webshot 取景太远致 VLM 判定漂移；官方对照基线实质 38/38 全 PASS，已推送（见 git log））**：
 - **Relay 销案证据链**（全部落盘 `build/compare_official_vlm/Relay_Component_forensics.md` 结案段）：①FBX 源码实锤——继电器.FBX 唯一根 Model Sphere001 带 `Lcl +90°X`+`GeoRotation -90°X` 单轴互抵，prefab 跨层级直引 mesh（fileID 4300000）→ Unity 语义=只烘 GeoM(-90°X) 立起、跳过 Lcl，**提取器行为与 Unity 逐位一致**，上轮「漏了导入旋转」推断作废；②GLB 数据全对（body Y=0.031/Pin2 顶 0.0766/footprint 0.16 → H/W=0.48 与官方实述精确吻合）；③web 近景实述结构正确（蓝立方体+其上黑金顶圆柱+薄底座+3红1黑接线柱+丝印）；④拼图复跑仍 FAIL 但判词与前轮互斥（「线框结构」幻觉）⑤**公平对照终裁 PASS**（官方预览 vs 近景等高并排 `relay_fair.png` + `relay_fair_vlm.json`）。
 - **Y=0.423 压扁疑虑撤销**：0.423 是 prefab 源码里 Unity 真实 scale，一比一复刻即正确。
