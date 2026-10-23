@@ -5,37 +5,34 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
-**2026-10-23 11:30（值班第 11 轮收尾：✅ M8 电表类五件落地 + e2e/VLM 全绿，commit 待推）**：
-- **主战果（承接上轮挂掉的会话，验证收尾后完成）**：规范 §4 电表类——
-  简单安培计/简单伏特计/灵敏电流计/微安表/电能表，前端全链路：
-  web/src/meters.js（新 309 行）+ app.js 挂接（展开/回读/指针/标签）。
-- **实现要点（全部对照 unity/ Meters/*.cs，禁记忆）**：引擎无电表原生模型
-  → 照 Unity BuildElements 展开为 Resistor 子网络（ideal/real 两档、
-  pinMap 端点改写）；SyncStatistics 公式（电流/刻度/名义量程/烧毁阈值
-  ±1.05、安培计 R=1/72 满偏 7.5mV、伏特计 R=3000 量程 3/15V、检流计
-  R=100 量程 3e-6、微安表 500Ω 量程 0.1V、电能表 RV/RC 示数累积 Wh）；
-  RenderPointer eulerY=lerp(46°,-46°,invLerp(min,max,刻度))（SimpleAmmeter
-  -1/3..1、Galvanometer -1..1、Microammeter 0..1 源码逐一核对一致）；
-  电能表无指针走示数行（Unity Text 滚轮的 web 等价）；标签 Unity
-  RenderLabel 一比一（安培/伏特计显名义量程，其余无世界标签）。
-- **验证**：①tools/verify_meter.mjs（新 e2e）三重断言 PASS——电池3V/1MΩ
-  串检流计：读数 3µA、刻度 0.9999 满偏不烧、指针 -46° 驱动链全通
-  （DOM 级 rotation.y 断言，比截图更硬）；②VLM 双图 PASS（verify_meter
-  _deflect.png 指针右偏+读数标签可见；上轮遗留 meter_e2e_deflected.png
-  指针左偏）；③smoke_test SMOKE OK；④vite build 干净（2.2s，hash
-  index-CMdpqpwO.js）。抽查 unity 源码数值 4/4 吻合。
-- **顺手修复**：verify_scene.mjs（root 属主不可写，未动）存量布线缺陷——
-  检流计两端同节点自短接+断言符号错——已由 verify_meter.mjs 以正确
-  串联回路替代覆盖；引擎电流符号约定（bat/res 同号）记录在 e2e 注释。
-- 教训：⑧wakeup.sh 的 git status 输出会截断 untracked 列表（显示 11 个
-  只有 8 行，meters.js 被吞）——收尾前补 `git status --short` 亲自核对；
-  ⑨ root 属主文件（跨会话残留）sudo 无密码改不了 → 新建同功能工具绕过，
-  勿硬刚。
-下一步优先级：P1=headless 0fps（真机验证，等 sin）；P2=M8 剩余——
-示波器（规范 §3.2/§3.4）、逐元件参数调节（规范 §2 八类全集）、
-存档 .plsave 双向兼容（规范 §7）；Multimeter（多用电表）未在 SUPPORTED。
-CF Pages 搁置勿动。
-
+**2026-10-23 12:12（值班第 12 轮收尾：✅ Multimeter 多用电表全链路落地 + e2e/VLM/smoke 三绿，已推送）**：
+- **主战果（承接第 11 轮挂掉的未提交 meters.js 半成品，核对 Unity 后接线完成）**：
+  规范 §4 最后一件电表——Multimeter（万用表）18 档全链路：meters.js
+  multimeterNet/multimeterDisplay + expandMeters 展开接线 + app.js 屏显
+  浮动标签/档位下拉 + SUPPORTED/DEFAULT_PROPS 补录。
+- **实现要点（对照 unity Meters/Multimeter.cs，禁记忆）**：BuildElements =
+  R(Pins[0]→内) + VDC(内→Pins[1]，MaximumVoltage=-15/0)；SyncProperties
+  三段——档 0-2,13-17 R=1e9 V=0（伏特计形）、3-7 R=1e-9 V=0（安培计形）、
+  8-12 R=1 V=-15（欧姆计形）；GetDigitalText 一比一（|v|≥max→"OL"、
+  ≤min→"0.00"、长度≥7 截断）；电阻档实测 R=15/I-1；18 档角度表抄
+  Render()（GLB 无 SwitchKnob 节点，旋钮不可驱动——档位走检查器下拉）。
+  上轮半成品 bug 一处：档位标签「交流 250V」实为 200V（250 是屏显量程
+  上限），已按 GetStatusData 修正。
+- **引擎接线两难点的实证解**：①电流档 R1=1e-9Ω 压降 ~3e-11V 引擎序列化
+  截断归零 → 回读改集 {电压,电流} 对，压降为零时兜底读内置 V 源支路电流
+  （MNA write_back 原生回填，串联同值，符号 e2e 实证为正）；②-15V 源在
+  pe_sim Battery「电压」直传，KVL 实证引擎约定 V=V(pin0)-V(pin1)，i=+0.1485
+  → R 屏显恰为 100，与 Unity -15 设计意图吻合，无需翻转。
+- **验证**：tools/verify_multimeter.mjs（新 e2e，数据驱动三幕）9/9 PASS——
+  电流档 0.03A 屏显"0.03"、电压档 3V 屏显"3"、电阻档 15/101A 屏显
+  "100"（纯函数 Node 直跑源码 + 页面 statistics + DOM 标签三重断言）；
+  VLM 截图 PASS（meter_visible/wiring_ok/display_100 全 true 零缺陷，
+  build/verify_multimeter_ohm.png）；smoke_test SMOKE OK；vite build 干净。
+- **遗留文件坑**：web/src/meters.js 为 root 属主（上轮 root 会话残留），
+  bash 不可写但 Edit 工具可写——后续会话改它用 Edit，勿用 bash 重定向。
+下一步优先级：P1=headless 0fps（真机验证，等 sin）；P2=示波器（规范
+§3.2/§3.4）、逐元件参数调节（规范 §2 八类全集）、存档 .plsave 双向
+兼容（规范 §7）；M8 电表类自此六件全齐。CF Pages 搁置勿动。
 
 ## 0. 一句话现状
 

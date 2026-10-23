@@ -51,7 +51,7 @@ const SUPPORTED = new Set([
   "D Flipflop", "Half Adder", "Full Adder", "Half Subtractor", "Full Subtractor",
   "Counter", "Random Generator",
   "Simple Ammeter", "Simple Voltmeter", "Galvanometer", "Microammeter",
-  "Electricity Meter",
+  "Electricity Meter", "Multimeter",
 ]);
 
 export function isSupported(modelId) {

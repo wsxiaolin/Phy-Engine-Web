@@ -143,6 +143,17 @@ export class UI {
         v.className = "stat";
         v.textContent = row.value;
         r.append(label, v);
+      } else if (row.type === "select") {
+        const sel = document.createElement("select");
+        for (const [val, text] of row.options) {
+          const o = document.createElement("option");
+          o.value = String(val);
+          o.textContent = text;
+          sel.appendChild(o);
+        }
+        sel.value = String(row.value);
+        sel.addEventListener("change", () => row.onChange(sel.value));
+        r.append(label, sel);
       } else {
         const input = document.createElement("input");
         input.value = row.value;

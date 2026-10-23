@@ -14,6 +14,7 @@ const DEFAULT_PROPS = {
   "Basic Capacitor": { 电容: 0.001 },
   "Basic Inductor": { 电感: 0.001 },
   "Battery Source": { 电压: 3 },
+  "Multimeter": { 状态: 0 },
   "Simple Switch": { 开关: 0 },
   "Push Switch": { 开关: 0 },
   "Air Switch": { 开关: 0 },

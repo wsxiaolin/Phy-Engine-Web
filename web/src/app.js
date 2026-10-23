@@ -6,7 +6,7 @@ import { UI } from "./ui.js";
 import { Experiment, defaultProps } from "./state.js";
 import { initEngine, Engine } from "./engine.js";
 import { byId, isSupported, WIRE_COLORS } from "./catalog.js";
-import { METER_MODELS, expandMeters, meterStatistics, pinWiredOf, pointerAngle } from "./meters.js";
+import { METER_MODELS, MULTIMETER_MODES, expandMeters, meterStatistics, multimeterDisplay, pinWiredOf, pointerAngle } from "./meters.js";
 
 const SNAP = 0; // Unity has no grid snapping; free continuous placement.
 const TABLE_HALF_X = 0.74;
@@ -646,6 +646,21 @@ export class App {
     const rows = [];
     const supported = isSupported(el.modelId);
     for (const [k, v] of Object.entries(el.properties)) {
+      if (el.modelId === "Multimeter" && k === "状态") {
+        // 18 档旋钮（Unity GetStatusData）：GLB 无 SwitchKnob 节点不可驱动
+        // 旋钮转角，档位以下拉呈现，屏显数字随档位实时切换。
+        rows.push({
+          label: "档位",
+          value: Math.max(0, Math.min(17, Math.round(Number(v) || 0))),
+          type: "select",
+          options: MULTIMETER_MODES.map((m, i) => [i, m.label]),
+          onChange: (val) => {
+            el.properties[k] = Number(val);
+            this.scheduleSimulate();
+          },
+        });
+        continue;
+      }
       rows.push({
         label: k,
         value: v,
@@ -874,7 +889,8 @@ export class App {
       const status = JSON.parse((root.Experiment || root).StatusSave);
       const byIdMap = new Map(this.experiment.elements.map((e) => [e.id, e]));
       for (const e of this.experiment.elements) e.statistics = {};
-      // 电表子电阻压降收集（id 形如 owner::R1）
+      // 电表子元件统计收集（id 形如 owner::R1）：电压=压降、电流=支路电流
+      // （电流档子电阻压降 ~1e-11V，引擎序列化截断时用 V 源支路电流兜底）
       const subU = new Map();
       for (const e of status.Elements) {
         const id = e.Identifier;
@@ -882,7 +898,11 @@ export class App {
           const idx = id.lastIndexOf("::");
           const owner = id.slice(0, idx);
           if (!subU.has(owner)) subU.set(owner, {});
-          subU.get(owner)[id.slice(idx + 2)] = Number((e.Statistics || {}).电压) || 0;
+          const stat = e.Statistics || {};
+          subU.get(owner)[id.slice(idx + 2)] = {
+            电压: Number(stat.电压) || 0,
+            电流: Number(stat.电流) || 0,
+          };
         }
       }
       for (const e of status.Elements) {
@@ -973,7 +993,11 @@ export class App {
       if (METER_MODELS.has(el.modelId)) {
         // Unity RenderLabel 一比一：安培计/伏特计显示名义量程（如 0.6A / 3V），
         // 灵敏电流计/微安表/电能表无世界标签（base 虚方法返回 ""）。
-        if (el.modelId === "Simple Ammeter" || el.modelId === "Simple Voltmeter") {
+        if (el.modelId === "Multimeter") {
+          // Unity TextDisplay 的 web 等价：屏显数字作浮动标签（GLB 屏幕无
+          // 动态贴图通道；模式 0 空串不显示）。GetDigitalText 一比一，见 meters.js。
+          parts.push(multimeterDisplay(el, st));
+        } else if (el.modelId === "Simple Ammeter" || el.modelId === "Simple Voltmeter") {
           const nominal = st["名义量程"] ?? el.properties?.["名义量程"] ?? 0;
           parts.push(fmt(nominal, el.modelId === "Simple Ammeter" ? "A" : "V"));
         }

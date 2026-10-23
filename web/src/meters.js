@@ -14,6 +14,7 @@ export const METER_MODELS = new Set([
   "Galvanometer",
   "Microammeter",
   "Electricity Meter",
+  "Multimeter",
 ]);
 
 export function isMeter(modelId) {
@@ -118,8 +119,107 @@ const NETWORKS = {
   },
 };
 
-// ---- 展开函数 ---------------------------------------------------------------
+// ---- Multimeter（多用电表）---------------------------------------------------
+// Unity Meters/Multimeter.cs 一比一。网络与档位联动（GetStatusData 0..17）：
+// BuildElements = R(Pins[0]→内部) + VDC(内部→Pins[1], MaximumVoltage 按档位)。
+// web 侧 VDC 用引擎 Battery Source（VDC 模型，属性「电压」）子元件承载，
+// pin0=正=内部节点、pin1=负=Pins[1]（与 app.js 幽灵接地「电池负=pin1」约定一致）。
 
+export function multimeterMode(el) {
+  const m = Math.round(Number(el.properties?.["状态"]) || 0);
+  return Math.max(0, Math.min(17, m));
+}
+
+// SyncProperties 三段（Unity 源码逐 case 抄录）：
+// 档 0-2,13-17（OFF/交流/直流电压）：R=1e9, V=0（伏特计形态，并联）；
+// 档 3-7（直流电流）：R=1e-9, V=0（安培计形态，串联）；
+// 档 8-12（电阻）：R=1, V=-15（内置 15V 驱动源，实测 R=15/I-1）。
+function multimeterNet(el) {
+  const mode = multimeterMode(el);
+  const ohmMode = mode >= 8 && mode <= 12;
+  const r = ohmMode ? 1 : mode >= 3 && mode <= 7 ? 1e-9 : 1e9;
+  return {
+    resistors: [{ key: "R1", r }],
+    sources: [{ key: "SRC", v: ohmMode ? -15 : 0 }],
+    pinMap: { 0: ["R1", "a"], 1: ["SRC", "b"] },
+    internal: [["R1", "b", "SRC", "a"]],
+  };
+}
+
+// 18 档档位表：label = GetStatusData 的 OperationData(值,单位,说明) 三字段
+// 组合；angle = Render 的 SwitchKnob localEulerAngles.y 逐 case 抄录。
+// 注：GLB 无 SwitchKnob 节点（旋钮烤在主体网格里，dump_glb 实证 4 网格无
+// 旋钮件），旋钮转角暂不驱动，数值保留在此待后续建模拆分。
+export const MULTIMETER_MODES = [
+  { label: "开关开路", angle: 0 },
+  { label: "交流 750V", angle: 15.2 },
+  { label: "交流 200V", angle: 35 },
+  { label: "直流 0.0002A", angle: 52 },
+  { label: "直流 0.002A", angle: 72.5 },
+  { label: "直流 0.02A", angle: 91 },
+  { label: "直流 0.2A", angle: 108 },
+  { label: "直流 10A", angle: 125.3 },
+  { label: "电阻 200Ω", angle: 180 },
+  { label: "电阻 2000Ω", angle: 198 },
+  { label: "电阻 20000Ω", angle: 216 },
+  { label: "电阻 200000Ω", angle: 231 },
+  { label: "电阻 2000000Ω", angle: 250 },
+  { label: "直流 0.2V", angle: 265.5 },
+  { label: "直流 2V", angle: 284 },
+  { label: "直流 20V", angle: 302 },
+  { label: "直流 200V", angle: 318 },
+  { label: "直流 1000V", angle: 337 },
+];
+
+// Unity GetDigitalText 一比一：|v|≥max→"OL"；≤min 或非有限→"0.00"；
+// 否则 (负号)+|v|.ToString()，长度≥7 截前 7 字符。
+function digital(src, max, min) {
+  if (!Number.isFinite(src)) return "0.00";
+  const a = Math.abs(src);
+  if (a >= max) return "OL";
+  if (a <= min) return "0.00";
+  const s = (src < 0 ? "-" : "") + String(a);
+  return s.length >= 7 ? s.slice(0, 7) : s;
+}
+
+// Unity Math.Round(x, n) 为银行家舍入，此处 half-up；仅精确 .5 边界有差异。
+const roundN = (v, n) => {
+  const m = 10 ** n;
+  return Math.round(v * m) / m;
+};
+
+// Render() 的 TextDisplay 数字显字（档位 + 统计键 → 屏显字符串）。
+// 电阻档实测值 = 15/瞬间电流-1（Unity Render 原式）。
+export function multimeterDisplay(el, st) {
+  const mode = multimeterMode(el);
+  const V = Number(st?.电压) || 0; // Unity sqrt(|P·R|) ≥ 0（幅值）
+  const I = Number(st?.瞬间电流) || 0;
+  const Uv = Number(st?.瞬间电压) || 0; // 带符号
+  const R = I !== 0 ? 15 / I - 1 : Infinity;
+  switch (mode) {
+    case 0: return "";
+    case 1: return digital(roundN(V, 2), 750, 1);
+    case 2: return digital(roundN(V, 2), 250, 0.1);
+    case 3: return digital(I, 0.0002, 1e-8);
+    case 4: return digital(I, 0.002, 1e-7);
+    case 5: return digital(I, 0.02, 1e-6);
+    case 6: return digital(I, 0.2, 1e-4);
+    case 7: return digital(roundN(I, 2), 10, 0.01);
+    case 8: return digital(roundN(R, 1), 200, 1);
+    case 9: return digital(Math.round(R), 2000, 10);
+    case 10: return digital(Math.round(R), 20000, 100);
+    case 11: return digital(Math.round(R), 200000, 1000);
+    case 12: return digital(Math.round(R), 2000000, 10000);
+    case 13: return digital(roundN(Uv, 4), 0.2, 0.001);
+    case 14: return digital(roundN(Uv, 3), 2, 0.01);
+    case 15: return digital(roundN(Uv, 3), 20, 0.1);
+    case 16: return digital(roundN(Uv, 2), 200, 1);
+    case 17: return digital(roundN(Uv, 2), 1000, 10);
+  }
+  return "";
+}
+
+// ---- 展开函数 ---------------------------------------------------------------
 // 把 elements/wires（均为可变副本）里的电表替换为子电阻网络。
 // 返回 { elements, wires, meters:[{el, spec}] }；meters 供回读统计用。
 export function expandMeters(elements, wires) {
@@ -127,21 +227,23 @@ export function expandMeters(elements, wires) {
   const meters = [];
   const nets = []; // {el, net} wire 改写用
   for (const el of elements) {
+    const isMM = el.modelId === "Multimeter";
     const nets4model = NETWORKS[el.modelId];
-    if (!nets4model) {
+    if (!isMM && !nets4model) {
       out.push(el);
       continue;
     }
     const ideal = isIdeal(el);
-    let net = nets4model[ideal ? "ideal" : "real"] || nets4model.real;
-    // 深拷贝网络（烧毁改写电阻值，避免污染共享常量）
+    let net = isMM ? multimeterNet(el) : nets4model[ideal ? "ideal" : "real"] || nets4model.real;
+    // 深拷贝网络（烧毁改写电阻值，避免污染共享常量；Multimeter 无烧毁逻辑）
     net = {
       resistors: net.resistors.map((r) => ({ ...r })),
+      sources: (net.sources || []).map((s) => ({ ...s })),
       pinMap: { ...net.pinMap },
       internal: net.internal.map((x) => [...x]),
     };
     // 烧毁：Unity SyncProperties → SetResistance(this, 0, 1e8)
-    if (el.broken) {
+    if (el.broken && !isMM) {
       const r0 = net.resistors.find((r) => r.key === "R1" || r.key === "RV");
       if (r0) r0.r = 1e8;
     }
@@ -153,6 +255,20 @@ export function expandMeters(elements, wires) {
         position: { ...el.position },
         rotY: el.rotY || 0,
         properties: { 电阻: r.r },
+        statistics: {},
+        broken: false,
+      });
+    }
+    // Multimeter 内置源（Unity VoltageSource DC，MaximumVoltage 按档位 -15/0）：
+    // 引擎侧用 Battery Source（属性「电压」）承载，负值直传（MNA 代数无歧义）。
+    for (const s of net.sources) {
+      out.push({
+        id: `${el.id}::${s.key}`,
+        modelId: "Battery Source",
+        label: el.label,
+        position: { ...el.position },
+        rotY: el.rotY || 0,
+        properties: { 电压: s.v },
         statistics: {},
         broken: false,
       });
@@ -213,7 +329,7 @@ export function meterStatistics(el, U, pinWired, dtSec = 0) {
     case "Simple Ammeter": {
       // 电流/功率/电压 = 主电阻 R1；量程 0.0075（满偏电压）
       const r1 = broken0 ? 1e8 : isIdeal(el) ? 1e-6 : 1 / 72;
-      const u1 = U.R1 || 0;
+      const u1 = U.R1?.电压 || 0;
       const i = ohm(u1, r1);
       const p = u1 * i;
       const u = i === 0 ? 0 : p / i;
@@ -228,7 +344,7 @@ export function meterStatistics(el, U, pinWired, dtSec = 0) {
     case "Simple Voltmeter": {
       // 量程 0.001（满偏电流）；名义量程 3/15V
       const r1 = broken0 ? 1e8 : isIdeal(el) ? 1e6 : 3000;
-      const u1 = U.R1 || 0;
+      const u1 = U.R1?.电压 || 0;
       const i = ohm(u1, r1);
       const p = u1 * i;
       const u = i === 0 ? 0 : p / i;
@@ -242,7 +358,7 @@ export function meterStatistics(el, U, pinWired, dtSec = 0) {
     case "Galvanometer": {
       // 量程 3e-6 A；刻度取负（指针双向，中零）
       const r1 = broken0 ? 1e8 : 100;
-      const u1 = U.R1 || 0;
+      const u1 = U.R1?.电压 || 0;
       const i = ohm(u1, r1);
       const p = u1 * i;
       const u = i === 0 ? 0 : p / i;
@@ -254,7 +370,7 @@ export function meterStatistics(el, U, pinWired, dtSec = 0) {
     case "Microammeter": {
       // 量程 0.1V（卡片显示 0.2，计算用 0.1——照抄源码）
       const r1 = broken0 ? 1e8 : 500;
-      const u1 = U.R1 || 0;
+      const u1 = U.R1?.电压 || 0;
       const i = ohm(u1, r1);
       const p = u1 * i;
       const u = i === 0 ? 0 : p / i;
@@ -266,8 +382,8 @@ export function meterStatistics(el, U, pinWired, dtSec = 0) {
     case "Electricity Meter": {
       // 电流=RC 支路、电压=RV 压降、示数 Wh 累积；额定电流 6A
       const rated = Number(el.properties?.["额定电流"]) || 6;
-      const uV = U.RV || 0;
-      const uC = U.RC || 0;
+      const uV = U.RV?.电压 || 0;
+      const uC = U.RC?.电压 || 0;
       const i = broken0 ? 0 : ohm(uC, 0.01);
       const u = broken0 ? 0 : uV;
       const p = i * u;
@@ -277,6 +393,29 @@ export function meterStatistics(el, U, pinWired, dtSec = 0) {
       el.properties["示数"] = +wh.toFixed(6);
       st = { 电流: i, 电压: u, 功率: p, 示数: +wh.toFixed(6), 额定电流: rated };
       broken = broken0 || i < -rated || i > rated;
+      break;
+    }
+    case "Multimeter": {
+      // Unity SyncStatistics → SyncResistor(this, Statistics, 0, Resistance)：
+      // 瞬间电流=I(U/R1)、瞬间电压=P/I、电压=√|P·R|（幅值，AC 档用）、
+      // 电流=√|P/R|。R1 取档位值（multimeterNet 与 expandMeters 同源）。
+      // 无烧毁判定（Multimeter.cs 源码无 Break 逻辑）。
+      const mmNet = multimeterNet(el);
+      const mmR = mmNet.resistors[0].r;
+      const mmU = U.R1?.电压 || 0;
+      let mmI = ohm(mmU, mmR);
+      // 电流档 R1=1e-9Ω 压降 ~1e-11V：引擎序列化截断归零时改读内置源支路
+      // 电流（MNA write_back 回填 V 源支路电流，串联同值；符号以 e2e 实证校准）
+      const srcI = Number(U.SRC?.电流) || 0;
+      if (mmI === 0 && srcI !== 0) mmI = srcI;
+      const mmP = mmU * mmI;
+      st = {
+        瞬间电流: mmI,
+        瞬间电压: mmI === 0 ? 0 : mmP / mmI,
+        电压: Math.sqrt(Math.abs(mmP * mmR)),
+        电流: Math.sqrt(Math.abs(mmP / mmR)),
+        功率: mmP,
+      };
       break;
     }
     default:
