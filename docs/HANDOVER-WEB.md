@@ -5,6 +5,11 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
+**2026-10-24 13:00（值班第 25 轮收尾：✅ 遗留项全面盘点销项——移动端触控确认已完成（快照优先级列表过时三轮已销），剩余项全部依赖 sin 输入，零代码改动，已推送（见 git log））**：
+- **「移动端触控」销项**：PLAN.md:92 已勾选（dc7ffb3，2026-10-15），但 round-22~24 快照的「下轮直接干①」一直抄旧未销。本轮逐文件核实实现完整：①app.js bindPointer `_activePtrs` 集——双指触发撤销拖拽+控制权交还 OrbitControls（dolly 缩放），单指命中交互暂禁相机旋转；②拾取阈值 26px×fovCoef「generous touch target」；③ui.js bindDrawerGesture 抽屉把手上下滑 >30px 开合（绑 tabs 避让卡片滚动）；④styles.css @media 720px（全宽抽屉/joystick 78px）+ touch-action:none；⑤index.html viewport 禁双击缩放。**无剩余工作**。
+- **剩余项终态盘点（全部等 sin，下轮唤醒若无新输入→简短报告即可，勿硬编活）**：①M8 三项（示波器 §3.2/§3.4、参数补全 §2 八类、导线核对 §5）=规范文档 `shared/specs/Unity电学模块功能规范.md` 缺失阻塞（round-14 已全域搜索实锤不在本地：unity/ 克隆、repo/ 引擎、工作区、git 均无）→ 需 sin 提供文件或指路；②烧毁冒烟效果（PLAN:86 二期）=unity/Assets 全域搜 smoke/burn/烟雾 零命中（仅火箭 AfterlerRight 误中），无源码依据，铁律禁凭记忆做→需 sin 定夺是否授权自研样式；③0fps 真机验证=等 sin；④预览部署=GH Pages 等组织升级，CF Pages sin 已令搁置勿动。
+- **验证**：本轮零代码改动（纯文档），无需 smoke；git 唤醒时即干净（ahead=0/未提交 0）。
+
 **2026-10-24 11:20（值班第 24 轮收尾：✅ 收尾上会话挂掉的烧毁警示箭头+维修按钮（Unity RenderArrow/RepairComponent 一比一），e2e 5/5 + VLM PASS，已推送 971c520）**：
 - **功能**（上会话写完 src 未验证即挂）：①烧毁警示箭头——Arrow.FBX 几何（6 顶点 8 三角，cm Z-up→m Y-up）+ Arrow-Broken.mat 纯红 + y=0.07 + 2s 线性浮动 ±0.03（Arrow Animation.anim），components.js 默认隐藏不参与拾取，app.js updateArrows 随帧驱动；②repair()——IsBroken=false + Statistics 重置 + 面板刷新 + 重仿真（Unity RepairComponent）；③inspector 烧毁时首位渲染「维修」按钮（Button-Repair）。
 - **本轮修的两处**：①verify_break_arrow.mjs 断言物理算错（100Ω+表内阻100Ω→15mA→刻度5000，原期望±10）改为 >1.05 超量程判据；②固定 waitForTimeout 900ms 在 headless 软渲染下不够（broken 翻转实测 3.5-6.5s，120ms 防抖 timer 被主线程忙延迟）——改 waitForFunction 轮询（8s 上限）。**产品本身零缺陷，均为测试时序/断言问题**。
