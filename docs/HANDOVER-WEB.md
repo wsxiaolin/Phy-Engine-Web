@@ -5,6 +5,13 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
+**2026-10-24 14:25（值班第 26 轮·项目收尾终验：✅ 验证基线全链绿灯 + itest WASM 就绪竞态修复（真 bug·测试侧），已推送（见 git log））**：
+- **终验链（零产品代码变更前提下全绿）**：`npm run build` 2.31s 干净；`route_test` EXIT=0（直连/绕障/折线不穿盒全 PASS）；`smoke_test` EXIT=0（SMOKE OK：load→build→analyze→write_back，I=0.03/U=3）；itest 修复后全绿（见下）。
+- **itest.mjs 时序竞态修复（收尾终验抓出的真 bug）**：原第 21 行 `waitForTimeout(1500)` 固定预热在 headless 软渲染下不够——WASM Module 未就绪时 simulate/dump 报 `_malloc/_pl_experiment_dump of null`，且 clkOk 因 digitalClk 空转（circuit=0 时 engine.js:67 直接 no-op）**恒为 true 的假绿**（round-24 verify_break_arrow 同类教训第三例）。修法：`waitForFunction(() => window.__app.firstFrameMs != null, 30s)`——firstFrameMs 在 app.js:56 `await initEngine()` 之后才赋值，是引擎就绪权威标记。修后：batStat 电流 -0.06（3V/50Ω 物理正确）/lastSimErr null/dump 成功（engWires 3 条含 __ground__ 接地 + engEls 原生信封透传）/PAGEERRORS 0。
+- **⚠️ itest 无硬断言（下轮必读）**：itest.mjs 纯 JSON 输出、EXIT 恒 0——跑完必须人工核对 **batStat 有读数 + lastSimErr null + 无 dumpErr + PAGEERRORS 0** 四判据；旧记录里 dumpErr/lastSimErr 非零即引擎未就绪假绿，勿当产品回归。
+- **项目收尾终态**：代码线全部完成（87 元件资产管线 / 36 件官方对照 38:38 实质全 PASS / 导线路由+悬链 / 开关拨杆 / 烧毁箭头+维修 / 移动端触控 / .plsave 原生信封）；main 与远端同步。
+- **等 sin 清单（唯一剩余项，收尾冻结）**：①M8 三项等规范文档 `shared/specs/Unity电学模块功能规范.md`（本地全域实锤缺失，round-14/25 两轮复核）②烧毁冒烟等自研授权（unity/Assets 无源码依据，铁律禁凭记忆）③0fps 真机验证④预览部署（GH Pages 等 org 升级 / CF Pages sin 搁置令）。下轮唤醒无新输入→简短报告即可，勿硬编活。
+
 **2026-10-24 13:00（值班第 25 轮收尾：✅ 遗留项全面盘点销项——移动端触控确认已完成（快照优先级列表过时三轮已销），剩余项全部依赖 sin 输入，零代码改动，已推送（见 git log））**：
 - **「移动端触控」销项**：PLAN.md:92 已勾选（dc7ffb3，2026-10-15），但 round-22~24 快照的「下轮直接干①」一直抄旧未销。本轮逐文件核实实现完整：①app.js bindPointer `_activePtrs` 集——双指触发撤销拖拽+控制权交还 OrbitControls（dolly 缩放），单指命中交互暂禁相机旋转；②拾取阈值 26px×fovCoef「generous touch target」；③ui.js bindDrawerGesture 抽屉把手上下滑 >30px 开合（绑 tabs 避让卡片滚动）；④styles.css @media 720px（全宽抽屉/joystick 78px）+ touch-action:none；⑤index.html viewport 禁双击缩放。**无剩余工作**。
 - **剩余项终态盘点（全部等 sin，下轮唤醒若无新输入→简短报告即可，勿硬编活）**：①M8 三项（示波器 §3.2/§3.4、参数补全 §2 八类、导线核对 §5）=规范文档 `shared/specs/Unity电学模块功能规范.md` 缺失阻塞（round-14 已全域搜索实锤不在本地：unity/ 克隆、repo/ 引擎、工作区、git 均无）→ 需 sin 提供文件或指路；②烧毁冒烟效果（PLAN:86 二期）=unity/Assets 全域搜 smoke/burn/烟雾 零命中（仅火箭 AfterlerRight 误中），无源码依据，铁律禁凭记忆做→需 sin 定夺是否授权自研样式；③0fps 真机验证=等 sin；④预览部署=GH Pages 等组织升级，CF Pages sin 已令搁置勿动。

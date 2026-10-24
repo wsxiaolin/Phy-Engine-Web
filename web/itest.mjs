@@ -18,7 +18,10 @@ const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
 const errors = [];
 page.on("pageerror", (e) => errors.push(e.message));
 await page.goto("http://localhost:8941/", { waitUntil: "networkidle" });
-await page.waitForTimeout(1500);
+// 等 WASM 引擎就绪（firstFrameMs 在 await initEngine() 之后才赋值，app.js:56）。
+// 固定 1500ms 在 headless 软渲染下不够——Module 未就绪时 simulate/dump 报 _malloc/_pl_experiment_dump of null，
+// 而 clkOk 因 digitalClk 空转(circuit=0)仍为 true 的假绿（round-24 同类教训：waitForFunction 替代固定 timeout）。
+await page.waitForFunction(() => window.__app && window.__app.firstFrameMs != null, null, { timeout: 30000 });
 const r = await page.evaluate(async () => {
   const app = window.__app;
   const out = {};
