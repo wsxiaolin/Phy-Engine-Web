@@ -5,6 +5,12 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
+**2026-10-24 08:30（值班第 23 轮收尾：✅ webshot 取景管线改进落地——判定漂移根因根治，MI/Relay 新管线下 3 轮复验稳定 PASS，已推送 d0eddc6）**：
+- **改动**（`web/shot_pairs.mjs`）：①`__frame` 弃 max(边)×√3/2 包围球法（扁件虚大最多 ~50%），改 bbox 8 角点对屏幕 x/y 两轴**解析求最小距离**（90% 视口利用率，OrbitControls 零滚转正交基 r/up 手推验证，fov=30°/near=0.02 距离下限安全）；②`__worldBox` 加 `o.visible` 过滤（不可见辅助几何不撑大 bbox）；③新增 `ONLY` 环境变量（`ONLY="Mutual Inductor,Relay Component" FORCE=1 EXTRA="Relay Component" node shot_pairs.mjs` 单件重截，EXTRA 机制挂 catalog 全名）。
+- **验证链**：距离探针 Relay/MI/Capacitor 取景 0.58→0.39m（拉近 1.5×，画面面积 2.2×，探针脚本已清理未入库）；两件重截→compose 拼图→`vlm_review_official.py` 复审 **3 轮全 PASS**（MI 3/3、Relay 3/3；旧管线下两件均为不稳定 FAIL=round-20/21 两起判定漂移元凶）；smoke EXIT=0。注意 `vlm_review_official.py` 传参用下划线文件名（`Mutual_Inductor`）不是空格 ModelID。
+- **基线策略**：仅 MI/Relay 两件更新 webshot/拼图/报告，其余 36 件维持旧基线（round-22 裁定全量重截边际收益低且会重新引入漂移不确定性）。未来新元件走新管线自动受益；如需全量重截：`cd web && FORCE=1 EXTRA="Relay Component,Photoresistor" node shot_pairs.mjs` + compose + vlm_review 三连，预计 8 分钟跑批，重截即重审。
+- **下轮直接干（优先级重排）**：①移动端触控②示波器（规范 §3.2/§3.4）③逐元件参数补全（规范 §2 八类）④导线/求解规格核对（规范 §5）。P1=0fps 真机验证（等 sin）。CF Pages 搁置勿动。
+
 **2026-10-24 07:30（值班第 22 轮收尾：✅ MI Icon 面片销案——非差距，判定漂移链终结；官方对照基线终态 38/38 零真实建模差距，已推送 41207e3）**：
 - **MI 销案证据链**（`build/compare_official_vlm/Mutual_Inductor_forensics.md` 结案段）：①渲染实测逐节点 bbox——Icon 面片 0.062×0.057m 平铺底板顶面+0.0004、四角 pin Quad 同平面，与 prefab TRS 手算 Unity 真值逐位吻合（提取器 R@diag(S) 语义经数值锚定正确，魔方旋转+非均匀缩放链忠实）；②z-ai vision 直审官方 210×139 原图——**基座表面 IC 周围本就印白色线圈符号**、IC 顶面另有丝印，推翻 round-20「白符号只在 IC 表面」误读（上轮「真差距唯一幸存项」撤销）；③公平对照 `mi_fair.png` 官方×web 近景等高并排 VLM 判 PASS 五项结构一一对应。round-21 快照「下轮直接干②Icon 面片贴部件表面」作废——官方就是印底座的。
 - **PLAN 两遗留条目勾销**：「剩余 10 项真实建模缺陷」（Relay×3 判定漂移 / Resistance×5+Photoresistor×2 前轮已修复）与「Quad 图标面片材质层级」。
