@@ -5,6 +5,13 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
+**2026-10-24 11:20（值班第 24 轮收尾：✅ 收尾上会话挂掉的烧毁警示箭头+维修按钮（Unity RenderArrow/RepairComponent 一比一），e2e 5/5 + VLM PASS，已推送 971c520）**：
+- **功能**（上会话写完 src 未验证即挂）：①烧毁警示箭头——Arrow.FBX 几何（6 顶点 8 三角，cm Z-up→m Y-up）+ Arrow-Broken.mat 纯红 + y=0.07 + 2s 线性浮动 ±0.03（Arrow Animation.anim），components.js 默认隐藏不参与拾取，app.js updateArrows 随帧驱动；②repair()——IsBroken=false + Statistics 重置 + 面板刷新 + 重仿真（Unity RepairComponent）；③inspector 烧毁时首位渲染「维修」按钮（Button-Repair）。
+- **本轮修的两处**：①verify_break_arrow.mjs 断言物理算错（100Ω+表内阻100Ω→15mA→刻度5000，原期望±10）改为 >1.05 超量程判据；②固定 waitForTimeout 900ms 在 headless 软渲染下不够（broken 翻转实测 3.5-6.5s，120ms 防抖 timer 被主线程忙延迟）——改 waitForFunction 轮询（8s 上限）。**产品本身零缺陷，均为测试时序/断言问题**。
+- **验证链**：verify_break_arrow.mjs 5/5 PASS（PHASE1 不烧隐藏/PHASE2 烧毁红箭浮动+刻度5000烧毁=1/PHASE2b 维修按钮/PHASE3 repair后读数恢复0.9999箭头隐藏）；smoke_test EXIT=0；z-ai vision 审 build/verify_break_arrow.png PASS（红锥箭悬浮+按钮齐+无渲染缺陷）；vite build 3.3s 干净。
+- **工具坑（下轮省考古）**：①网关不稳时 Bash 前台长调用 504——子壳后台要用 `( cmd > log 2>&1 & )`（& 在括号内）；`( ... ) & echo` 形式会挂死子进程。②headless e2e 断言状态翻转一律用 waitForFunction 轮询，勿用固定 timeout。
+- **下轮直接干（优先级）**：①移动端触控（双指缩放+抽屉滑动）②示波器（规范 §3.2/§3.4）③逐元件参数补全（规范 §2 八类）④导线/求解规格核对（规范 §5）。P1=0fps 真机验证（等 sin）。CF Pages 搁置勿动。
+
 **2026-10-24 08:30（值班第 23 轮收尾：✅ webshot 取景管线改进落地——判定漂移根因根治，MI/Relay 新管线下 3 轮复验稳定 PASS，已推送 d0eddc6）**：
 - **改动**（`web/shot_pairs.mjs`）：①`__frame` 弃 max(边)×√3/2 包围球法（扁件虚大最多 ~50%），改 bbox 8 角点对屏幕 x/y 两轴**解析求最小距离**（90% 视口利用率，OrbitControls 零滚转正交基 r/up 手推验证，fov=30°/near=0.02 距离下限安全）；②`__worldBox` 加 `o.visible` 过滤（不可见辅助几何不撑大 bbox）；③新增 `ONLY` 环境变量（`ONLY="Mutual Inductor,Relay Component" FORCE=1 EXTRA="Relay Component" node shot_pairs.mjs` 单件重截，EXTRA 机制挂 catalog 全名）。
 - **验证链**：距离探针 Relay/MI/Capacitor 取景 0.58→0.39m（拉近 1.5×，画面面积 2.2×，探针脚本已清理未入库）；两件重截→compose 拼图→`vlm_review_official.py` 复审 **3 轮全 PASS**（MI 3/3、Relay 3/3；旧管线下两件均为不稳定 FAIL=round-20/21 两起判定漂移元凶）；smoke EXIT=0。注意 `vlm_review_official.py` 传参用下划线文件名（`Mutual_Inductor`）不是空格 ModelID。
