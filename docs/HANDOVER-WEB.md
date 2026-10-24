@@ -5,6 +5,12 @@
 
 ## 0.快照（值班会话结束时更新；唤醒时只读本段+PLAN未勾项，勿通读全文）
 
+**2026-10-24 15:00（值班第 27 轮·终轮：✅ 项目收尾停机——值班 cron 已删除，按 sin 收尾指令终态，零代码改动）**：
+- **本轮状态**：唤醒时 git clean（ahead=0/behind=0/未提交 0），round-26（14:25）终验全链绿灯后无新输入、远端无变化——按纪律本应简短报告，但 cron prompt 内 sin 指令「项目请在一天 10月23日日内收尾」已超期一天，代码线终态（见 round-26 快照）+遗留全部阻塞 sin 输入 → 每小时唤醒纯空转烧预算。
+- **决策**：删除值班 cron（job 6ad49c99cfd90c385679094d「phy-engine-web 值班」，每小时整点）。项目代码线全部完成，等 sin 清单（M8 规范文档 / 烧毁冒烟授权 / 0fps 真机 / 预览部署）不依赖值班循环——sin 回话或提供输入随时可续，本快照 §0 即完整交接。
+- **恢复方式（sin 回来后）**：直接对话即可续推进；如需恢复值班循环，一句话重建 cron（工作区+纪律提示词沿用本快照与 tools/wakeup.sh 即可）。
+- **验证**：本轮零代码改动（纯文档快照）；git 唤醒即 clean，无 smoke 必要；本条目随收尾 commit 推送。
+
 **2026-10-24 14:25（值班第 26 轮·项目收尾终验：✅ 验证基线全链绿灯 + itest WASM 就绪竞态修复（真 bug·测试侧），已推送（见 git log））**：
 - **终验链（零产品代码变更前提下全绿）**：`npm run build` 2.31s 干净；`route_test` EXIT=0（直连/绕障/折线不穿盒全 PASS）；`smoke_test` EXIT=0（SMOKE OK：load→build→analyze→write_back，I=0.03/U=3）；itest 修复后全绿（见下）。
 - **itest.mjs 时序竞态修复（收尾终验抓出的真 bug）**：原第 21 行 `waitForTimeout(1500)` 固定预热在 headless 软渲染下不够——WASM Module 未就绪时 simulate/dump 报 `_malloc/_pl_experiment_dump of null`，且 clkOk 因 digitalClk 空转（circuit=0 时 engine.js:67 直接 no-op）**恒为 true 的假绿**（round-24 verify_break_arrow 同类教训第三例）。修法：`waitForFunction(() => window.__app.firstFrameMs != null, 30s)`——firstFrameMs 在 app.js:56 `await initEngine()` 之后才赋值，是引擎就绪权威标记。修后：batStat 电流 -0.06（3V/50Ω 物理正确）/lastSimErr null/dump 成功（engWires 3 条含 __ground__ 接地 + engEls 原生信封透传）/PAGEERRORS 0。
