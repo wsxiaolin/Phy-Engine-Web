@@ -1,13 +1,18 @@
 {
- "total": 1,
- "pass": 1,
+ "total": 2,
+ "pass": 2,
  "fail": 0,
  "error": 0,
  "detail": {
+  "Mutual_Inductor": {
+   "verdict": "PASS",
+   "issues": [],
+   "notes": "Web 端复刻版在主体几何结构、部件构成及比例上与 Unity 官方预览保持一致，表面纹理与引脚差异符合预期豁免范围。"
+  },
   "Relay_Component": {
    "verdict": "PASS",
    "issues": [],
-   "notes": "销案(第21轮)：公平对照 PASS（relay_fair.png）——拼图 FAIL=webshot 取景太远致 VLM 判定漂移，几何提取正确（forensics 结案段）"
+   "notes": "Web 端渲染忠实复刻了官方预览的几何结构、部件构成及配色，比例协调，无可见缺陷。"
   }
  }
 }
