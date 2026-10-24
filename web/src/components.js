@@ -42,6 +42,31 @@ const postMatBlack = new THREE.MeshStandardMaterial({ color: 0x2c2c30, roughness
 const postTipMat = new THREE.MeshStandardMaterial({ color: 0xb8bec8, roughness: 0.35, metalness: 0.85 });
 const PIN_NAME_RE = /^pin/i; // 与提取器 is_pin_node 判定同源
 
+// --- 烧毁警示箭头（Unity CircuitComponent.RenderArrow 一比一）---
+// 几何抽自 unity/Assets/Circuits/Effects/Arrows/Arrow.FBX（6 顶点 8 三角，
+// FBX 厘米 Z-up → Unity 米 Y-up：(x,y,z)→(x,z,-y)）；颜色 Arrow-Broken.mat
+// _Color=(1,0,0,1) 纯红；位置 Arrow Position.prefab 根 localPosition=
+// (0, ArrowHeight=0.07, 0)（CircuitComponent.cs:44/94 覆盖同值）；
+// 浮动动画 Arrow Animation.anim：y 0→0.03→0 线性 2s 循环（app.js loop 驱动）。
+// Unity Durability<0.9 橙色预警箭头因 pe_sim 引擎无 Durability 输出不实现。
+const BREAK_ARROW_VERTS = [
+  -0.0983, 0.4094, 0.0992, 0.0983, 0.4094, 0.0992, // 底方截面四角（y=0.4094）
+  -0.0983, 0.4094, -0.0992, 0.0983, 0.4094, -0.0992,
+  0, 0.7507, 0, // 上锥顶
+  0, -0.0028, 0, // 下锥尖
+];
+const BREAK_ARROW_FACES = [
+  2, 0, 4, 3, 2, 4, 1, 3, 4, 0, 1, 4, // 上锥 4 面
+  0, 2, 5, 2, 3, 5, 3, 1, 5, 1, 0, 5, // 下锥 4 面
+];
+const breakArrowGeo = new THREE.BufferGeometry();
+breakArrowGeo.setAttribute("position", new THREE.Float32BufferAttribute(BREAK_ARROW_VERTS, 3));
+breakArrowGeo.setIndex(BREAK_ARROW_FACES);
+const breakArrowMat = new THREE.MeshBasicMaterial({
+  color: 0xff0000, // Arrow-Broken.mat: r=1, g=0, b=0, a=1
+  side: THREE.DoubleSide, // FBX 面序在 Y-up 转换后法线朝向不定，双面渲染
+});
+
 // Build a placed component: GLB clone + pin anchor pick spheres + selection box.
 export async function createComponent(modelId, { pickable = true } = {}) {
   const group = new THREE.Group();
@@ -100,6 +125,14 @@ export async function createComponent(modelId, { pickable = true } = {}) {
   group.userData.pinLocal = pins.map((p) => new THREE.Vector3(p.position[0], p.position[1], p.position[2]));
   group.userData.pinNames = pins.map((p) => p.name);
   group.userData.pickable = pickable;
+  // 烧毁警示箭头：默认隐藏，app.js updateArrows 按 el.broken 显示并驱动浮动
+  const arrow = new THREE.Mesh(breakArrowGeo, breakArrowMat);
+  arrow.name = "breakArrow";
+  arrow.position.set(0, 0.07, 0); // Arrow Position.prefab 根 (0, ArrowHeight, 0)
+  arrow.visible = false;
+  arrow.raycast = () => {}; // 警示标记不参与拾取
+  group.add(arrow);
+  group.userData.arrow = arrow;
   return group;
 }
 

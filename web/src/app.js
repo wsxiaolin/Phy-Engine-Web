@@ -683,7 +683,20 @@ export class App {
       rows,
       () => this.rotate(el.id),
       () => this.deleteElement(el.id),
+      el.broken ? () => this.repair(el.id) : null, // Unity Button-Repair：仅烧毁时出现
     );
+  }
+
+  // Unity RepairComponent 一比一：ResetHistory（IsBroken=false + Statistics 重置）
+  // + RenderArrow（updateArrows 循环自动隐藏箭头）+ 面板刷新 + 重仿真。
+  repair(id) {
+    const el = this.experiment.getElement(id);
+    if (!el || !el.broken) return;
+    el.broken = false;
+    el.statistics = {};
+    if (this.rails.selection === id) this.showInspector(el);
+    this.scheduleSimulate();
+    this.ui.toast(`${el.label} 已维修`);
   }
 
   rotateBy(id, delta) {
@@ -1023,6 +1036,23 @@ export class App {
     this.ui.updateLabels(entries, this.world.camera, this.world.renderer);
   }
 
+  // 烧毁警示箭头（Unity RenderArrow + Arrow Animation 一比一）：
+  // el.broken → 显示红色箭头并 2s 周期浮动（y 0→0.03→0 线性往返）。
+  updateArrows(now) {
+    const t = now / 1000;
+    for (const el of this.experiment.elements) {
+      const arrow = this.elementObjects.get(el.id)?.userData?.arrow;
+      if (!arrow) continue;
+      if (el.broken) {
+        const ph = t % 2;
+        arrow.position.y = 0.07 + (ph < 1 ? 0.03 * ph : 0.03 * (2 - ph));
+        arrow.visible = true;
+      } else if (arrow.visible) {
+        arrow.visible = false;
+      }
+    }
+  }
+
   loop() {
     this._lastT = performance.now();
     this._clkAcc = 0;
@@ -1044,6 +1074,7 @@ export class App {
       }
       this.applyJoystick();
       this.world.controls.update();
+      this.updateArrows(now);
       if (this.rails.selection) {
         const g = this.elementObjects.get(this.rails.selection);
         if (g) this._selectBox.setFromObject(g);

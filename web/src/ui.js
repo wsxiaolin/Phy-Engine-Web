@@ -130,7 +130,7 @@ export class UI {
     this.wirebar.classList.add("hidden");
   }
 
-  showInspector(title, rows, onRotate, onDelete) {
+  showInspector(title, rows, onRotate, onDelete, onRepair) {
     this.inspTitle.textContent = title;
     this.inspRows.innerHTML = "";
     for (const row of rows) {
@@ -164,6 +164,14 @@ export class UI {
     }
     const actions = this.inspector.querySelector(".insp-actions");
     actions.innerHTML = "";
+    if (onRepair) {
+      // Unity CircuitComponent 元数据操作区首位：Button-Repair（仅 IsBroken 时出现）
+      const b = document.createElement("button");
+      b.className = "btn";
+      b.textContent = "维修";
+      b.onclick = onRepair;
+      actions.appendChild(b);
+    }
     if (onRotate) {
       const b = document.createElement("button");
       b.className = "btn";
