@@ -5,14 +5,14 @@ wasm 版本，顺便做好前端，参考组织下已有物实 physicslab 的 un
 最终要求视觉效果和使用体验与 unity 版本一模一样（不含社区功能），引擎替换为 wasm
 的新引擎，注意性能敏感"。
 
-> **2026-10-18 收尾刷新（phyengine 超时，林澈 代收尾）**：M1–M5 完成；M6 仅剩预览部署
-> 与 HUD fps 待验（移动端触控已于 dc7ffb3 完成）；M7 建模保真审计 96%（问题 244→10）；
-> M8 功能规范补齐未开始。**整体完成度 ≈ 85%**（按里程碑体量加权：M1–M5 100%、
-> M6 ~90%、M7 96%、M8 0%）。详细交接见 HANDOVER-WEB.md。
-> 仓库 https://github.com/NetLogo-Mobile/phy-engine-web，main 已推至 **b97a4c3**
-> （收尾提交：审计管线 v2 工具 + 对照截图管线四件套 + audit_report_v2，其后另有本 PLAN 文档笔）。
-> ⚠️ 收尾环境缺 git-lfs：重提取产物（87 GLB + catalog×2）已在本地产出并验证
-> （build EXIT=0），暂无法以 LFS 指针推送，滞留本地待环境恢复后补推（见 M7 末项）。
+> **2026-10-31 收尾刷新（复验）**：代码线自 2026-10-24 第 27 轮起冻结（值班 cron 已删）。
+> M1–M5 100%；M6 ~90%（剩公网预览部署、真机 fps）；M7 100%（官方对照全 PASS，
+> 遗留 10 项全部销案）；M8 ~40%（电表 6 件与 `.plsave` 双向兼容已完成，示波器 /
+> 逐元件参数 / 导线求解规格核对待规范文档）。**整体完成度 ≈ 90%**。
+> 本次复验：`npm ci` + `npm run build` 13.6s、`node tools/smoke_test.mjs` SMOKE OK
+> （3V/100Ω → 0.03A）、加载存档后连导线/删线/重连仿真读数均正确、本地 `npm run dev`
+> 预览可用。仓库 https://github.com/NetLogo-Mobile/phy-engine-web，HEAD 以 git log 为准。
+> 剩余阻塞与复验细节见 `docs/HANDOVER-WEB.md` §0 与本文 §六。
 
 ## 一、产品定义
 
@@ -90,11 +90,13 @@ wasm 版本，顺便做好前端，参考组织下已有物实 physicslab 的 un
 - [x] VLM 视觉对照 ≥4/4 PASS（导线弧线/绕行/拨杆/标签/面板多轮全过）
 - [x] 交付：NetLogo-Mobile/phy-engine-web main 直推（sin 授权）
 - [x] **移动端触控适配**（dc7ffb3，2026-10-15）
-- [ ] **预览部署**：GH Pages 私有仓不支持（workflow 已挂等 org 升级）；
-      CF Pages 需 sin 在 Dashboard 连一次 repo（推荐）；公开仓会带出 GLB+docs（已知悉未决）
-- [ ] headless 下 HUD 显示 0 fps（rAF 节流读数问题，真机大概率正常，待验）
+- [ ] **预览部署**：本地 `npm run dev` 预览已可用（2026-10-31 复验，Vite 5173 正常出画面）；
+      公网托管仍待 sin 决策——GH Pages 私有仓需组织升级（workflow 已挂，历史 run 全 failure）；
+      CF Pages 需 sin 在 Dashboard 连一次 repo；公开仓会带出 GLB+docs（已知悉未决）
+- [ ] 真机 fps：headless 软渲染实测 0.3 fps（Swiftshader），HUD 读数随之失真；
+      真机 rAF 正常，待 sin 在真实设备上确认 60fps 目标
 
-### M7 建模保真审计与 Unity 对照（🔶 96%，2026-10-16 ~ 10-18 轮）
+### M7 建模保真审计与 Unity 对照（✅ 100%，2026-10-16 ~ 10-24 轮）
 - [x] 审计管线 v2（1482c4d）：audit_models 与提取器同源（复用 FBXCache，
       消除 fileID→子网格解析假阳性）+ .meta fileIDToRecycleName 权威映射
       + Unity 内置基元支持（Quad/Plane/Cube/Cylinder）
@@ -120,13 +122,18 @@ wasm 版本，顺便做好前端，参考组织下已有物实 physicslab 的 un
 - [x] **重提取产物补推已完成**（10-23 实锤）：git-lfs 3.7.0 就绪，176 GLB 全部
       LFS 追踪且已在 origin/main，本项为过时描述
 
-### M8 功能规范补齐（⬜ 未开始，2026-10-16 sin 新增范围）
+### M8 功能规范补齐（🔶 约 40%，2026-10-16 sin 新增范围）
 依据 shared/specs/Unity电学模块功能规范.md（M4/M5 已覆盖导线连接、电路求解、
-存档读写的基础能力，本里程碑对齐规范补缺口）：
-- [ ] 示波器（规范 §3.2 社区实验搭法 / §3.4 Web 实现建议为基线）
-- [ ] 逐元件参数调节补全（规范 §2 八类全集对照现有属性卡逐一补齐）
+存档读写的基础能力，本里程碑对齐规范补缺口）。
+
+⚠️ **阻塞（2026-10-31 复核）**：`shared/specs/Unity电学模块功能规范.md` 在本机、
+本仓库、工作区与 git 历史中均不存在（round-14/25/31 三轮全域搜索）。三项未勾选
+全部依赖该文档，需 sin 提供文件或指路。
+
+- [ ] 示波器（等规范文档；规范 §3.2 社区实验搭法 / §3.4 Web 实现建议为基线）
+- [ ] 逐元件参数调节补全（等规范文档；规范 §2 八类全集对照现有属性卡逐一补齐）
 - [x] 电表类（规范 §4：电流表/电压表/灵敏电流计/微安表/多用电表/电能表）——M8 六件全齐（PR 序列 b14117d/e6fb162）
-- [ ] 导线连接与电路求解规格核对（规范 §5）
+- [ ] 导线连接与电路求解规格核对（等规范文档；规范 §5）
 - [x] 存档 .plsave 双向兼容验证（规范 §7）——toPlsave 输出引擎原生嵌套信封（default_plsav_template 一比一，37/36/17 键逐键），fromPlsave 兼容新旧两格式，WASM 装载+物理回读实测（tools/verify_plsave.mjs 17 断言 ALL PASS）
 
 ## 四、明确不做（sin 圈定）
@@ -139,7 +146,28 @@ wasm 版本，顺便做好前端，参考组织下已有物实 physicslab 的 un
 
 | 风险 | 预案 |
 |---|---|
-| 引擎不支持灯/表/电源类（Unity 核心体验） | 引擎有 generator/linear 模型但 pe_sim 未映射；可提 PR 扩 pe_sim（照 R/C/L 样式）；过渡期灰色禁用 |
+| 引擎无电表原生模型 | 已落地：前端照 Unity BuildElements 把电表展开成 Resistor 子网络（`web/src/meters.js`），读数与烧毁判定按 Unity 语义在本地计算 |
 | 87 元件全加载慢 | 按分类懒加载 + IndexedDB 缓存；GLB 总量 150MB 里有传感器等冷门类 |
-| 导线路由效果差 | MVP 直线弧，二期上 A*；Unity 的 WireManager 有 waypoint 参考实现 |
-| 首屏 WASM+GLB 体积 | wasm ~2-4MB gzip 后 ~1MB；GLB 分包按需 |
+| 导线路由效果差 | 已复刻 Unity CircuitWire.Reroute（直线→绕角→Catmull-Rom→悬链线），无需 A* |
+| 首屏 WASM+GLB 体积 | wasm 1.94MB（gzip 后更小）；GLB 按需加载，构建产物 JS 650KB / gzip 171KB |
+| 仿真失败后状态残留 | 已知缺陷（2026-10-31 复验）：`simulate()` 成功时未清空 `lastSimError`，失败 toast 会停留到下次强制重跑；修复点 `web/src/app.js` 成功分支 |
+
+## 六、2026-10-31 复验记录
+
+环境：沙箱 Linux + Node 22 + git-lfs 3.3.0 + playwright-core（chromium-1248 软渲染）。
+
+| 检查 | 结果 |
+|---|---|
+| LFS 物化 | 安装 git-lfs 后 `git lfs pull` 成功，wasm 1.94MB / room.glb 7.3MB 就位 |
+| 依赖安装 | `npm ci` 13 包 / 15s |
+| 生产构建 | `vite build` 13.57s，JS 650.58KB（gzip 170.79KB），产物哈希与仓库内 dist 一致 |
+| 引擎冒烟 | `node tools/smoke_test.mjs` → `SMOKE OK`，I=0.03A / U=3V |
+| 存档加载 + 仿真 | 电池+电阻+开关+接地 4 线闭环：电池 -0.03A、电阻 3V/0.03A/0.09W |
+| 连线交互 | 删除一条导线后重连（handlePin 两次）：导线数回到 4，统计值恢复正确 |
+| 导线网格 | `wireSystem` 子节点数与导线数一致（4） |
+| 页面加载 | 首屏 6.24s（0.3fps 软渲染），canvas、7 分类抽屉、HUD 正常，无 PAGEERROR |
+| 404 | 浏览器请求 `/favicon.ico` 404（`index.html` 未声明图标），无功能影响 |
+
+未纳入代码修复的观察（留给后续会话）：短路接法（电池两端直连）会让 `circuit_analyze`
+失败并弹失败提示，属引擎 MNA 奇异所致，与 Unity 行为待对齐；失败后 `lastSimError`
+与 toast 不清空。

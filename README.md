@@ -4,9 +4,11 @@
 > 视觉与使用体验对齐 Unity 版 Physics-Lab（`NetLogo-Mobile/Physics-Lab` 2.0 分支，
 > 不含社区功能）。**sin 对性能敏感。**
 
-**状态：交接中。资产管线 100% 可用（87 元件 GLB+目录+房间）；WASM 构建成功
-（91 符号，1.94MB）；当前阻塞 = 引擎 vendored json.hpp 解析全 discarded（已定位，
-见 `docs/HANDOVER.md` §1）。前端未动工，完整计划见 `docs/PLAN.md`。**
+**状态：代码线收官（2026-10-31 复验）。资产管线 100% 可用（87 元件 GLB + 目录 +
+房间）；WASM 引擎 1.94MB，load→build→analyze→write_back 冒烟全通；前端已完成
+（Three.js 场景 / 87 元件 / 连线路由 / 仿真闭环 / 电表 / 移动端触控 / `.plsave`
+双向兼容），建模对照全部 PASS。整体完成度约 90%，剩余项依赖 sin 输入，详见
+`docs/HANDOVER-WEB.md` §0 与 `docs/PLAN.md`。**
 
 ## 目录结构
 
@@ -27,22 +29,35 @@ phy-engine-web/
 ├── build/wasm/               # phy_engine.js + .wasm（构建产物）
 ├── repo/                     # Phy-Engine 克隆（.gitignore，不入库）
 ├── unity/                    # Physics-Lab Unity 克隆（.gitignore，不入库）
-├── web/                      # 前端（未动工，架构见 PLAN）
+├── web/                      # 前端（Vite + Three.js，已完工；src/ 源码，dist/ 构建产物）
 └── docs/                     # 交接文档 / 计划书 / 引擎契约
 ```
 
 ## 快速开始
 
 ```bash
-# 1. 资产重提取（约 1 分钟，需 PyYAML）
+# 0. 克隆后先装 LFS 并物化资产（GLB / wasm 都是 LFS 指针）
+git lfs install && git lfs pull
+
+# 1. 引擎冒烟（约 1 秒）
+node tools/smoke_test.mjs
+
+# 2. 前端开发预览
+cd web && npm ci && npm run dev
+
+# 3. 生产构建（产物 web/dist，含 assets/ 与 wasm/ 拷贝）
+cd web && npm run build
+```
+
+资产重提取与 WASM 重建仅在改动 Unity 素材或引擎时需要：
+
+```bash
+# 资产重提取（约 1 分钟，需 PyYAML）
 pip install pyyaml && python3 tools/extract_components.py && python3 tools/extract_room.py
 
-# 2. WASM 构建（需 emsdk 4.0.22，见 docs/HANDOVER.md 环境节）
+# WASM 构建（需 emsdk 4.0.22，见 docs/HANDOVER.md 环境节）
 EM_CONFIG=<emsdk>/upstream/emscripten/.emscripten EMXX=<emsdk>/upstream/emscripten/em++ \
   bash tools/build_wasm.sh
-
-# 3. 前端开发（未动工）
-cd web && npm i && npm run dev   # 规划中的形态
 ```
 
 ## 引擎契约速览（详见 docs/ENGINE_API.md）
